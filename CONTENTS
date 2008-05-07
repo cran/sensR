@@ -1,0 +1,107 @@
+Entry: AUC.default
+Aliases: AUC.default AUC.discrim AUC
+Keywords: htest
+Description: AUC computation
+URL: ../../../library/sensR/html/AUC.default.html
+
+Entry: AnotA
+Aliases: AnotA
+Keywords: models
+Description: Analysis of A-not-A tests
+URL: ../../../library/sensR/html/AnotA.html
+
+Entry: ROC.default
+Aliases: ROC.default ROC.discrim ROC
+Keywords: hplot
+Description: Plot the Receiver Operating Characteristic Curve
+URL: ../../../library/sensR/html/ROC.default.html
+
+Entry: SDT
+Aliases: SDT
+Keywords: models
+Description: Signal Detection Theory Computation of d-prime
+URL: ../../../library/sensR/html/SDT.html
+
+Entry: discrim
+Aliases: discrim discrimr
+Keywords: models
+Description: Sensory discrimination analysis
+URL: ../../../library/sensR/html/discrim.html
+
+Entry: discrimPwr
+Aliases: discrimPwr
+Keywords: models
+Description: Sensory discrimination power analysis
+URL: ../../../library/sensR/html/discrimPwr.html
+
+Entry: discrimSS
+Aliases: discrimSS
+Keywords: models
+Description: Sensory discrimination sample size calculation
+URL: ../../../library/sensR/html/discrimSS.html
+
+Entry: discrimSim
+Aliases: discrimSim
+Keywords: models
+Description: Simulates replicated difference tests
+URL: ../../../library/sensR/html/discrimSim.html
+
+Entry: duotrio
+Aliases: duotrio
+Keywords: models
+Description: Create duotrio binomial family
+URL: ../../../library/sensR/html/duotrio.html
+
+Entry: findcr
+Aliases: findcr
+Keywords: models
+Description: Find the critical value of a one-tailed binomial test
+URL: ../../../library/sensR/html/findcr.html
+
+Entry: plot.discrim
+Aliases: plot.discrim
+Keywords: hplot
+Description: Plot function for discrim objects
+URL: ../../../library/sensR/html/plot.discrim.html
+
+Entry: print.AUC
+Aliases: print.AUC
+Keywords: print
+Description: Print AUC objects
+URL: ../../../library/sensR/html/print.AUC.html
+
+Entry: print.discrim
+Aliases: print.discrim
+Keywords: print models
+Description: Print method for objects of class "discrim"
+URL: ../../../library/sensR/html/print.discrim.html
+
+Entry: samediff
+Aliases: samediff
+Keywords: models
+Description: Computation of tau and dprime for same different test
+URL: ../../../library/sensR/html/samediff.html
+
+Entry: sensR-package
+Aliases: sensR-package sensR
+Keywords: package
+Description: Thurstonian models for sensory discrimination
+URL: ../../../library/sensR/html/sensR-package.html
+
+Entry: threeAFC
+Aliases: threeAFC
+Keywords: models
+Description: Create 3-AFC binomial family
+URL: ../../../library/sensR/html/threeAFC.html
+
+Entry: triangle
+Aliases: triangle
+Keywords: models
+Description: Create triangle binomial family
+URL: ../../../library/sensR/html/triangle.html
+
+Entry: twoAFC
+Aliases: twoAFC
+Keywords: models
+Description: Create 2-AFC binomial family
+URL: ../../../library/sensR/html/twoAFC.html

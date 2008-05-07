@@ -1,0 +1,55 @@
+
+# functions
+export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
+       discrimSim, duotrio, threeAFC, triangle, twoAFC, SDT, ROC, AUC,
+       samediff, findcr, betabin, samediffSim, discrimR, clls,
+       samediffPwr)
+
+S3method(print, betabin)
+S3method(summary, betabin)
+S3method(print, summary.betabin)
+S3method(vcov, betabin)
+S3method(logLik, betabin)
+S3method(coef, betabin)
+
+S3method(print, discrim)
+S3method(plot, discrim)
+S3method(ROC, default)
+S3method(ROC, discrim)
+S3method(AUC, discrim)
+S3method(confint, discrim)
+S3method(profile, discrim)
+S3method(plot, profile.discrim)
+
+S3method(AUC, default)
+S3method(print, AUC)
+
+S3method(print, samediff)
+S3method(coef, samediff)
+S3method(vcov, samediff)
+S3method(logLik, samediff)
+S3method(profile, samediff)
+S3method(summary, samediff)
+S3method(confint, samediff)
+S3method(contour, samediff)
+S3method(plot, profile.samediff)
+S3method(print, summary.samediff)
+S3method(plot, samediff)
+
+S3method(print, clls)
+S3method(summary, clls)
+S3method(print, summary.clls)
+S3method(anova, clls)
+S3method(logLik, clls)
+S3method(vcov, clls)
+S3method(extractAIC, clls)
+## S3method(confint, clls)
+## S3method(profile, clls)
+## S3method(plot, profile.clls)
+
+
+importFrom(graphics, plot, contour)
+## importFrom(MASS, confint.glm)
+importFrom(stats, coef, confint, logLik, profile, vcov, update,
+           family, extractAIC)
+
