@@ -1,90 +1,118 @@
-nll.betabin.ab <-  function(par, x, n) {
-  ## Negative log-likelihood for the beta-binomial model in the
-  ## alpha-beta parameterization 
-  a <- par[1]; b <- par[2]
-  tmp <- lbeta(a,b)
-  - sum(lbeta(a + x, b - x + n) - tmp)
-}
-
-nll.betabin.mg <- function(par, x, n) {
-  ## Negative log-likelihood for the beta-binomial model in the
-  ## mu-gamma parameterization
-  if(any(par <= 0) || any(par >= 1)) return(1e8)
-  mu <- par[1]; g <- par[2]
-  a <- (mu/g) * (1 - g)
-  b <- (1/g) * (1 - g) * (1 - mu)
-  tmp <- lbeta(a, b)
-  ## Negative log-likelihood of the Beta-binomial distribution
-  nll <- - sum(lbeta(a + x, b - x + n) - tmp)
-  ##  cat(nll, tmp, a, b, mu, g, "\n")
-  nll
-}
-
-nll.ccbetabin.ab <- function(par, x, n, C) {
-  if(any(par <= 0) || any(par >= 1)) return(Inf)
-  term1 <- function(i, n, x, a, b, C)
-    (1 - C)^(n - x + i) * C^(x - i) * beta(a + i, n - x + b)
-  a <- par[1]; b <- par[2]
-  N <- length(n)
-  Term1 <- sapply(1:N, term1, n, x, a, b, C)
-  nll <- log(sum(Term1)) - lbeta(a, b)
-  cat(nll, a, b, "\n")
-  -nll
-}
-
-
-### betabin <- function(x, ...) UseMethod("betabin")
-### betabin.default <- function(x, ...) betabin.formula(x, ...)
-### betabin.matrix <- function(x, ...) betabin.data.frame(x, ...)
-###
-
-nll.bin <- function(par, x, n)
-  -sum(x * log(par) + (n - x) * log(1 - par))
-       
-
 betabin <-
   function(data, start = c(.5,.5), method = c("mu-gamma", "alpha-beta"),
-           vcov = TRUE, ...)
+           vcov = TRUE, corrected = TRUE, pGuess = 1/2,
+           gradTol = 1e-4, ...)
 {
-### FIXME:
-### Formula as a possible first argument as well as numeric vector 
-### Corrected betabinomial as an option (separate function)    
-  m <- match.call(expand.dots = FALSE)
-  call <- match.call()
-  m$method <- NULL
-  m[[1]] <- as.name("list")
-  m <- eval.parent(m)
-  method <- match.arg(method)
-  x <- m$data[,1]
-  n <- m$data[,2]
-  ## Optimize log-likelihood:
-  if(method == "mu-gamma") {
-    fit <- optim(start, fn = nll.betabin.mg, x = x, n = n,
-                 method = "L-BFGS-B",
-                 lower=c(1e-6, 1e-6), upper=c(1 - 1e-6, 1 - 1e-6),
-                 hessian = vcov,
-                 control = list(parscale = c(1, .01)))
-    name <- c("mu", "gamma")
-  }
-  else {
-    fit <- optim(start, fn = nll.betabin.ab, x = x, n = n,
-                 method = "BFGS", hessian = vcov, ...)
-    name <- c("alpha", "beta")
-  }
-  ## Extract Output:
-  coef <- fit$par
-  names(coef) <- name
-  if(vcov) {
-    vcov <- solve(fit$hessian)
-    dimnames(vcov) <- list(name, name)
-  }
-  else
-    vcov <- NULL
-  res <- list(coef = coef, vcov = vcov, convergence = fit$convergence,
-              logLik = -fit$value, message = fit$message, counts =
-              fit$counts, call = call, data = data, method = method)
-  class(res) <- c("betabin")
-  res
+    m <- match.call(expand.dots = FALSE)
+    call <- match.call()
+    m$method <- NULL
+    m[[1]] <- as.name("list")
+    m <- eval.parent(m)
+    doFit <- TRUE # A little trick:
+    if("doFit" %in% names(m$...)) doFit <- (m$...)$doFit
+    if(is.data.frame(m$data)) m$data <- as.matrix(m$data)
+    if(!is.matrix(m$data))
+        stop("'data' is not a matrix or data.frame")
+    if(NCOL(m$data) != 2 || NROW(m$data) < 3)
+        stop("'data' should have 2 columns and > 3 rows")
+    if(pGuess <= 0 || pGuess >= 1)
+        stop("pGuess has to be in the open interval (0, 1)")
+    method <- match.arg(method)
+    if(any(start < 1e-3) || any(start > 1- 1e-3))
+        stop("start has to be in the open interval (0, 1)")
+    name <-
+        if(method == "mu-gamma") c("mu", "gamma")
+        else c("alpha", "beta")
+    bbRho <- bbEnvir(parent.frame(), X=as.matrix(m$data),
+                     corrected = corrected, pGuess = pGuess,
+                     start = start)
+    if(!doFit) return(bbRho)
+    fit <- optim(getParBB(bbRho), fn = function(par) setParBB(bbRho, par),
+                 method = "L-BFGS-B", hessian = FALSE,
+                 lower = bbRho$lbounds, upper = bbRho$ubounds,
+                 control = list(parscale = c(.01, .01)))
+    if(all(fit$par > bbRho$lbounds) && all(fit$par < bbRho$ubounds)) {
+        grad <- grad(function(par) setParBB(bbRho, par), fit$par)
+        if(max(abs(grad)) > gradTol)
+            warning(sprintf("Optimizer terminated with max|gradient|: %e",
+                            max(abs(grad))), call. = FALSE) }
+    else
+        warning("Parameters at boundary occured", call. = FALSE)
+    coef <- fit$par
+    if(method == "alpha-beta") {
+        coef[1] <- fit$par[1] * (1 - fit$par[2]) / fit$par[2]
+        coef[2] <- (1 - fit$par[2]) * (1 - fit$par[1]) / fit$par[2]
+    }
+    names(coef) <- name
+    res <- list(coefficients = coef,
+                convergence = fit$convergence,
+                message = fit$message, counts = fit$counts,
+                call = match.call(), data = m$data,
+                method = method, corrected = corrected)
+    res$logLik <- -fit$value + bbRho$Factor
+    res$logLikNull <-
+        sum(dbinom(bbRho$x, bbRho$n, prob = pGuess, log = TRUE))
+    res$logLikMu <-
+        with(bbRho, sum(dbinom(x, n, prob = sum(x)/sum(n),
+                               log = TRUE)))
+    if(vcov) {
+        res$vcov <- matrix(NA, 2, 2)
+        names(res$vcov) <- list(name, name)
+        if(all(fit$par > bbRho$lbounds) && all(fit$par < bbRho$ubounds)) {
+            if(method == "alpha-beta") bbRho$method <- "alpha-beta"
+            res$vcov <-
+                solve(hessian(function(par) setParBB(bbRho, par), coef))
+        }
+    }
+    class(res) <- c("betabin")
+    res
+}
+
+bbEnvir <- function(parent, X, corrected, pGuess, start)
+{
+    rho <- new.env(parent = parent)
+    rho$corrected <- corrected
+    rho$method <- "mu-gamma"
+    rho$X <- X
+    rho$n <- X[,2]
+    rho$x <- X[,1]
+    rho$N <- nrow(X)
+    rho$start <- rho$par <- start
+    rho$lbounds <- c(1e-6, 1e-6)
+    if(corrected) rho$lbounds <- c(1e-6, 1e-3)
+    rho$ubounds <- c(1 - 1e-6, 1 - 1e-6)
+##     rho$const <- choose(x[1], 0:x[1]) * (1 - pGuess)^(0:x[1]) *
+##         pGuess^(-(0:x[1]))
+    rho$nllAux <- function(x, a, b)
+        log(sum(choose(x[1], 0:x[1]) * (1 - pGuess)^(0:x[1]) *
+                pGuess^(-(0:x[1])) *
+                beta(a + 0:x[1], b + x[2] - x[1])))
+    ## The term choose(x[1], 0:x[1]) does not have to be computed
+    ## every time.
+    rho$Factor <- sum(lchoose(rho$n, rho$x))
+    if(corrected)
+        rho$Factor <- rho$Factor +
+            sum((rho$n-rho$x) * log(1-pGuess)) + sum(rho$x * log(pGuess))
+    rho
+}
+
+getParBB <- function(rho) rho$par
+setParBB <- function(rho, par)
+{
+    if(!missing(par))
+        rho$par <- par
+    with(rho, {
+        if(method == "mu-gamma") {
+            a <- par[1] * (1 - par[2]) / par[2]
+            b <- (1 - par[2]) * (1 - par[1]) / par[2] }
+        else {
+            a <- par[1]
+            b <- par[2] }
+        if(corrected)
+            N * lbeta(a, b) - sum(apply(X, 1, nllAux, a=a, b=b))
+        else
+            N * lbeta(a, b) - sum(lbeta(a + x, b - x + n))
+    })
 }
 
 print.betabin <-
@@ -93,7 +121,7 @@ print.betabin <-
   cat("\nCall:\n", deparse(x$call), "\n\n", sep = "")
   if (length(coef(x))) {
     cat("Coefficients:\n")
-    print.default(format(coef(x), digits = digits), print.gap = 2, 
+    print.default(format(coef(x), digits = digits), print.gap = 2,
                   quote = FALSE)
   }
   else cat("No coefficients\n")
@@ -105,35 +133,39 @@ print.betabin <-
 summary.betabin <-
   function(object, alpha=.05, ...)
 {
-  object$se <- sqrt(diag(object$vcov))
-  names(object$se) <- names(object$coef)
-  p <- 1-alpha/2
-  object$lower <- object$coef - qnorm(p) * object$se
-  object$upper <- object$coef + qnorm(p) * object$se
-  table <- cbind(object$coef, object$se, object$lower, object$upper)
-  rownames(table) <- names(object$coef)
-  colnames(table) <- c("Estimate", "Std. Error", "Lower", "Upper")
-  if(object$method == "mu-gamma") 
-    object$LR.gamma <- 2 *
-      (object$logLik + nll.bin(object$coef[1],
-                               object$data[,1], object$data[,2]))
-  object$p.value.gamma <- pchisq(object$LR.gamma, df = 1, lower = FALSE)
-  object$table <- table
-  class(object) <- "summary.betabin"
-  object
+    if(is.null(object$vcov))
+        stop("summary needs vcov in object")
+    object$se <- sqrt(diag(object$vcov))
+    names(object$se) <- names(object$coef)
+    p <- 1-alpha/2
+    object$lower <- object$coef - qnorm(p) * object$se
+    object$upper <- object$coef + qnorm(p) * object$se
+    table <- cbind(object$coef, object$se, object$lower, object$upper)
+    rownames(table) <- names(object$coef)
+    colnames(table) <- c("Estimate", "Std. Error", "Lower", "Upper")
+    object$LR.OD <- 2 * with(object, logLik - logLikMu)
+    object$p.value.OD <-
+        pchisq(object$LR.OD, df = 1, lower.tail = FALSE)
+    object$LR.null <- 2 * with(object, logLik - logLikNull)
+    object$p.value.null <-
+        pchisq(object$LR.null, df = 2, lower.tail = FALSE)
+    object$table <- table
+    class(object) <- "summary.betabin"
+    object
 }
 
 print.summary.betabin <-
   function(x, digits = getOption("digits"), alpha=.05, ...)
 {
   cat("\nCall:\n")
-  cat(paste(deparse(x$call), sep = "\n", collapse = "\n"), 
+  cat(paste(deparse(x$call), sep = "\n", collapse = "\n"),
         "\n\n", sep = "")
   print(x$table)
-  conv <- ifelse(x$convergence, "No", "Yes")
-  cat("\nlog-likelihood: ", x$logLik, " Fit converged: ", conv, "\n")
-  cat("LR-test of gamma:", x$LR.gamma, "p-value:",
-      x$p.value.gamma, "\n")
+  cat("\nlog-likelihood: ", x$logLik, "\n")
+  cat("LR-test of over-dispersion, G^2:", x$LR.OD, "df:", 1,
+      "p-value:", x$p.value.OD, "\n")
+  cat("LR-test of association, G^2:", x$LR.null, "df:", 2,
+      "p-value:", x$p.value.null, "\n")
   invisible(x)
 }
 
@@ -156,14 +188,14 @@ coef.betabin <- function(object, ...) {
 
 ## Potential functions:
 ## profile.betabin <- function() {
-## 
+##
 ## }
-## 
+##
 ## plot.profile.betabin <- function() {
-## 
+##
 ## }
-## 
+##
 ## confint.betabin <- function() {
-## 
+##
 ## }
-  
+

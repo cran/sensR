@@ -1,0 +1,15 @@
+This file documents updates and changes in package sensR since version
+1.0.0
+
+Oct. 9. 2009:
+
+- betabin has been completely rewritten with option to choose the
+  chance corrected beta-binomial model as well as the ordinary
+  beta-binomial model.
+- discrim, discrimPwr, discrimSS and findcr have been updated to allow
+  for difference as well as similarity tests and have grown an
+  argument 'pd0 = 0' to indicate the proportion of discriminators in
+  the population. All help pages have been updated.
+- references updated in help files to published same-diff paper and
+  in-press GLIM paper
+

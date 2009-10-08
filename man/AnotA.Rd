@@ -4,8 +4,8 @@
 \title{Analysis of A-not-A tests}
 \description{
   Computation of dprime and it's uncertainty for the monadic A-not-A test
-  together with the one-tailed exact P-value of the difference test
-  (Fisher's Exact test). 
+  together with the one-tailed P-value of the difference test
+  (Fisher's Exact test).
 }
 \usage{
 AnotA(x1, n1, x2, n2, ...)
@@ -15,17 +15,17 @@ AnotA(x1, n1, x2, n2, ...)
   \item{n1}{The total number of A-samples}
   \item{x2}{The number of A-answers on not-A-samples}
   \item{n2}{The number of not-A-samples}
-  \item{...}{Additional arguments passed to \code{glm}}  
+  \item{...}{Additional arguments passed to \code{glm}}
 }
 \details{
-  The function uses the \code{glm} and \code{fisher.test} functions 
+  The function uses the \code{glm} and \code{fisher.test} functions
   of the \code{stats} package. Note that all arguments have to be
-  positive integers. 
+  positive integers.
 }
 \value{
   An object of class \code{"discrim"} (which has a print method). This is
   a list with elements
-  \item{coef}{ named vector of coefficients (d-prime)}
+  \item{coefficients}{ named vector of coefficients (d-prime)}
   \item{res.glm}{the glm-object from the fitting process}
   \item{vcov}{variance-covariance matrix of the coefficients}
   \item{se}{named vector with standard error of the coefficients
@@ -36,14 +36,14 @@ AnotA(x1, n1, x2, n2, ...)
     the print method}
   \item{call}{the matched call}
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B.(2008). Thurstonian
-  models for sensory discrimination tests as generalized linear models. 
-  Manuscript for Food Quality and Preference.}
+\references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
+  models for sensory discrimination tests as generalized linear models.
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 \seealso{\code{\link{print.discrim}}, \code{\link{discrim}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
-  \code{\link{discrimSS}}, \code{\link{findcr}}} 
+  \code{\link{discrimSS}}, \code{\link{findcr}}}
 
 \examples{
 # data: 10 of the A-samples were judged to be A
@@ -64,7 +64,7 @@ level <- c(0.95, 0.99)
 delta <- seq(1e-4, 5, length = N)
 for(i in 1:N)
   dev[i] <- glm(xt ~ 1 + offset(c(0, delta[i])),
-                family = binomial(probit))$deviance 
+                family = binomial(probit))$deviance
 plot(delta, exp(-dev/2), type = "l",
      xlab = expression(delta),
      ylab = "Normalized Profile Likelihood")

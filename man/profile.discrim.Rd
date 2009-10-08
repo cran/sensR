@@ -15,7 +15,7 @@
 \method{plot}{profile.discrim}(x, level = c(0.99, 0.95), fig = TRUE,
             method = "natural", n = 500, ...)
 
-\method{confint}{discrim}(object, parm, level = 0.95, ...) 
+\method{confint}{discrim}(object, parm, level = 0.95, ...)
 }
 \arguments{
   \item{fitted}{a \code{discrim} object.}
@@ -61,15 +61,14 @@
   normalized profile likelihood.
 
   For \code{confint}:
-  
+
   A 2x2 matrix with columns named \code{"lower", "upper"} giving the
   lower and upper (1 - \code{alpha})\% confidence interval for the
   parameters named in the rows.
 }
-\references{Brockhoff, P.B. and Christensen R.H.B.(2008). Thurstonian
-  models for sensory 
-  discrimination tests as generalized linear models.
-  Manuscript for Food Quality and Preference.}
+\references{Brockhoff, P.B. and Christensen R.H.B. (2010). Thurstonian
+  models for sensory discrimination tests as generalized linear models.
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 %% \seealso{

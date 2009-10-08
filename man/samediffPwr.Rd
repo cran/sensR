@@ -4,7 +4,7 @@
 \title{Power Analysis for Same-different Experiments}
 \description{
   Computes the power for at same-different discrimination experiment
-  with a no-difference null hypothesis via simulation.  
+  with a no-difference null hypothesis via simulation.
 }
 \usage{
 samediffPwr(n = 1000, tau, delta, Ns, Nd, alpha = 0.05)
@@ -23,7 +23,7 @@ samediffPwr(n = 1000, tau, delta, Ns, Nd, alpha = 0.05)
 }
 \details{
   The power is computed using simulations. \code{n} datasets is
-  simulated from the 
+  simulated from the
   Same Different model with specified parameters. The power is the
   fraction of times the p-value is lower than \code{alpha}.
 
@@ -42,9 +42,9 @@ samediffPwr(n = 1000, tau, delta, Ns, Nd, alpha = 0.05)
 \value{
   A single numeric value giving the power of the specified test.
 }
-\references{Christensen, R.H.B and P.B. Brockhoff (2008). Estimation and
-  Inference for the Same Different Test.
-  Manuscript for Food Quality and Preference.}
+\references{Christensen, R.H.B., Brockhoff, P.B. (2009).
+  Estimation and inference in the same-different test.
+  Food, Quality and Preference, 20 pp. 514--520}
 \author{Rune Haubo B Christensen}
 
 \seealso{

@@ -4,9 +4,9 @@
 \title{Create 2-AFC binomial family}
 \description{
 Creates af copy of the binomial family with the inverse link function
-changed to equal  
+changed to equal
 the 2-AFC psychometric function and correspondingly changed link
-function and derivative of the  
+function and derivative of the
 inverse link function.
 }
 \usage{
@@ -14,9 +14,9 @@ twoAFC()
 }
 \value{
 A binomial family object for models. Among other things it inludes the
-psychometric function as  
+psychometric function as
 \code{linkinv} and the inverse psychometric function (for direct
-dprime computation) as 
+dprime computation) as
 \code{linkfun}.
 }
 \note{
@@ -24,9 +24,9 @@ dprime computation) as
   may also be used on its own---see the example below.
 }
 
-\references{Brockhoff, P.B. and Christensen, R.H.B.(2008). Thurstonian
-  models for sensory discrimination tests as generalized linear models. 
-  Manuscript for Food Quality and Preference.}
+\references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
+  models for sensory discrimination tests as generalized linear models.
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 \seealso{\code{\link{triangle}}, \code{\link{threeAFC}},
@@ -42,7 +42,7 @@ summary(res)
 
 ## Extended example plotting the profile likelihood
 ## data: 10 correct and 8 incorrect:
-xt <- matrix(c(10, 8), ncol = 2) 
+xt <- matrix(c(10, 8), ncol = 2)
 summary(res <- glm(xt ~ 1, family = twoAFC))
 N <- 100
 dev <- double(N)

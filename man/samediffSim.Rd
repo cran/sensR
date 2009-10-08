@@ -24,6 +24,9 @@ samediffSim(n, tau, delta, Ns, Nd)
   different-answers to same-samples, same-answers to different-samples
   and different-answers to different-samples respectively.
 }
+\references{Christensen, R.H.B., Brockhoff, P.B. (2009).
+  Estimation and inference in the same-different test.
+  Food, Quality and Preference, 20 pp. 514--520}
 \author{Rune Haubo B Christensen}
 
 \seealso{ \code{\link{discrimSim}}}

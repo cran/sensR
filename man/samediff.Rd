@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Computation of tau and dprime for same different test}
 \description{
-  Computation of tau and dprime and their uncertainties for the 
+  Computation of tau and dprime and their uncertainties for the
   same different test using maximum likelihood.
 }
 \usage{
@@ -20,7 +20,7 @@ samediff(nsamesame, ndiffsame, nsamediff, ndiffdiff, VCOV = TRUE)
 }
 \details{
   The function computes the maximum likelihood estimates of
-  \code{tau} and \code{delta}. 
+  \code{tau} and \code{delta}.
 }
 \value{
   An object of class \code{samediff} with elements
@@ -37,6 +37,9 @@ samediff(nsamesame, ndiffsame, nsamediff, ndiffdiff, VCOV = TRUE)
     parameters.}
   \item{case}{A case indicator for internal use}
 }
+\references{Christensen, R.H.B., Brockhoff, P.B. (2009).
+  Estimation and inference in the same-different test.
+  Food, Quality and Preference, 20 pp. 514--520}
 \author{Rune Haubo B Christensen}
 
 \examples{

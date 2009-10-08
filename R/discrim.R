@@ -1,10 +1,10 @@
 `AnotA` <-
-function (x1, n1, x2, n2, ...) 
+function (x1, n1, x2, n2, ...)
 {
   m <- match.call(expand.dots = FALSE)
   m[[1]] <- as.name("c")
   m <- eval.parent(m) # evaluate the *list* of arguments
-  data <- m 
+  data <- m
   for(i in data) {
     if(i != abs(trunc(i)) | i==0)
       stop("Data have to be positive integers")
@@ -22,12 +22,12 @@ function (x1, n1, x2, n2, ...)
   ## Prepare output:
   b <- coef(summary(res))
   coef <- -b[2,1] # d-prime
-  se <- b[2,2] 
+  se <- b[2,2]
   vcov <- as.matrix(se^2) # variance-covariance
-  p.value <- fisher.test(xt, alternativ="greater")$p.value 
+  p.value <- fisher.test(xt, alternativ="greater")$p.value
   ## Naming:
   names(vcov) <- names(se) <- names(coef) <- "d-prime"
-  fit <- list(coef = coef, res.glm = res, vcov = vcov, se = se,
+  fit <- list(coefficients = coef, res.glm = res, vcov = vcov, se = se,
               data = data, p.value = p.value, test = test,
               call = call)
   class(fit) <- c("discrim")
@@ -35,107 +35,133 @@ function (x1, n1, x2, n2, ...)
 }
 
 `discrimPwr` <-
-  function (delta, sample.size, alpha = .05,
-            method = c("duotrio", "threeAFC", "twoAFC", "triangle"))  
+  function (delta, sample.size, alpha = 0.05,
+            method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+            pd0 = 0, type = c("difference", "similarity"))
 {
-  m <- match.call(expand.dots=FALSE)
-  method <- match.arg(method)
-  m[[1]] <- as.name("list")
-  m$method <- NULL
-  eval.parent(m) # evaluate the *list* of arguments
-  ss <- sample.size 
-  ## Control arguments:
-  if(ss != trunc(ss) | ss <= 0)
-    stop("'sample.size' has to be a positive integer")
-  if(delta < 0) stop("'delta' has to be non-negative")
-  if(alpha <= 0 | alpha >= 1)
-    stop("'alpha' has to be between zero and one")
-  ## Find the prob corresponding to delta:
-  prob <- switch(method,
-                 duotrio = duotrio(),
-                 triangle = triangle(),
-                 twoAFC = twoAFC(),
-                 threeAFC = threeAFC() )
-  ## prob under the null hypothesis:
-  p <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-  ## critical value in a one-tailed binomial test:
-  xcr <- findcr(ss, alpha, p)
-  ## Compute power of the test:
-  power <- 1 - pbinom(xcr - 1, ss, prob$linkinv(delta))
-  power
+### m <- match.call(expand.dots=FALSE)
+    method <- match.arg(method)
+    type <- match.arg(type)
+### m[[1]] <- as.name("list")
+### m$method <- NULL
+### eval.parent(m) # evaluate the *list* of arguments
+    ss <- sample.size
+    ## Control arguments:
+    if(ss != trunc(ss) | ss <= 0)
+        stop("'sample.size' has to be a positive integer")
+    if(delta < 0) stop("'delta' has to be non-negative")
+    if(alpha <= 0 | alpha >= 1)
+        stop("'alpha' has to be between zero and one")
+    if(pd0 < 0 | pd0 > 1)
+        stop("'pd0' has to be between zero and one")
+    ## Find the prob corresponding to delta:
+    prob <- switch(method,
+                   duotrio = duotrio(),
+                   triangle = triangle(),
+                   twoAFC = twoAFC(),
+                   threeAFC = threeAFC() )
+    ## prob under the null hypothesis:
+    p <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
+    ## critical value in a one-tailed binomial test:
+    xcr <- findcr(ss, alpha, p, type = type, pd0)
+    ## Compute power of the test:
+    if(type == "difference")
+        power <- 1 - pbinom(xcr - 1, ss, prob$linkinv(delta))
+    else
+        power <- pbinom(xcr, ss, prob$linkinv(delta))
+    power
 }
-  
+
 
 `discrimSS` <-
-  function (delta, power, alpha,
-            method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
-{  
-  m <- match.call(expand.dots=FALSE)
-  method <- match.arg(method)
-  m[[1]] <- as.name("list")
-  m$method <- NULL
-  eval.parent(m) # evaluate the *list* of arguments
-  if(delta < 0) stop("'delta' has to be non-negative")
-  if(alpha <= 0 | alpha >= 1)
-    stop("'alpha' has to be between zero and one")
-  if(power <= 0 | power >= 1)
-    stop("'power' has to be between zero and one")
-
-  i<-1
-  while (discrimPwr(delta,i,alpha,method)<power) i<-i+1
-  i
+  function (delta, power, alpha = 0.05,
+            method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+            pd0 = 0, type = c("difference", "similarity"), start = 1)
+{
+    method <- match.arg(method)
+    type <- match.arg(type)
+###   m <- match.call(expand.dots=FALSE)
+###   m[[1]] <- as.name("list")
+###   m$method <- NULL
+###   eval.parent(m) # evaluate the *list* of arguments
+    if(delta < 0) stop("'delta' has to be non-negative")
+    if(alpha <= 0 | alpha >= 1)
+        stop("'alpha' has to be between zero and one")
+    if(power <= 0 | power >= 1)
+        stop("'power' has to be between zero and one")
+    if(pd0 < 0 | pd0 > 1)
+        stop("'pd0' has to be between zero and one")
+    i <- start
+    while (discrimPwr(delta = delta, sample.size = i,
+                      alpha = alpha, method = method,
+                      pd0 = pd0, type = type) < power)
+        i <- i + 1
+    i
 }
 
 `discrim` <-
-function (success, total, method = c("duotrio", "threeAFC",
-                            "twoAFC", "triangle"), ...) 
+function (success, total,
+          method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+          pd0 = 0, type = c("difference", "similarity"), ...)
 {
-  m <- match.call(expand.dots=FALSE)
-  method <- match.arg(method)
-  m[[1]] <- as.name("list")
-  m$method <- NULL
-  m <- eval.parent(m) # evaluate the *list* of arguments
-  x <- m$success;  n <- m$total
-  call <- match.call()
-  method <- match.arg(method)
-  if(x != trunc(x) | x<=0)
-    stop("'success' has to be a positive integer")
-  if(n != trunc(n) | n<=0)
-    stop("'total' has to be a positive integer")
-  if(x >= n)
-    stop("'total' has to be larger than 'success'")
-  p <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-  if(x/n <= p)
-    stop("'succes'/'total' has to be larger than ",
-         ifelse(p < 1/2, "1/3", "1/2") , " for the ",
-         method, " test")
-  ## Create glm-family object
-  fam <- switch(method,
-                duotrio = duotrio(),
-                threeAFC = threeAFC(),
-                twoAFC = twoAFC(),
-                triangle = triangle() )
-  ## Compute d-prime:
-  xt <- matrix(c(x, n - x), ncol = 2)
-  etastart <- fam$linkfun(xt[1, 1]/sum(xt))
-  res <- glm(xt ~ 1, family = fam, etastart = etastart,
-             control = glm.control(epsilon = 1e-05, maxit = 50), ...)
-  ## Compute p-value:
-  p.value <- 1 - pbinom(x - 1, n, p)
-  ## Prepare output:
-  s.res <- summary(res)
-  coef <- coef(res)
-  vcov <- s.res$cov.unscaled
-  se <- s.res$coef[,2]
-  data <- c(success = x, total = n)
-  ## Naming:
-  names(coef) <- names(se) <- names(vcov) <- "d-prime"
-  ## Output'ing and class'ing:
-  fit <- list(coef = coef, res.glm = res, vcov = vcov, se = se,
-              data = data, p.value = p.value, test = method,
-              call = call)
-  class(fit) <- "discrim"
-  fit
+    m <- match.call(expand.dots=FALSE)
+    method <- match.arg(method)
+    type <- match.arg(type)
+    m[[1]] <- as.name("list")
+    m$method <- m$type <- NULL
+    m <- eval.parent(m) # evaluate the *list* of arguments
+    x <- m$success;  n <- m$total
+    call <- match.call()
+    if(x != trunc(x) | x<=0)
+        stop("'success' has to be a positive integer")
+    if(n != trunc(n) | n<=0)
+        stop("'total' has to be a positive integer")
+    if(x >= n)
+        stop("'total' has to be larger than 'success'")
+    if(pd0 < 0 | pd0 > 1)
+        stop("'pd0' has to be between zero and one")
+    p <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
+    ## Compute p-value:
+    p.value <-
+        if(type == "difference")
+            1 - pbinom(x - 1, n, pd0 + p * (1 - pd0))
+        else
+            pbinom(x, n, pd0 + p * (1 - pd0))
+    if(x/n > p) {
+##         stop("'succes'/'total' has to be larger than ",
+##              ifelse(p < 1/2, "1/3", "1/2") , " for the ",
+##              method, " test")
+    ## Create glm-family object
+        fam <- switch(method,
+                      duotrio = duotrio(),
+                      threeAFC = threeAFC(),
+                      twoAFC = twoAFC(),
+                      triangle = triangle() )
+        ## Compute d-prime:
+        xt <- matrix(c(x, n - x), ncol = 2)
+        etastart <- fam$linkfun(xt[1, 1]/sum(xt))
+        res <- glm(xt ~ 1, family = fam, etastart = etastart,
+                   control = glm.control(epsilon = 1e-05, maxit = 50), ...)
+        ## Prepare output:
+        s.res <- summary(res)
+        coef <- coef(res)
+        vcov <- s.res$cov.unscaled
+        se <- s.res$coef[,2]
+    }
+    else {
+        coef <- 0
+        vcov <-  se <- NA
+        res <- NULL
+    }
+    data <- c(success = x, total = n)
+    ## Naming:
+    names(coef) <- names(se) <- names(vcov) <- "d-prime"
+    ## Output'ing and class'ing:
+    fit <- list(coefficients = coef, res.glm = res, vcov = vcov, se = se,
+                data = data, p.value = p.value, test = method,
+                call = call)
+    class(fit) <- "discrim"
+    fit
 }
 
 `discrimSim` <-
@@ -143,11 +169,11 @@ function (success, total, method = c("duotrio", "threeAFC",
            method = c("duotrio", "halfprobit", "probit", "triangle",
            "twoAFC", "threeAFC"))
 {
-  m <- match.call(expand.dots=FALSE)
   method <- match.arg(method)
-  m[[1]] <- as.name("list")
-  m$method <- NULL
-  eval.parent(m) # evaluate the *list* of arguments
+###   m <- match.call(expand.dots=FALSE)
+###   m[[1]] <- as.name("list")
+###   m$method <- NULL
+###   eval.parent(m) # evaluate the *list* of arguments
   method <- match.arg(method)
   if(sample.size != trunc(sample.size) | sample.size <= 0)
     stop("'sample.size' has to be a positive integer")
@@ -181,7 +207,7 @@ print.discrim <- function(x, digits = getOption("digits"),
   lower <- ifelse(lower <= 0, 0, lower)
   upper <- coef + qnorm(p) * se
   mat <- c(coef, se, lower, upper, p.value)
-  table <- matrix(mat, nrow = length(coef)) 
+  table <- matrix(mat, nrow = length(coef))
   rownames(table) <- names(coef)
   colnames(table) <- c("Estimate", "Std. Error", "Lower",
                        "Upper", "P-value")
@@ -208,21 +234,21 @@ plot.discrim <-
 }
 
 ## summary.discrim <- function() {
-## 
+##
 ## }
-## 
+##
 ## print.summary.discrim <- function() {
-## 
+##
 ## }
 ## fitted.discrim <- function() {
-## 
+##
 ## }
 
 discrimr <- ## Discrim revised
   function(formula, data, weights, start, subset, na.action, contrasts
            = NULL, method = c("duotrio", "probit", "threeAFC",
                      "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
-{ 
+{
   nll <- function(beta, X, y, w) { # negative log-likelihood
     eta <- offset
     eta <- eta + X %*% beta
@@ -237,7 +263,7 @@ discrimr <- ## Discrim revised
     p <- link.inv(eta)
     if(all(p > 0)) {
       ##      cat(NROW(w), NROW(p), NROW(y), "X = ", dim(X), "\n")
-      -2 * t(X) %*% (w * muEta(eta) * (y/p - (1-y)/(1-p))) 
+      -2 * t(X) %*% (w * muEta(eta) * (y/p - (1-y)/(1-p)))
       ##  browser()
     }
     else(rep(NA, length(beta)))
@@ -245,7 +271,7 @@ discrimr <- ## Discrim revised
   m <- match.call(expand.dots = FALSE)
   m$start <- m$Hess <- m$method <- m$... <- NULL
   m[[1]] <- as.name("model.frame")
-  if (is.matrix(eval.parent(m$data))) 
+  if (is.matrix(eval.parent(m$data)))
     m$data <- as.data.frame(data)
   m <- eval.parent(m)
   Terms <- attr(m, "terms")
@@ -253,10 +279,10 @@ discrimr <- ## Discrim revised
   n <- nrow(x)
   cons <- attr(x, "contrasts")
   wt <- model.weights(m)
-  if (!length(wt)) 
+  if (!length(wt))
     wt <- rep(1, n)
   offset <- model.offset(m)
-  if (length(offset) <= 1) 
+  if (length(offset) <= 1)
     offset <- rep(0, n)
   y <- model.response(m)
   if (NCOL(y) == 2) {
@@ -266,9 +292,9 @@ discrimr <- ## Discrim revised
   }
   stopifnot(all(wt > 0))
   if(missing(start)) start <- rep(0, ncol(x))
-  if(missing(data)) 
+  if(missing(data))
   if(length(start) != ncol(x))
-    stop("'start' is not of correct length")  
+    stop("'start' is not of correct length")
   method <- match.arg(method)
   dn <- dimnames(x)[[2]]
   link.inv <- switch(method,
@@ -289,7 +315,7 @@ discrimr <- ## Discrim revised
                   logit = dlogis
                   )
 
-  fit <- optim(start, fn=nll, gr=grd, X=x, y=y, w=wt, method="BFGS", #  
+  fit <- optim(start, fn=nll, gr=grd, X=x, y=y, w=wt, method="BFGS", #
                hessian = Hess, ...)
   ## Fitted values (probabilities):
   fit$fitted <- p <- link.inv(offset + x %*% fit$par)
@@ -346,7 +372,7 @@ plot.profile.discrim <-
   if (fig == TRUE) {
     npl.spline <- spline(x$delta, x$npl, n = n, method = method)
     plot(npl.spline$x, npl.spline$y, type = "l", las = 1, ylim = c(0, 1),
-         xlab = expression(delta), ylab = "Normalized Profile Likelihood", 
+         xlab = expression(delta), ylab = "Normalized Profile Likelihood",
          main = "", ...)
     abline(h = lim, col = "grey")
   }

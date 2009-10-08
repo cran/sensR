@@ -5,14 +5,14 @@
 \title{Sensory discrimination analysis}
 \description{
   Computes the d-prime, its standard error and P-value for the
-  hypothesis of no sensory 
+  hypothesis of no sensory
   difference for any  of four methods: 2-AFC, 3-AFC, duotrio and
-  triangle tests. 
+  triangle tests.
 }
 \usage{
 discrim(success, total,
-        method = c("duotrio", "threeAFC", "twoAFC", "triangle"), ...)  
-
+        method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+        pd0 = 0, type = c("difference", "similarity"), ...)
 %% discrimr(formula, data, weights, start, subset, na.action,
 %%          contrasts = NULL, method = c("duotrio", "probit", "threeAFC",
 %%            "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
@@ -28,42 +28,50 @@ discrim(success, total,
 %%%     environment(formula)}
 %%%   \item{start}{starting values to be used in the optimization}
 %%%   \item{subset}{an optional vector specifying a subset of observations to be
-%%%     used in the fitting process.} 
+%%%     used in the fitting process.}
 %%%   \item{weights}{an optional vector of weights to be used in the fitting
 %%%     process. Should be NULL or a numeric vector.}
 %%%   \item{na.action}{a function which indicates what should happen when the
 %%%     data contain NAs. The default is set by the na.action setting of
 %%%     options, and is na.fail if that is unset. The "factory-fresh" default
 %%%     is na.omit. Another possible value is NULL, no action. Value na.exclude
-%%%     can be useful.} 
+%%%     can be useful.}
 %%%   \item{contrasts}{an optional list of specifying the contrasts to use.}
 %%%   \item{hess}{logical, should the hessian be computed? (requires for
 %%%     standard errors etc. to be computed by summary.discrimr)}
   \item{method}{the discrimination protocol. Four allowed values:
-    "twoAFC", "threeAFC", "duotrio", "triangle"} 
+    "twoAFC", "threeAFC", "duotrio", "triangle"}
+  \item{pd0}{the proportion of discriminators in the population of interest}
+  \item{type}{the type of test}
   \item{\dots}{additional arguments passed to \code{\link{glm}}}
 }
 \details{
+  The p-value for the standard one-tailed difference test of "no
+  difference" is obtained with \code{pd0 = 0}.
+
+  The probability under the null hypothesis is
+  given by \code{pd0 + p0 * (1 - pd0)} where \code{p0} is the guessing
+  probability defined by the \code{method} argument.
+
   The function uses the one of the dedicated binomial families and the
-  base function \code{\link{glm}} %% (discrim) or \code{optim} (discrimr). 
+  base function \code{\link{glm}} %% (discrim) or \code{optim} (discrimr).
 }
 \value{
   An object of class \code{discrim} with elements
-  \item{coef}{ named vector of coefficients (d-prime and tau)}
+  \item{coefficients}{ named vector of coefficients (d-prime and tau)}
   \item{res.glm}{the glm-object from the fitting process}
   \item{vcov}{variance-covariance matrix of the coefficients}
   \item{se}{named vector with standard error of the coefficients
-    (standard error of d-prime}
+    (standard error of d-prime)}
   \item{data}{a named vector with the data supplied to the function}
-  \item{p.value}{one-sided p-value from Fisher's exact test
-    (\code{fisher.test})} 
-  \item{test}{a string with the name of the test (\code{A-Not A}) for
+  \item{p.value}{one-tailed exact binomial p-value}
+  \item{test}{a string with the name of the test for
     the print method}
   \item{call}{the matched call}
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B.(2008). Thurstonian
+\references{Brockhoff, P.B. and Christensen, R.H.B (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
-  Manuscript for Food Quality and Preference.}
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 \seealso{ \code{\link{triangle}}, \code{\link{twoAFC}},
@@ -74,10 +82,14 @@ discrim(success, total,
 }
 
 \examples{
-## Running the simple discrimination test analyses:
-discrim(10, 15, "twoAFC")
-discrim(10, 15, "threeAFC")
-discrim(10, 15, "duotrio")
-discrim(10, 15, "triangle")
+## Running the simple discrimination (differens) tests:
+discrim(10, 15, method = "twoAFC")
+discrim(10, 15, method = "threeAFC")
+discrim(10, 15, method = "duotrio")
+discrim(10, 15, method = "triangle")
+
+## A similarity test where less than chance successes are obtained:
+discrim(20, 75, "triangle", pd0 = .2, type = "simil")
+
 }
 \keyword{models}% at least one, from doc/KEYWORDS

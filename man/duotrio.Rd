@@ -3,8 +3,8 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Create duotrio binomial family}
 \description{
-  Creates af copy of the binomial family with the inverse link function changed to equal 
-  the duotrio psychometric function and correspondingly changed link function and derivative of the 
+  Creates af copy of the binomial family with the inverse link function changed to equal
+  the duotrio psychometric function and correspondingly changed link function and derivative of the
   inverse link function.
 }
 \usage{
@@ -12,12 +12,13 @@ duotrio()
 }
 %- maybe also 'usage' for other objects documented here.
 \value{
-A binomial family object for models. Among other things it inludes the psychometric function as 
+A binomial family object for models. Among other things it inludes the psychometric function as
 \code{linkinv} and the inverse psychometric function (for direct dprime computation) as
 \code{linkfun}
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B.(2008). Thurstonian models for sensory discrimination tests as generalized linear models.
-Manuscript for Food Quality and Preference.}
+\references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
+  models for sensory discrimination tests as generalized linear models.
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Per Bruun Brockhoff}
 \note{
   Several functions in this package makes use of the function, but it
@@ -28,7 +29,7 @@ Manuscript for Food Quality and Preference.}
   \code{\link{threeAFC}}, \code{\link{discrim}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
   \code{\link{AnotA}}, \code{\link{discrimSS}},
-  \code{\link{samediff}}, \code{\link{findcr}}} 
+  \code{\link{samediff}}, \code{\link{findcr}}}
 \examples{
 xt <- matrix(c(10, 5), ncol = 2) ## data: 10 correct answers, 5 incorrect
 res <- glm(xt ~ 1, family = duotrio)
@@ -36,7 +37,7 @@ summary(res)
 
 ## Extended example plotting the profile likelihood
 ## data: 10 correct answers, 5 incorrect
-xt <- matrix(c(10, 5), ncol = 2) 
+xt <- matrix(c(10, 5), ncol = 2)
 summary(res <- glm(xt ~ 1, family = duotrio))
 N <- 100
 dev <- double(N)

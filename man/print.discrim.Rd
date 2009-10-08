@@ -21,15 +21,15 @@
   A table of results of the descrimination test is printed including
   estimates, standard errors, lower confidence limit, upper confidence
   limit and a p-value for a test of the null-hypothesis of the parameter
-  being zero. 
+  being zero.
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B.(2008). Thurstonian
-  models for sensory discrimination tests as generalized linear models. 
-  Manuscript for Food Quality and Preference.}
+\references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
+  models for sensory discrimination tests as generalized linear models.
+  Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen}
 \seealso{\code{\link{AnotA}}, \code{\link{discrim}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
-  \code{\link{discrimSS}}, \code{\link{findcr}}} 
+  \code{\link{discrimSS}}, \code{\link{findcr}}}
 
 \examples{
 ## Print results of an A-Not A test:
