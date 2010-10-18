@@ -1,6 +1,7 @@
-\name{AUC.default}
+\name{AUC}
 \alias{AUC.default}
 \alias{AUC.discrim}
+\alias{print.AUC}
 \alias{AUC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ AUC computation}
@@ -19,10 +20,11 @@
     is to be computed or a discrim object from the fitting of a A-not A
     test with \code{\link{AnotA}}} 
   \item{scale}{a unit length vector giving the ratio of scale (ie. standard
-    deviation) of the latent distribution for the no-class items relative to
-    that of the yes-class items} 
-  \item{se.d}{standard error of \code{d} (d-prime). If provided, the function
-    will compute confidence limits of value of AUC---cf. in section value.}
+    deviation) of the latent distribution for the no-class items
+    relative to that of the yes-class items} 
+  \item{se.d}{standard error of \code{d} (d-prime). If provided, the
+    function will compute confidence limits of value of AUC---cf. in
+    section value.} 
   \item{CI.alpha}{the type I level of the confidence interval of AUC}
   \item{\dots}{additional arguments passed \code{integrate}}
 }
@@ -33,8 +35,10 @@
   Confidence limits are based on a normal approximation of
   \code{d} and not of AUC. The limits are computed,
   if an estimate of the standard error of \code{d} is provided. Note
-  that the limits does not take the uncertainty in estimating the scale
+  that the limits do not take the uncertainty in estimating the scale
   nor that of estimating the standard error of \code{d} into account.
+
+  A print method is implemented for objects of class \code{AUC}.
 }
 \value{
   A list with components. If \code{se.d} is supplied to the default

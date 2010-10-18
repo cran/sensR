@@ -1,5 +1,6 @@
 \name{discrim}
 \alias{discrim}
+\alias{print.discrim}
 % \alias{discrimr}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Sensory discrimination analysis}
@@ -10,9 +11,13 @@
   triangle tests.
 }
 \usage{
+
 discrim(success, total,
         method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
         pd0 = 0, type = c("difference", "similarity"), ...)
+
+\method{print}{discrim}(x, digits = getOption("digits"), alpha = 0.05, ...)
+
 %% discrimr(formula, data, weights, start, subset, na.action,
 %%          contrasts = NULL, method = c("duotrio", "probit", "threeAFC",
 %%            "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
@@ -43,6 +48,10 @@ discrim(success, total,
     "twoAFC", "threeAFC", "duotrio", "triangle"}
   \item{pd0}{the proportion of discriminators in the population of interest}
   \item{type}{the type of test}
+  \item{x}{an object of class \code{"discrim"}}
+  \item{alpha}{the allowed type I level of the Wald based confidence
+    interval}
+  \item{digits}{number of digits in resulting table of results}
   \item{\dots}{additional arguments passed to \code{\link{glm}}}
 }
 \details{

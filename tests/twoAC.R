@@ -1,0 +1,20 @@
+library(sensR)
+
+## Testing twoAC functions:
+(fm1 <- twoAC(c(2, 2, 6)))
+confint(fm1, type = "Wald")
+confint(fm1)
+confint(fm1, level = .90)
+confint(fm1, level = 1 - 1e-3)
+confint(fm1, parm = "d.prime", type = "Wald")
+confint(fm1, parm = "d.prime")
+pr1 <- profile(fm1, range = c(-2, 3))
+pr1 <- profile(fm1)
+confint(pr1)
+
+pr1 <- profile(fm1, alpha = 1e-5)
+par(mfrow = c(2,2))
+plot(pr1)
+plot(pr1, Log = FALSE, relative = TRUE)
+plot(pr1, Log = TRUE, relative = TRUE)
+plot(pr1, Log = TRUE, relative = FALSE)

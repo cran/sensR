@@ -1,4 +1,4 @@
-\name{ROC.default}
+\name{ROC}
 \alias{ROC.default}
 \alias{ROC.discrim}
 \alias{ROC}

@@ -13,3 +13,29 @@ Oct. 9. 2009:
 - references updated in help files to published same-diff paper and
   in-press GLIM paper
 
+June 17. 2010: version 1.2.0:
+
+- the twoAC() function and its print method is introduced for
+  estimation of d-prime and tau in the 2-AC protocol
+- the clls function and its methods are no longer supported. 
+  The user is adviced to use clm() from package ordinal instead. 
+
+July 20. 2010: version 1.2.1:
+
+- the following methods for twoAC objects are now available: confint,
+  profile, confint.profile and plot.profile.
+
+October 13. 2010: version 1.2.2:
+
+- rescale function and additional auxiliary (psyfun, psyinv, psyderiv,
+  pc2pd, pd2pc) functions included
+- major revision of betabin: argument Pguess has been removed and the
+  method argument is now the sensory discrimination protocol rather
+  than the parameterization of the beta-binomial model. The summary
+  method has gained the argument level instead of alpha. The results
+  of the summary method are much more extensive with results in terms
+  of Pc, Pd and d-prime.
+- revision of findcr function. It is now faster and more reliable
+  since it is using uniroot rather than a simple while loop and an
+  explicit test that the return value is in fact the critical value is
+  conducted.  

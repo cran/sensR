@@ -3,14 +3,14 @@
 export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
        discrimSim, duotrio, threeAFC, triangle, twoAFC, SDT, ROC, AUC,
        samediff, findcr, betabin, samediffSim, discrimR, clls,
-       samediffPwr)
+       samediffPwr, twoAC, rescale, psyfun, psyinv, psyderiv, pc2pd,
+       pd2pc) 
 
 S3method(print, betabin)
 S3method(summary, betabin)
 S3method(print, summary.betabin)
 S3method(vcov, betabin)
 S3method(logLik, betabin)
-S3method(coef, betabin)
 
 S3method(print, discrim)
 S3method(plot, discrim)
@@ -47,6 +47,13 @@ S3method(extractAIC, clls)
 ## S3method(profile, clls)
 ## S3method(plot, profile.clls)
 
+S3method(print, twoAC)
+S3method(confint, twoAC)
+S3method(profile, twoAC)
+S3method(confint, profile.twoAC)
+S3method(plot, profile.twoAC)
+
+S3method(print, rescale)
 
 importFrom(graphics, plot, contour)
 ## importFrom(MASS, confint.glm)

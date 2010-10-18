@@ -17,9 +17,9 @@ findcr(sample.size, alpha = .05, p0 = .5, pd0 = 0,
 }
 \details{
   The critical value of the standard one-tailed difference test of "no
-  difference" is obtained with \code{pd0 = 0}.
+  difference" is obtained with \code{pd0 = 0}. 
 
-  The probability under the null hypothesis is
+  The probability of a correct answer under the null hypothesis is
   given by \code{pd0 + p0 * (1 - pd0)}.
 }
 \value{

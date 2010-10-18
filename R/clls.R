@@ -48,7 +48,8 @@ clls <-
       c(g1, g2, g3)
     else rep(NA, pc + q + k)
   }
- 
+
+  warning("This function is no longer supported.\nThe user is adviced to use clm() from package ordinal instead.")
   m <- match.call(expand.dots = FALSE)
   if(missing(location))
     stop("Model needs a specification of the location")

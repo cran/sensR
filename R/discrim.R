@@ -34,44 +34,79 @@ function (x1, n1, x2, n2, ...)
   fit
 }
 
-`discrimPwr` <-
-  function (delta, sample.size, alpha = 0.05,
-            method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
-            pd0 = 0, type = c("difference", "similarity"))
-{
-### m <- match.call(expand.dots=FALSE)
-    method <- match.arg(method)
-    type <- match.arg(type)
-### m[[1]] <- as.name("list")
-### m$method <- NULL
-### eval.parent(m) # evaluate the *list* of arguments
-    ss <- sample.size
-    ## Control arguments:
-    if(ss != trunc(ss) | ss <= 0)
-        stop("'sample.size' has to be a positive integer")
-    if(delta < 0) stop("'delta' has to be non-negative")
-    if(alpha <= 0 | alpha >= 1)
-        stop("'alpha' has to be between zero and one")
-    if(pd0 < 0 | pd0 > 1)
-        stop("'pd0' has to be between zero and one")
-    ## Find the prob corresponding to delta:
-    prob <- switch(method,
-                   duotrio = duotrio(),
-                   triangle = triangle(),
-                   twoAFC = twoAFC(),
-                   threeAFC = threeAFC() )
-    ## prob under the null hypothesis:
-    p <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-    ## critical value in a one-tailed binomial test:
-    xcr <- findcr(ss, alpha, p, type = type, pd0)
-    ## Compute power of the test:
-    if(type == "difference")
-        power <- 1 - pbinom(xcr - 1, ss, prob$linkinv(delta))
-    else
-        power <- pbinom(xcr, ss, prob$linkinv(delta))
-    power
-}
+## `discrimPwr` <-
+##   function (delta, sample.size, alpha = 0.05,
+##             method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+##             pd0 = 0, type = c("difference", "similarity"))
+## {
+## ### m <- match.call(expand.dots=FALSE)
+##     method <- match.arg(method)
+##     type <- match.arg(type)
+## ### m[[1]] <- as.name("list")
+## ### m$method <- NULL
+## ### eval.parent(m) # evaluate the *list* of arguments
+##     ss <- sample.size
+##     ## Control arguments:
+##     if(ss != trunc(ss) | ss <= 0)
+##         stop("'sample.size' has to be a positive integer")
+##     if(delta < 0) stop("'delta' has to be non-negative")
+##     if(alpha <= 0 | alpha >= 1)
+##         stop("'alpha' has to be between zero and one")
+##     if(pd0 < 0 | pd0 > 1)
+##         stop("'pd0' has to be between zero and one")
+##     ## Find the prob corresponding to delta:
+##     prob <- switch(method,
+##                    duotrio = duotrio(),
+##                    triangle = triangle(),
+##                    twoAFC = twoAFC(),
+##                    threeAFC = threeAFC() )
+##     ## prob under the null hypothesis:
+##     Pguess <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
+##     ## critical value in a one-tailed binomial test:
+##     xcr <- findcr(ss, alpha, Pguess, type = type, pd0)
+##     ## Compute power of the test:
+##     if(type == "difference")
+##         power <- 1 - pbinom(xcr - 1, ss, prob$linkinv(delta))
+##     else
+##         power <- pbinom(xcr, ss, prob$linkinv(delta))
+##     power
+## }
+## 
 
+discrimPwr <-
+  function(delta, sample.size, alpha = 0.05,
+           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+           pd0 = 0, type = c("difference", "similarity"))
+{
+  ## match and test arguments:
+  method <- match.arg(method)
+  type <- match.arg(type)
+  ss <- sample.size
+  if(ss != trunc(ss) | ss <= 0)
+    stop("'sample.size' has to be a positive integer")
+  if(delta < 0) stop("'delta' has to be non-negative")
+  if(alpha <= 0 | alpha >= 1)
+    stop("'alpha' has to be between zero and one")
+  if(pd0 < 0 | pd0 > 1)
+    stop("'pd0' has to be between zero and one")
+  ## get Pc from delta:
+  Pc <- psyfun(delta, method = method)
+  Pguess <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
+  ## critical value in one-tailed binomial test:
+  xcr <- findcr(ss, alpha, Pguess, type = type, pd0)
+  ## compute power of the test from critical value:
+  if(type == "difference") {
+    xcr <- delimit(xcr, low = 1, up = ss + 1)
+    power <- 1 - pbinom(q = xcr - 1, size = ss, prob = Pc)
+  }
+  else if(type == "similarity") {
+    xcr <- delimit(xcr, low = 0, up = ss)
+    power <- pbinom(q = xcr, size = ss, prob = Pc)
+  }
+  else ## should never happen
+    stop("'type' not recognized")
+  return(power)
+}
 
 `discrimSS` <-
   function (delta, power, alpha = 0.05,
@@ -80,10 +115,6 @@ function (x1, n1, x2, n2, ...)
 {
     method <- match.arg(method)
     type <- match.arg(type)
-###   m <- match.call(expand.dots=FALSE)
-###   m[[1]] <- as.name("list")
-###   m$method <- NULL
-###   eval.parent(m) # evaluate the *list* of arguments
     if(delta < 0) stop("'delta' has to be non-negative")
     if(alpha <= 0 | alpha >= 1)
         stop("'alpha' has to be between zero and one")

@@ -1,24 +1,21 @@
 \name{betabin}
 \alias{betabin}
 \alias{summary.betabin}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{Beta-Binomial model for over-dispersed binomial data}
+\title{Beta-binomial and chance-corrected beta-binomial models for
+  over-dispersed binomial data} 
 \description{
-  Fits the beta binomial model and the chance corrected beta binomial
-  model to binomial data.
+  Fits the beta-binomial model and the chance-corrected beta-binomial
+  model to (over-dispersed) binomial data.
 }
 \usage{
-betabin(data, start = c(.5,.5), method = c("mu-gamma", "alpha-beta"),
-        vcov = TRUE, corrected = TRUE, pGuess = 1/2,
-        gradTol = 1e-4, ...)
+betabin(data, start = c(.5,.5), 
+        method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+        vcov = TRUE, corrected = TRUE, gradTol = 1e-4, ...)
 
-\method{summary}{betabin}(object, alpha=.05, ...)
+\method{summary}{betabin}(object, level = 0.95, ...)
 
 }
 \arguments{
-  \item{object}{an object of class "betabin", i.e. the result of
-    \code{betabin()}.}
-  \item{alpha}{the allowed type I error for confidence intervals}
   \item{data}{matrix or data.frame with two columns; first column
     contains the number of success and the second the total number of
     cases. The number of rows should correspond to the number of
@@ -26,47 +23,62 @@ betabin(data, start = c(.5,.5), method = c("mu-gamma", "alpha-beta"),
   \item{start}{starting values to be used in the optimization}
   \item{vcov}{logical, should the variance-covariance matrix of the
     parameters be computed?}
-  \item{method}{the desired representation. Optimization is performed in
-    the "mu-gamma" parameterization and subsequently transformed to the
-    "alpha-beta" scale if needed.}
+  \item{method}{the sensory discrimination protocol for which d-prime
+    and its standard error should be computed}
   \item{corrected}{should the chance corrected or the standard beta
     binomial model be estimated?}
-  \item{pGuess}{the guessing probability in the test protocol, i.e. the
-    point at which the probability scale is truncated in the chance
-    corrected model. The argument is further used in the likelihood
-    ratio test of association reported by the summary method for both
-    models.}
   \item{gradTol}{a warning is issued if max|gradient| < gradTol, where
     'gradient' is the gradient at the values at which the optimizer
     terminates. This is not used as a termination or convergence
     criterion during model fitting.}
+  \item{object}{an object of class "betabin", i.e. the result of
+    \code{betabin()}.}
+  \item{level}{the confidence level of the confidence intervals computed
+    by the summary method}
   \item{\dots}{\code{betabin}: The only recognized (hidden) argument is
     \code{doFit} (boolean) which by default is \code{TRUE}. When
     \code{FALSE} \code{betabin} returns an environment which facilitates
     examination of the likelihood surface via the (hidden) functions
-    \code{getParBB} and \code{setParBB}.
+    \code{sensR:::getParBB} and \code{sensR:::setParBB}.
     Not used in \code{summary.betabin}.}
 }
 \details{
-The following additional methods are implemented objects of class
-\code{betabin}:
-\code{print}, \code{vcov}, \code{logLik} and \code{coef}.
+The beta-binomial models are parameterized in terms of mu and gamma,
+where mu corresponds to a probability parameter and gamma measures
+over-dispersion. Both parameters are restricted to the interval (0, 1).
+The parameters of the standard (i.e. corrected = FALSE) beta-binomial
+model refers to the mean (i.e. probability) and dispersion on the scale
+of the observations, i.e. on the scale where we talk of a probability of
+a correct answer (Pc). The parameters of the chance corrected (i.e. corrected
+= TRUE) beta-binomial model refers to the mean and dispersion on the
+scale of the "probability of discrimination" (Pd).
+The mean parameter (mu) is therefore restricted to the
+interval from zero to one in both models, but they have different
+interpretations.
 
-The bounded optimization is performed with the "L-BFGS-B" optimizer in
-\code{\link{optim}}.
+The summary method use the estimate of mu to infer the parameters of the
+sensory experiment; Pc, Pd and d-prime. These are restricted to their
+allowed ranges, e.g. Pc is always as least as large as the guessing
+probability.
 
-Observe that standard errors and confidence intervals are often not
-appropriate for parameter close to the boundaries of the parameter
-space. The likelihood ratio tests reported by the summary method are
-more accurate.
+Confidens intervals are computed as Wald (normal-based) intervals on the
+mu-scale and the confidence limits are subsequently transformed to the
+Pc, Pd and d-prime scales. Confidence limits are restricted to the
+allowed ranges of the parameters, for example no confidence limits will
+be less than zero. 
 
-Variance-covariance matrix (and standard errors) is based on the inverted
-Hessian at the optimum. The Hessian is obtained with the \code{hessian}
-function from the numDeriv package.
+Standard errors, and therefore also confidence intervals, are only
+available if the parameters are not at the boundary of their allowed
+range (parameter space). If parameters are close to the boundaries of
+their allowed range, standard errors, and also confidence intervals, may
+be misleading. The likelihood ratio tests are more accurate. More
+accurate confidence intervals such as profile likelihood intervals may
+be implemented in the future.
 
 The summary method provides a likelihood ratio test of over-dispersion
 on one degree of freedom and a likelihood ratio test of association
-(i.e. of the hypothesis if "no difference") on two degrees of
+(i.e. where the null hypothesis is "no difference" and the alternative
+hypothesis is "any difference") on two degrees of
 freedom (chi-square tests). Since the gamma parameter is tested on the
 boundary of the
 parameter space, the correct degree of freedom for the first test is
@@ -75,16 +87,6 @@ test is probably also on less than two degrees of freedom. Research is
 needed to determine the appropriate no. degrees of freedom to use in
 each case. The choices used here are believed to be conservative, so the
 stated p-values are probably a little too large.
-
-The parameters of the standard (i.e. corrected = FALSE) beta-binomial
-model refers to the mean (i.e. probability) and dispersion on the scale
-of the observations, i.e. on the scale where we talk of a probability of
-a correct answer. The parameters of the chance corrected (i.e. corrected
-= TRUE) beta-binomial model refers to the mean and dispersion on the
-scale of "proportion of discriminators" in the population of
-interest. The mean parameter (mu) is therefore restricted to the
-interval from zero to one in both models, but the has different
-interpretations.
 
 The log-likelihood of the standard beta-binomial model is
 \deqn{\ell(\alpha, \beta; x, n) = - N \log Beta(\alpha, \beta) +
@@ -107,9 +109,18 @@ function, cf. \code{\link{beta}},
 number of rows in \code{data}, and \eqn{p_g} is the guessing
 probability, \code{pGuess}.
 
+The variance-covariance matrix (and standard errors) is based on the
+inverted Hessian at the optimum. The Hessian is obtained with the
+\code{hessian} function from the numDeriv package.
+
 The gradient at the optimum is evaluated with \code{gradient} from the
 numDeriv package.
 
+The bounded optimization is performed with the "L-BFGS-B" optimizer in
+\code{\link{optim}}.
+
+The following additional methods are implemented objects of class
+\code{betabin}: \code{print}, \code{vcov} and \code{logLik}.
 }
 \value{
   An object of class \code{betabin} with elements
@@ -121,12 +132,12 @@ numDeriv package.
   \item{logLik}{the value of the log-likelihood at the MLEs}
   \item{method}{the method used for the fit}
   \item{convergence}{0 indicates convergence. For other error messages,
-    see \code{?optim}.}
-  \item{message}{possible error message - see \code{?optim} for
+    see \code{\link{optim}}.}
+  \item{message}{possible error message - see \code{\link{optim}} for
     details}
   \item{counts}{the number of iterations used in the optimization - see
-    \code{?optim} for details}
-  \item{corrected}{Is the chance corrected model estimated?}
+    \code{\link{optim}} for details}
+  \item{corrected}{is the chance corrected model estimated?}
   \item{logLikNull}{log-likelihood of the binomial model with
     prop = pGuess}
   \item{logLikMu}{log-likelihood of a binomial model with
@@ -141,9 +152,6 @@ numDeriv package.
 
 \seealso{ \code{\link{triangle}}, \code{\link{twoAFC}},
   \code{\link{threeAFC}}, \code{\link{duotrio}},
-  \code{\link{discrimPwr}}, \code{\link{discrimSim}},
-  \code{\link{discrimSS}}, \code{\link{samediff}},
-  \code{\link{AnotA}}, \code{\link{findcr}}
 }
 
 \examples{
@@ -152,8 +160,8 @@ x <- c(3,2,6,8,3,4,6,0,9,9,0,2,1,2,8,9,5,7)
 n <- c(10,9,8,9,8,6,9,10,10,10,9,9,10,10,10,10,9,10)
 dat <- data.frame(x, n)
 
-(bb <- betabin(dat, method = "mu-gamma"))
-(bb <- betabin(dat, corrected = FALSE, method = "mu-gamma"))
+(bb <- betabin(dat, method = "duotrio"))
+(bb <- betabin(dat, corrected = FALSE, method = "duotrio"))
 summary(bb)
 vcov(bb)
 logLik(bb)

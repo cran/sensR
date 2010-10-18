@@ -5,6 +5,9 @@
   Cumulative Link Location-Scale Models
 }
 \description{
+  IMPORTANT: This function and its methods are no longer supported. The
+  user is adviced to use clm() from package ordinal instead. 
+  
   Fits a cumulative link location-scale model to an ordered response
   variable. When the scale part is left unspecified, the model reduces
   to a cumulative link model assuming a constant scale. With the default

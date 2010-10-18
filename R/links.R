@@ -2,7 +2,7 @@
   function () 
 {
   duotrio <- binomial()
-  duotrio$link <- "Link for the Duo-trio test"
+  duotrio$link <- "Link for the duo-trio test"
   duotrio$linkinv <- function(eta) {
     tres <- 1 - pnorm(eta/sqrt(2)) - pnorm(eta/sqrt(6)) + 
       2 * pnorm(eta/sqrt(2)) * pnorm(eta/sqrt(6))
@@ -18,9 +18,9 @@
     tres <- mu
     for (i in 1:length(mu)) {
       if (mu[i] > 0.5) 
-        tres <- uniroot(duotriog, c(0, 10), p = mu[i])$root
+        tres[i] <- uniroot(duotriog, c(0, 10), p = mu[i])$root
       if (mu[i] <= 0.5) 
-        tres <- 0
+        tres[i] <- 0
     }
     tres
   }
@@ -69,7 +69,7 @@
   function () 
 {
   triangle <- binomial()
-    triangle$link <- "Link for the Triangle test"
+    triangle$link <- "Link for the triangle test"
   triangle$linkinv <- function(eta) {
     triangleg <- function(x, d) 2 * dnorm(x) *
       (pnorm(-x * sqrt(3) + d * sqrt(2/3)) +
