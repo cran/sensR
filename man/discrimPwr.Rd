@@ -1,64 +1,83 @@
 \name{discrimPwr}
 \alias{discrimPwr}
+\alias{d.primePwr}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Sensory discrimination power analysis}
 \description{
-  Computes the power of the hypothesis test of no sensory
-  difference for any one of four methods: 2-AFC, 3-AFC, duotrio and
-  triangle tests given the underlying sensory difference delta, the type I
-  test level and the sample size.
+  Computes the power of a difference or similarity test for a sensory
+  discrimination experiment using the binomial distribution.
+  \code{d.primePwr} is a convenience function that calls
+  \code{discrimPwr} but has arguments in terms of d-prime rather than
+  pd, the probability of discrimination.
 }
 \usage{
-discrimPwr(delta, sample.size, alpha = 0.05,
+discrimPwr(pdA, pd0 = 0, sample.size, alpha = 0.05, pGuess = 1/2,
+           test = c("difference", "similarity"),
+           statistic = c("exact", "normal"))
+
+d.primePwr(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
            method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
-           pd0 = 0, type = c("difference", "similarity"))
+           test = c("difference", "similarity"),
+           statistic = c("exact", "normal"))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{delta}{the underlying sensory difference (non-negative)}
-  \item{sample.size}{the sample size (a positive integer)}
-  \item{alpha}{the type I level of the test (must be between zero and one)}
-  \item{method}{the discrimination test protocol. Four allowed values:
-    \code{"twoAFC"}, \code{"threeAFC"}, \code{"duotrio"},
-    \code{"triangle"}}
-  \item{pd0}{the proportion of discriminators in the population of interest}
-  \item{type}{the type of test}
+  \item{pdA}{the probability of discrimination for the model under the
+    alternative hypothesis; scalar between zero and one}
+  \item{d.primeA}{d-prime for the model under the
+    alternative hypothesis; non-negative numerical scalar}
+  \item{pd0}{the probability of discrimination under the
+    null hypothesis; scalar between zero and one}
+  \item{d.prime0}{d-prime under the null hypothesis; non-negative
+    numerical scalar}
+  \item{sample.size}{the sample size; a scalar positive integer}
+  \item{alpha}{the type I level of the test; scalar between zero and
+    one}
+  \item{method}{the discrimination protocol for which the power should
+    be computed} 
+  \item{pGuess}{the guessing probability for the discrimination
+    protocol, e.g. 1/2 for duo-trio and 2-AFC, and 1/3 for
+    triangle and 3-AFC; scalar between zero and one}
+  \item{test}{the type of one-sided binomial test (direction of the
+    alternative hypothesis): "difference" corresponds "greater" and
+    "similarity" corresponds to "less"}
+  \item{statistic}{should power determination be based on the 'exact'
+           binomial test or the normal approximation to this?}
 }
 \details{
-  The power of the standard one-tailed difference test of "no
-  difference" is obtained with \code{pd0 = 0}.
+  The power of the standard one-tailed difference test where the null
+  hypothesis is "no difference" is obtained with \code{pd0 = 0}.
 
   The probability under the null hypothesis is
-  given by \code{pd0 + p0 * (1 - pd0)} where \code{p0} is the guessing
-  probability defined by the \code{method} argument.
+  given by \code{pd0 + pg * (1 - pd0)} where \code{pg} is the guessing
+  probability \code{pGuess}. Similarly, the probability of the
+  alternative hypothesis is given by \code{pdA + pg * (1 - pdA)}
 
-  The function uses one of the dedicated binomial families.
 }
 \value{
-  The power.
+  The power; a numerical scalar.
 }
 \references{Brockhoff, P.B. and Christensen, R.H.B (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
   Food Quality and Preference, 21, pp. 330-338.}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
-\seealso{\code{\link{triangle}}, \code{\link{twoAFC}},
-  \code{\link{threeAFC}}, \code{\link{duotrio}},
+\seealso{\code{\link{findcr}}, 
   \code{\link{discrim}}, \code{\link{discrimSim}},
-  \code{\link{AnotA}}, \code{\link{discrimSS}},
-  \code{\link{samediff}}, \code{\link{findcr}}
+  \code{\link{AnotA}}, \code{\link{discrimSS}}
 }
 
 \examples{
-## Finding the power of a discrimination test with a sensory delta of 1,
+## Finding the power of a discrimination test with d-prime = 1,
 ## a sample of size 30 and a type I level of .05:
-discrimPwr(1, 30, 0.05, "twoAFC")
-discrimPwr(1, 30, 0.05, "threeAFC")
-discrimPwr(1, 30, 0.05, "duotrio")
-discrimPwr(1, 30, 0.05, "triangle")
+pd <- coef(rescale(d.prime = 1, method = "twoAFC"))$pd
+discrimPwr(pd, sample.size = 30)
+d.primePwr(1, sample.size = 30, method = "twoAFC")
+discrimPwr(pd, sample.size = 30, statistic = "normal")
+
 
 ## A similarity example:
-discrimPwr(.2, 100, method = "triangle", pd0 = .2, type = "simil")
+discrimPwr(pdA = 0.1, pd0 = 0.2, sample.size = 100, pGuess = 1/3,
+           test = "similarity")
 
 }
 \keyword{models}% at least one, from doc/KEYWORDS

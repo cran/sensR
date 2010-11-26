@@ -1,6 +1,6 @@
 \name{AUC}
 \alias{AUC.default}
-\alias{AUC.discrim}
+\alias{AUC.anota}
 \alias{print.AUC}
 \alias{AUC}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -12,13 +12,13 @@
 }
 \usage{
 \method{AUC}{default}(d, scale = 1, se.d, CI.alpha = 0.05, ...)
-\method{AUC}{discrim}(d, CI.alpha = 0.05, ...)
+\method{AUC}{anota}(d, CI.alpha = 0.05, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{d}{a unit lenght vector with the value of d-prime for which AUC
-    is to be computed or a discrim object from the fitting of a A-not A
-    test with \code{\link{AnotA}}} 
+    is to be computed or a \code{anota} object from the fitting of a
+    A-not A test with \code{\link{AnotA}}} 
   \item{scale}{a unit length vector giving the ratio of scale (ie. standard
     deviation) of the latent distribution for the no-class items
     relative to that of the yes-class items} 

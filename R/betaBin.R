@@ -135,7 +135,7 @@ summary.betabin <-
     stop("summary needs vcov in object")
   ## Construct output table:
   table <- array(NA, dim = c(5, 4))
-  rownames(table) <- c("mu", "gamma", "Pc", "Pd", "d.prime")
+  rownames(table) <- c("mu", "gamma", "pc", "pd", "d-prime")
   colnames(table) <- c("Estimate", "Std. Error", "Lower", "Upper")
   table[1:2,1] <- coef(object)
   mu <- table[1,1]
@@ -149,24 +149,24 @@ summary.betabin <-
   muCI <- table[1, 3:4]
   ## Transform estimate to pc, pd and d-prime scales:
   if(!is.na(mu)) {
-    if(object$corrected) obj <- rescale(Pd = mu, method = object$method)
-    else obj <- rescale(Pc = mu, method = object$method)
+    if(object$corrected) obj <- rescale(pd = mu, method = object$method)
+    else obj <- rescale(pc = mu, method = object$method)
     table[3:5,1] <- unlist(coef(obj))
   }
   ## Transform std.err:
   if(all(!is.na(c(mu, se[1])))) {
     if(object$corrected)
-      obj <- rescale(Pd = mu, std.err = se[1], method = object$method)
+      obj <- rescale(pd = mu, std.err = se[1], method = object$method)
     else 
-      obj <- rescale(Pc = mu, std.err = se[1], method = object$method)
+      obj <- rescale(pc = mu, std.err = se[1], method = object$method)
     table[3:5,2] <- unlist(obj$std.err)
   }
   ## Transform Wald CI on mu-scale to pc, pd and d-prime scales:
   if(all(!is.na(muCI))) {
     if(object$corrected) 
-      intervals <- rescale(Pd = muCI, method = object$method)
+      intervals <- rescale(pd = muCI, method = object$method)
     else 
-      intervals <- rescale(Pc = muCI, method = object$method)
+      intervals <- rescale(pc = muCI, method = object$method)
     table[3:5,3] <- unlist(coef(intervals)[1,])
     table[3:5,4] <- unlist(coef(intervals)[2,])
   }

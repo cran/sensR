@@ -35,8 +35,8 @@
 %% \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 ## Generate discrim objects to be plotted:
-fm1 <- discrim(10, 15, "threeAFC")
-fm2 <- discrim(10, 15, "triangle")
+fm1 <- discrim(10, 15, method = "threeAFC")
+fm2 <- discrim(10, 15, method = "triangle")
 par(mfrow=c(2,1)) ## Split plotting window in two
 ## Plot the distributions of sensory intensity for the two objects
 ## and increase the line width

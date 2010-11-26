@@ -1,14 +1,14 @@
 rescale <-
-  function(Pc, Pd, d.prime, std.err, 
+  function(pc, pd, d.prime, std.err, 
            method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
 {
   m <- match.call(expand.dots = FALSE)
   m[[1]] <- as.name("list")
   m <- eval.parent(m) # evaluate the *list* of arguments
-  arg <- c("Pc", "Pd", "d.prime")
+  arg <- c("pc", "pd", "d.prime")
   isPresent <- sapply(arg, function(arg) !is.null(m[[arg]]))
   if(sum(isPresent) != 1)
-    stop("One and only one of Pc, Pd and d.prime should be given")
+    stop("One and only one of pc, pd and d.prime should be given")
   method <- match.arg(method)
   Pguess <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
   par <- arg[isPresent]
@@ -16,46 +16,46 @@ rescale <-
     stopifnot(is.numeric(se) && length(se) == length(m[[par]]))
     stopifnot(all(se[!is.na(se)] > 0))
   }
-  if(par == "Pc") {
-    Pc <- m[[par]]
-    stopifnot(is.numeric(Pc) && all(Pc >= 0) && all(Pc <= 1))
-    tooSmall <- Pc < Pguess
-    Pc[tooSmall] <- Pguess
-    Pd <- pc2pd(Pc, Pguess)
-    d.prime <- psyinv(Pc, method = method)
+  if(par == "pc") {
+    pc <- m[[par]]
+    stopifnot(is.numeric(pc) && all(pc >= 0) && all(pc <= 1))
+    tooSmall <- pc < Pguess
+    pc[tooSmall] <- Pguess
+    pd <- pc2pd(pc, Pguess)
+    d.prime <- psyinv(pc, method = method)
     if(!is.null(se)) {
-      se.Pc <- se
-      se.Pc[tooSmall] <- NA
-      se.Pd <- se.Pc / (1 - Pguess)
-      se.d.prime <- se.Pc / psyderiv(d.prime, method = method)
+      se.pc <- se
+      se.pc[tooSmall] <- NA
+      se.pd <- se.pc / (1 - Pguess)
+      se.d.prime <- se.pc / psyderiv(d.prime, method = method)
     }
   }
-  if(par == "Pd") {
-    Pd <- m[[par]]
-    stopifnot(is.numeric(Pd) && all(Pd >= 0) && all(Pd <= 1))
-    Pc <- pd2pc(Pd, Pguess)
-    d.prime <- psyinv(Pc, method = method)
+  if(par == "pd") {
+    pd <- m[[par]]
+    stopifnot(is.numeric(pd) && all(pd >= 0) && all(pd <= 1))
+    pc <- pd2pc(pd, Pguess)
+    d.prime <- psyinv(pc, method = method)
     if(!is.null(se)) {
-      se.Pd <- se
-      se.Pc <- se.Pd * (1 - Pguess)
-      se.d.prime <- se.Pc / psyderiv(d.prime, method = method)
+      se.pd <- se
+      se.pc <- se.pd * (1 - Pguess)
+      se.d.prime <- se.pc / psyderiv(d.prime, method = method)
     }
   }
   if(par == "d.prime") {
     stopifnot(is.numeric(d.prime) && all(d.prime >= 0))
     d.prime <- m[[par]]
-    Pc <- psyfun(d.prime, method = method)
-    Pd <- pc2pd(Pc, Pguess)
+    pc <- psyfun(d.prime, method = method)
+    pd <- pc2pd(pc, Pguess)
     if(!is.null(se)) {
       se.d.prime <- se
-      se.Pc <- se * psyderiv(d.prime, method = method)
-      se.Pd <- se.Pc / (1 - Pguess)
+      se.pc <- se * psyderiv(d.prime, method = method)
+      se.pd <- se.pc / (1 - Pguess)
     } 
   }
-  coef <- data.frame(Pc = Pc, Pd = Pd, d.prime = d.prime)
+  coef <- data.frame(pc = pc, pd = pd, d.prime = d.prime)
   res <- list(coefficients = coef)
   if(!is.null(se))
-    res$std.err <- data.frame(Pc = se.Pc, Pd = se.Pd,
+    res$std.err <- data.frame(pc = se.pc, pd = se.pd,
                               d.prime = se.d.prime)
   res$method <- method
   class(res) <- "rescale"
@@ -73,45 +73,45 @@ print.rescale <- function(x, digits = getOption("digits"), ...)
   return(invisible(x))
 }
 
-pc2pd <- function(Pc, Pguess)
-### Maps Pc to Pd
+pc2pd <- function(pc, Pguess)
+### Maps pc to pd
 
-### arg: Pc: numeric vector; 0 <= Pc <= 1
+### arg: pc: numeric vector; 0 <= pc <= 1
 ###      Pguess: the guessing probability; numeric scalar,
-###              0 <= Pc <= 1
-### res: Pd: numeric vector; 0 <= Pc <= 1
+###              0 <= pc <= 1
+### res: pd: numeric vector; 0 <= pc <= 1
 {
   stopifnot(is.numeric(Pguess) && length(Pguess) == 1 &&
             Pguess >= 0 && Pguess <= 1)
-  stopifnot(is.numeric(Pc) && all(Pc >= 0) && all(Pc <= 1))
-  Pd <- (Pc - Pguess) / (1 - Pguess)
-  Pd[Pc <= Pguess] <- 0
-  names(Pd) <- names(Pc)
-  return(Pd)
+  stopifnot(is.numeric(pc) && all(pc >= 0) && all(pc <= 1))
+  pd <- (pc - Pguess) / (1 - Pguess)
+  pd[pc <= Pguess] <- 0
+  names(pd) <- names(pc)
+  return(pd)
 }
 
-pd2pc <- function(Pd, Pguess) {
-### Maps Pd to Pc
+pd2pc <- function(pd, Pguess) {
+### Maps pd to pc
   
-### arg: Pd: numeric vector; 0 <= Pc <= 1
+### arg: pd: numeric vector; 0 <= pc <= 1
 ###      Pguess: the guessing probability; numeric scalar,
-###              0 <= Pc <= 1
-### res: Pc: numeric vector; 0 <= Pc <= 1
+###              0 <= pc <= 1
+### res: pc: numeric vector; 0 <= pc <= 1
   stopifnot(is.numeric(Pguess) && length(Pguess) == 1 &&
             Pguess >= 0 && Pguess <= 1)
-  stopifnot(is.numeric(Pd) && all(Pd >= 0) && all(Pd <= 1))
-  Pc <- Pguess + Pd * (1 - Pguess)
-  names(Pc) <- names(Pd)
-  return(Pc)
+  stopifnot(is.numeric(pd) && all(pd >= 0) && all(pd <= 1))
+  pc <- Pguess + pd * (1 - Pguess)
+  names(pc) <- names(pd)
+  return(pc)
 }
 
 psyfun <-
   function(d.prime,
            method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
-### Maps d.prime to Pc for sensory discrimination protocols
+### Maps d.prime to pc for sensory discrimination protocols
   
 ### arg: d.prime: non-negative numeric vector
-### res: Pc: numeric vector
+### res: pc: numeric vector
 {
   method <- match.arg(method)
   stopifnot(all(is.numeric(d.prime)) && all(d.prime >= 0))
@@ -120,37 +120,37 @@ psyfun <-
                    triangle = triangle()$linkinv,
                    twoAFC = twoAFC()$linkinv,
                    threeAFC = threeAFC()$linkinv)
-  Pc <- numeric(length(d.prime))
+  pc <- numeric(length(d.prime))
 ### Extreme cases are not handled well in the links, so we need: 
   OK <- d.prime < Inf
   if(sum(OK) > 0)
-    Pc[OK] <- psyFun(d.prime[OK])
-  Pc[!OK] <- 1
-  names(Pc) <- names(d.prime)
-  return(Pc)
+    pc[OK] <- psyFun(d.prime[OK])
+  pc[!OK] <- 1
+  names(pc) <- names(d.prime)
+  return(pc)
 }
 
-psyinv <- function(Pc, 
+psyinv <- function(pc, 
            method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
-### Maps Pc to d.prime for sensory discrimination protocols
+### Maps pc to d.prime for sensory discrimination protocols
 
-### arg: Pc: numeric vector; 0 <= Pc <= 1
+### arg: pc: numeric vector; 0 <= pc <= 1
 ### res: d.prime: numeric vector
 {
   method <- match.arg(method)
-  stopifnot(all(is.numeric(Pc)) && all(Pc >= 0) && all(Pc <= 1))
+  stopifnot(all(is.numeric(pc)) && all(pc >= 0) && all(pc <= 1))
   psyInv <- switch(method,
                    duotrio = duotrio()$linkfun,
                    triangle = triangle()$linkfun,
                    twoAFC = twoAFC()$linkfun,
                    threeAFC = threeAFC()$linkfun)
-  d.prime <- numeric(length(Pc))
+  d.prime <- numeric(length(pc))
 ### Extreme cases are not handled well in the links, so we need: 
-  OK <- Pc < 1
+  OK <- pc < 1
   if(sum(OK) > 0)
-    d.prime[OK] <- psyInv(Pc[OK])
+    d.prime[OK] <- psyInv(pc[OK])
   d.prime[!OK] <- Inf
-  names(d.prime) <- names(Pc)
+  names(d.prime) <- names(pc)
   return(d.prime)
 }
 
@@ -161,7 +161,7 @@ psyderiv <-
 ### d.prime for sensory discrimination protocols.
   
 ### arg: d.prime: non-negative numeric vector
-### res: Pc: numeric vector
+### res: pc: numeric vector
 {
   method <- match.arg(method)
   stopifnot(all(is.numeric(d.prime)) && all(d.prime >= 0))
@@ -208,26 +208,26 @@ psyderiv <-
 ##   }
 ## }
 
-test.crit <- function(xcr, sample.size, p.correct = 0.5, alpha = 0.05, type)
+test.crit <- function(xcr, sample.size, p.correct = 0.5, alpha = 0.05, test)
 ### Is xcr the critical value of a one-tailed binomial test?
 ### Result: boolean
 
 ### OBS: there is deliberately no requirement that xcr should be
 ### positive or less than sample.size.
 {  
-  if(type %in% c("difference", "greater")) ## alternative is "greater"
+  if(test %in% c("difference", "greater")) ## alternative is "greater"
     ((1 - pbinom(q = xcr - 1, size = sample.size, prob = p.correct) <= alpha) &&
      (1 - pbinom(q = xcr - 2, size = sample.size, prob = p.correct) > alpha))
-  else if(type %in% c("similarity", "less")) ## alternative is "less"
+  else if(test %in% c("similarity", "less")) ## alternative is "less"
     ((pbinom(q = xcr, size = sample.size, prob = p.correct) <= alpha) &&
      (pbinom(q = xcr + 1, size = sample.size, prob = p.correct) > alpha))
   else
-    stop("unknown type argument")
+    stop("unknown 'test' argument")
 }
 
 findcr <-
   function(sample.size, alpha = 0.05, p0 = 0.5, pd0 = 0,
-           type = c("difference", "similarity"))
+           test = c("difference", "similarity"))
 ### Find the critical value of a one-tailed binomial
 ### test. "difference" means a "greater" alternative hypothesis and
 ### "similarity" means a "less" alternative hypothesis.
@@ -236,13 +236,13 @@ findcr <-
 ### is larger than the sample size? Or when it is negative as can
 ### happen with similarity? Examples:
 ### (xcr <- findcr(sample.size = 1, p0 = psyfun(1, "twoAFC"))) ## 2
-### (xcr <- findcr(sample.size = 1, type = "similarity")) ## -1
+### (xcr <- findcr(sample.size = 1, test = "similarity")) ## -1
 ### This means that there is no number large/small enough for this
 ### sample size that could give a significant p-value. Maybe this
 ### should just be a deliberate feature.
 {
   ## match and test arguments:
-  type <- match.arg(type)
+  test <- match.arg(test)
   ss <- sample.size
 ### FIXME: Does this test work as intented?
   if(ss != trunc(ss) | ss <= 0)
@@ -254,46 +254,46 @@ findcr <-
   if(pd0 < 0 | pd0 > 1)
     stop("'pd0' has to be between zero and one")
   ## core function:
-  Pc <- pd2pc(pd0, p0)
-  if(type == "difference") {
+  pc <- pd2pc(pd0, p0)
+  if(test == "difference") {
     crdiff <-  function(cr)
-      1 - pbinom(q = cr - 1, size = ss, prob = Pc) - alpha
+      1 - pbinom(q = cr - 1, size = ss, prob = pc) - alpha
     interval <- c(0, ss + 2) ## deliberately outside allowed range
   }
-  else if(type == "similarity") {
+  else if(test == "similarity") {
     crdiff <- function(cr)
-      pbinom(q = cr + 1, size = ss, prob = Pc) - alpha
+      pbinom(q = cr + 1, size = ss, prob = pc) - alpha
     interval <- c(-2, ss) ## deliberately outside allowed range
   }
   else ## should never occur
-    stop("'type' not recognized") 
+    stop("'test' not recognized") 
   xcr <- round(uniroot(crdiff, interval = interval)$root)
   ## is xcr the critical value?:
-  is.crit <- test.crit(xcr = xcr, sample.size = ss, p.correct = Pc,
-                       alpha = alpha, type = type)
+  is.crit <- test.crit(xcr = xcr, sample.size = ss, p.correct = pc,
+                       alpha = alpha, test = test)
   if(is.crit) return(xcr)
   ## if uniroot fails, then do a simple search around the vicinity of
   ## the result from uniroot:
   max.iter <- 20 ## avoid infinite loop
   xcr <- delimit(xcr - 10, low = -1)
   i <- 0
-  if(type == "difference") {
-    while(1 - pbinom(q = xcr + i, size = ss, prob = Pc) > alpha) {
+  if(test == "difference") {
+    while(1 - pbinom(q = xcr + i, size = ss, prob = pc) > alpha) {
       if(i > max.iter || xcr + i > ss) break 
       i <- i + 1
     }
     xcr <- xcr + i + 1
   }
-  if(type == "similarity") {
-    while(pbinom(q = xcr + i, size = ss, prob = Pc) < alpha) {
+  if(test == "similarity") {
+    while(pbinom(q = xcr + i, size = ss, prob = pc) < alpha) {
       if(i > max.iter || xcr + i > ss) break
       i <- i + 1
     }
     xcr <- xcr + i - 1
   }
   ## is xcr now the critical value?:
-  is.crit <- test.crit(xcr = xcr, sample.size = ss, p.correct = Pc,
-                       alpha = alpha, type = type)
+  is.crit <- test.crit(xcr = xcr, sample.size = ss, p.correct = pc,
+                       alpha = alpha, test = test)
   if(is.crit) return(xcr)
   else stop("Failed to find critical value")
 }

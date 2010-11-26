@@ -4,16 +4,16 @@
 \description{Finds the critical value in a one-tailed binomial test}
 \usage{
 findcr(sample.size, alpha = .05, p0 = .5, pd0 = 0,
-              type = c("difference", "similarity"))
+              test = c("difference", "similarity"))
 }
 \arguments{
   \item{sample.size}{the sample size of the binomial test (must be a positve integer)}
-  \item{alpha}{the type I error-level of the test (must be between zero and one)}
+  \item{alpha}{the test I error-level of the test (must be between zero and one)}
   \item{p0}{the guessing probability under the null-hypothesis (must be
     between zero and one); 1/2 for the duotrio and twoAFC tests and 1/3
     for the triangle and threeAFC tests}
   \item{pd0}{the proportion of discriminators in the population of interest}
-  \item{type}{the type of test}
+  \item{test}{the type of test}
 }
 \details{
   The critical value of the standard one-tailed difference test of "no
@@ -43,7 +43,7 @@ findcr(sample.size, alpha = .05, p0 = .5, pd0 = 0,
 findcr(sample.size = 25, , p0 = 1/3)
 
 ## Similarity example:
-findcr(sample.size = 25, p0 = 1/3, pd0 = .2, type = "simil")
+findcr(sample.size = 25, p0 = 1/3, pd0 = .2, test = "simil")
 }
 \keyword{models}% at least one, from doc/KEYWORDS
 

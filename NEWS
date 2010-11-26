@@ -39,3 +39,23 @@ October 13. 2010: version 1.2.2:
   since it is using uniroot rather than a simple while loop and an
   explicit test that the return value is in fact the critical value is
   conducted.  
+- Error in discrimSim for the threeAFC method corrected.
+
+October 28. 2010: version 1.2.3:
+
+- major revision of discrim, discrimPwr and discrimSS including
+  confint.discrim, profile.discrim, print.discrim and
+  plot.profile.discrim. 
+
+November 25. 2010: version 1.2.4:
+
+- Vignette 'Methodology' describes the statistical methodology of
+  sensory discrimination tests. 
+- Added the convenience functions d.primePwr and d.primeSS.
+
+November 26. 2010: version 1.2.5:
+
+- print.anota is fixed.
+- confint.anota and plot.anota functions added and documented in the
+  AnotA help file. Examples added to help page.
+

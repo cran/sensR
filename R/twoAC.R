@@ -41,7 +41,7 @@ twoAC <- function(data, ...) {
 print.twoAC <- function(x, digits = max(3, .Options$digits - 3),
                         ...) {
   cat("\nCoefficients:\n")
-  print(x$coefficients, quote = FALSE, ...)
+  print(x$coefficients, quote = FALSE, digits = digits, ...)
   cat("\nlog-likelihood:", format(x$logLik, nsmall=2), "\n")
   invisible(x)
 }
@@ -73,12 +73,12 @@ profile.twoAC <-
     sapply(dseq, function(dd)
            optimize(nll.tau, c(1e-6, 10), d = dd, data = fitted$data)$objective)
   ## get likelihood root statistic:
-  sgn <- 2*(dseq > fitted$d.prime) - 1
+  sgn <- 2*(dseq < fitted$d.prime) - 1
   Lroot <- sgn * sqrt(2) * sqrt(nll + fitted$logLik)
   res <- data.frame("Lroot" = c(0, Lroot),
                     "d.prime" = c(fitted$d.prime, dseq))
   res <- res[order(res[,1]),]
-  if(!all(diff(res[,2]) > 0))
+  if(!all(diff(res[,2]) < 0))
     warning("likelihood is not monotonically decreasing from maximum,\n",
             "  so profile may be unreliable")
   prof <- vector("list", length = 1)
@@ -131,7 +131,7 @@ confint.profile.twoAC <-
   cutoff <- qnorm(a)
   pro <- object[[ "d.prime" ]]
   sp <- spline(x = pro[, 2], y = pro[, 1])
-  ci[1, ] <- approx(sp$y, sp$x, xout = cutoff)$y
+  ci[1, ] <- approx(-sp$y, sp$x, xout = cutoff)$y
   ci
 }
 
@@ -147,25 +147,25 @@ plot.profile.twoAC <-
   sp$y <- -sp$y^2/2
   if(relative && !Log) {
     sp$y <- exp(sp$y)
-    ylab <- "Relative likelihood"
+    ylab <- "Relative profile likelihood"
     dots <- list(...)
     if(missing(ylim))
       ylim <- c(0, 1)
   }
   if(relative && Log) {
-    ylab <- "Relative log-likelihood"
+    ylab <- "Relative profile log-likelihood"
     lim <- log(lim)
   }
   if(!relative & Log) {
     sp$y <- sp$y + ML
-    ylab <- "Log-likelihood"
+    ylab <- "profile Log-likelihood"
     lim <- ML + log(lim)
   }
   if(!relative & !Log) {
     stop("Not supported: at least one of 'Log' and 'relative' ",
          "have to be TRUE")
     sp$y <- exp(sp$y + ML)
-    ylab <- "Likelihood"
+    ylab <- "Profile likelihood"
     lim <- exp(ML + log(lim))
   }
   x[[ "d.prime" ]] <- sp

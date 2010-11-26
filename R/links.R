@@ -16,11 +16,13 @@
   duotrio$linkfun <- function(mu) {
     duotriog <- function(d, p) -p + duotrio$linkinv(d)
     tres <- mu
-    for (i in 1:length(mu)) {
-      if (mu[i] > 0.5) 
-        tres[i] <- uniroot(duotriog, c(0, 10), p = mu[i])$root
-      if (mu[i] <= 0.5) 
+    for(i in 1:length(mu)) {
+      if(mu[i] <= 0.5) 
         tres[i] <- 0
+      else if(mu[i] > 1-1e-9)
+        tres[i] <- Inf
+      else 
+        tres[i] <- uniroot(duotriog, c(0, 14), p = mu[i])$root
     }
     tres
   }

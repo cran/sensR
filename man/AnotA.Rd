@@ -1,5 +1,7 @@
 \name{AnotA}
 \alias{AnotA}
+\alias{confint.anota}
+\alias{plot.anota}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Analysis of A-not-A tests}
 \description{
@@ -9,32 +11,49 @@
 }
 \usage{
 AnotA(x1, n1, x2, n2, ...)
+
+\method{confint}{anota}(object, parm, level = 0.95, ...)
+
+\method{plot}{anota}(x, main = TRUE, length = 1000, ...)
+
 }
 \arguments{
-  \item{x1}{The number of (correct) A-answers on A-samples}
-  \item{n1}{The total number of A-samples}
-  \item{x2}{The number of A-answers on not-A-samples}
-  \item{n2}{The number of not-A-samples}
-  \item{...}{Additional arguments passed to \code{glm}}
+  \item{x1}{the number of (correct) A-answers on A-samples}
+  \item{n1}{the total number of A-samples}
+  \item{x2}{the number of A-answers on not-A-samples}
+  \item{n2}{the number of not-A-samples}
+  \item{object}{an \code{anota} object}
+  \item{parm}{currently not used}
+  \item{level}{the desired confidence level}
+  \item{x}{an \code{anota} object}
+  \item{main}{should the plot have a main title?}
+  \item{length}{the discretization of the curves}
+  \item{...}{additional arguments passed to \code{glm} for \code{AnotA};
+    not used for \code{confint} and \code{plot}}
 }
 \details{
-  The function uses the \code{glm} and \code{fisher.test} functions
-  of the \code{stats} package. Note that all arguments have to be
-  positive integers.
+  The \code{AnotA} function uses the \code{glm} and \code{fisher.test}
+  functions of the \code{stats} package. Note that all arguments have
+  to be positive integers.
 }
 \value{
-  An object of class \code{"discrim"} (which has a print method). This is
-  a list with elements
+  For \code{AnotA} an object of class \code{anota} (which has a print
+  method). This is a list with elements
   \item{coefficients}{ named vector of coefficients (d-prime)}
   \item{res.glm}{the glm-object from the fitting process}
   \item{vcov}{variance-covariance matrix of the coefficients}
   \item{se}{named vector with standard error of the coefficients
     (standard error of d-prime}
   \item{data}{a named vector with the data supplied to the function}
-  \item{p.value}{one-sided p-value from Fisher's exact test (\code{fisher.test})}
+  \item{p.value}{one-sided p-value from Fisher's exact test
+    (\code{fisher.test})} 
   \item{test}{a string with the name of the test (\code{A-Not A}) for
     the print method}
   \item{call}{the matched call}
+
+  For \code{plot} a figure of the distributions of sensory intensity is
+  produced, and for \code{confint} a 2-by-2 matrix of confidence
+  intervals is returned. 
 }
 \references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
@@ -52,6 +71,13 @@ AnotA(x1, n1, x2, n2, ...)
 #       20 not-A-samples in total
 
 AnotA(10, 20, 3, 20)
+(m1 <- AnotA(10, 20, 3, 20))
+
+## plot distributions of sensory intensity:
+plot(m1)
+
+## likelihood based confidence intervals:
+confint(m1)
 
 ## Extended example plotting the profile likelihood
 xt <- cbind(c(3, 10), c(20 - 3, 20 - 10))

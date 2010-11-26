@@ -1,6 +1,6 @@
 \name{ROC}
 \alias{ROC.default}
-\alias{ROC.discrim}
+\alias{ROC.anota}
 \alias{ROC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Plot the Receiver Operating Characteristic Curve}
@@ -14,7 +14,7 @@ ROC(object, ...)
 \method{ROC}{default}(object, se.d, scale = 1, length = 1000,
 fig = TRUE, se.type = c("CI", "SE"), CI.alpha = 0.05, ...)
 
-\method{ROC}{discrim}(object, length = 1000, fig = TRUE,
+\method{ROC}{anota}(object, length = 1000, fig = TRUE,
 se.type = c("CI", "SE"), CI.alpha = 0.05, ...) 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -25,14 +25,14 @@ se.type = c("CI", "SE"), CI.alpha = 0.05, ...)
   \item{object}{the class of the object defines, which of the methods is
     invoked. If obejct is a single element numeric vector it is taken as
     a d-prime value and the default method is invoked. If the object is
-    of class discrim (works for \code{AnotA} objects), the method for discrim
-    objects is invoked.} 
+    of class \code{anota}, the method for \code{anota} objects is
+    invoked.}  
   \item{se.d}{a unit length vector with the standard error of
     d-prime. If supplied confidence intervals or standard errors are
     plotted} 
   \item{scale}{a unit length vector giving the ratio of scale (ie. standard
-    deviation) of the latent distribution for the no-class items relative to
-    that of the yes-class items} 
+    deviation) of the latent distribution for the no-class items
+    relative to  that of the yes-class items} 
   \item{length}{the length of the vectors to be plotted. Longer vectors
     gives more smooth curves.}
   \item{fig}{Should a plot be produced?}
@@ -71,7 +71,7 @@ se.type = c("CI", "SE"), CI.alpha = 0.05, ...)
 (mat <- matrix(c(8, 17, 1, 24), 2, byrow = TRUE))
 (d.prime <- SDT(mat, "probit")[3])
 ROC(d.prime)
-## ROC.discrim:
+## ROC.anota:
 fm1 <- AnotA(8, 25, 1, 25)
 ROC(fm1)
 }

@@ -5,26 +5,31 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Sensory discrimination analysis}
 \description{
-  Computes the d-prime, its standard error and P-value for the
-  hypothesis of no sensory
-  difference for any  of four methods: 2-AFC, 3-AFC, duotrio and
-  triangle tests.
+  Computes the probability of a correct answer (Pc), the probability of
+  discrimination (Pd) and d-prime, their standard errors, confidence
+  intervals and a p-value of a difference or similarity test for one of
+  the four common discrimination protocols.
 }
 \usage{
 
-discrim(success, total,
-        method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
-        pd0 = 0, type = c("difference", "similarity"), ...)
+discrim(correct, total, pd0 = 0, conf.level = 0.95,
+           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+           statistic = c("exact", "likelihood", "score", "Wald"),
+           test = c("difference", "similarity"), ...)
 
-\method{print}{discrim}(x, digits = getOption("digits"), alpha = 0.05, ...)
+\method{print}{discrim}(x, digits = getOption("digits"), ...)
 
 %% discrimr(formula, data, weights, start, subset, na.action,
 %%          contrasts = NULL, method = c("duotrio", "probit", "threeAFC",
 %%            "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
 }
 \arguments{
-  \item{success}{the number of correct answers}
-  \item{total}{the total number of answers (sample size)}
+  \item{correct}{the number of correct answers; non-negativescalar
+    integer} 
+  \item{total}{the total number of answers (the sample size); positive
+    scalar integer} 
+  \item{pd0}{the probability of discrimination under the
+    null hypothesis; numerical scalar between zero and one}
 %%%   \item{formula}{an object of class "formula" (or one that can be coerced
 %%%     to that class): a symbolic description of the model to be fitted.}
 %%%   \item{data}{an optional data frame, list or environment (or object coercible
@@ -44,39 +49,68 @@ discrim(success, total,
 %%%   \item{contrasts}{an optional list of specifying the contrasts to use.}
 %%%   \item{hess}{logical, should the hessian be computed? (requires for
 %%%     standard errors etc. to be computed by summary.discrimr)}
+  \item{conf.level}{the confidence level for the confidence intervals}
   \item{method}{the discrimination protocol. Four allowed values:
     "twoAFC", "threeAFC", "duotrio", "triangle"}
-  \item{pd0}{the proportion of discriminators in the population of interest}
-  \item{type}{the type of test}
+  \item{test}{the type of test}
+  \item{statistic}{the statistic to be used for hypothesis testing and
+    confidence intervals}
   \item{x}{an object of class \code{"discrim"}}
-  \item{alpha}{the allowed type I level of the Wald based confidence
-    interval}
   \item{digits}{number of digits in resulting table of results}
-  \item{\dots}{additional arguments passed to \code{\link{glm}}}
+  \item{\dots}{not currently used}
 }
 \details{
   The p-value for the standard one-tailed difference test of "no
   difference" is obtained with \code{pd0 = 0}.
 
   The probability under the null hypothesis is
-  given by \code{pd0 + p0 * (1 - pd0)} where \code{p0} is the guessing
-  probability defined by the \code{method} argument.
+  given by \code{pd0 + pg * (1 - pd0)} where \code{pg} is the guessing
+  probability which is defined by the discrimination protocol given in
+  the \code{method} argument.
 
-  The function uses the one of the dedicated binomial families and the
-  base function \code{\link{glm}} %% (discrim) or \code{optim} (discrimr).
+  All estimates are restricted to their allowed ranges, e.g. Pc is
+  always as least as large as the guessing probability. Similarly
+  confidence limits are also restricted to the allowed range of the
+  parameters.
+
+  Standard errors are not defined when the parameter estimates are at
+  the boundary of their allowed range, so these will be reported as
+  \code{NA} in such cases. 
+
+  The \code{"Wald"} statistic is *NOT* recommended for practical
+  use---it is included here for completeness and to allow comparisons.
+
+  For \code{statistic = "score"}, the confidence interval is computed
+  from Wilson's score interval, while the p-value for the hypothesis
+  test is based on Pearson's chi-square test,
+  cf. \code{\link{prop.test}}. 
+  
 }
 \value{
   An object of class \code{discrim} with elements
-  \item{coefficients}{ named vector of coefficients (d-prime and tau)}
-  \item{res.glm}{the glm-object from the fitting process}
-  \item{vcov}{variance-covariance matrix of the coefficients}
-  \item{se}{named vector with standard error of the coefficients
-    (standard error of d-prime)}
+  \item{coefficients}{matrix of estimates, standard errors and
+    confidence intervals}
+  %% \item{res.glm}{the glm-object from the fitting process}
+  %% \item{vcov}{variance-covariance matrix of the coefficients}
+  %% \item{se}{named vector with standard error of the coefficients
+  %%   (standard error of d-prime)}
   \item{data}{a named vector with the data supplied to the function}
-  \item{p.value}{one-tailed exact binomial p-value}
-  \item{test}{a string with the name of the test for
-    the print method}
+  \item{p.value}{the p-value of the hypothesis test}
   \item{call}{the matched call}
+  \item{test}{the type of test}
+  \item{method}{the discrimination protocol}
+  \item{statistic}{the statistic used for confidence intervals and
+    p-value}
+  \item{pd0}{the probability of discrimination under the
+    null hypothesis}
+  \item{conf.level}{the confidence level}
+  \item{stat.value}{for \code{statistic != "exact"} the value of the
+    test statistic used to calculate the p-value}
+  \item{df}{for \code{statistic == "score"} the number of degrees of
+    freedom used for the Pearson chi-square test to calculate the
+    p-value}
+  \item{profile}{for \code{statistic == "likelihood"} the profile
+    likelihood on the scale of Pc}
 }
 \references{Brockhoff, P.B. and Christensen, R.H.B (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
@@ -87,18 +121,25 @@ discrim(success, total,
   \code{\link{threeAFC}}, \code{\link{duotrio}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
   \code{\link{discrimSS}}, \code{\link{samediff}},
-  \code{\link{AnotA}}, \code{\link{findcr}}
+  \code{\link{AnotA}}, \code{\link{findcr}},
+  \code{\link[=profile.discrim]{profile}}, 
+  \code{\link[=profile.discrim]{plot.profile}} 
+  \code{\link[=profile.discrim]{confint}} 
 }
 
 \examples{
-## Running the simple discrimination (differens) tests:
+## Running the simple discrimination (difference) tests:
 discrim(10, 15, method = "twoAFC")
-discrim(10, 15, method = "threeAFC")
-discrim(10, 15, method = "duotrio")
-discrim(10, 15, method = "triangle")
+discrim(10, 15, method = "threeAFC", statistic = "likelihood")
+discrim(10, 15, method = "duotrio", conf.level = 0.90)
+discrim(10, 15, method = "triangle", statistic = "score")
+
+## plot the distributions of sensory intensity:
+m1 <- discrim(10, 15, method = "twoAFC")
+plot(m1)
 
 ## A similarity test where less than chance successes are obtained:
-discrim(20, 75, "triangle", pd0 = .2, type = "simil")
+discrim(20, 75, method = "triangle", pd0 = .2, test = "similarity")
 
 }
 \keyword{models}% at least one, from doc/KEYWORDS

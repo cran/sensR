@@ -9,20 +9,22 @@
   for a given d-prime value and a given overdispersion (default 0).
 }
 \usage{
-discrimSim(sample.size, replicates, delta, sd.indiv = 0,
+discrimSim(sample.size, replicates, d.prime, sd.indiv = 0,
            method = c("duotrio", "halfprobit", "probit", "triangle",
            "twoAFC", "threeAFC"))
 }
 \arguments{
-  \item{sample.size}{The sample size - number of subjects}
-  \item{replicates}{Number of replications per subject}
-  \item{delta}{The delta (d-prime) value}
-  \item{method}{The discrimination protocol}
+  \item{sample.size}{the sample size - number of subjects}
+  \item{replicates}{number of replications per subject}
+  \item{d.prime}{the value of d-prime}
+  \item{method}{the discrimination protocol}
   \item{sd.indiv}{the individual variability in d-prime values. A value
-    of 0 (default) is default and corresponds to complete independence}
+    of 0 (default) corresponds to complete independence}
 }
 \details{
-  The function uses the four thurstonian binomial families.
+  The d-prime for each subject is a random draw from a normal
+  distribution with mean \code{d.prime} and standard deviation
+  \code{sd.indiv}. All negative values are set to zero.
 }
 \value{
   A vector of length \code{sample.size} with the number of correct answers for
@@ -42,7 +44,7 @@ discrimSim(sample.size, replicates, delta, sd.indiv = 0,
 \examples{
 
 ## Running simulations:
-discrimSim(sample.size = 10, replicates = 3, delta = 2,
+discrimSim(sample.size = 10, replicates = 3, d.prime = 2,
            method = "triangle", sd.indiv = 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

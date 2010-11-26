@@ -68,10 +68,13 @@ ROC.default <-
     invisible(res)
 }
 
-ROC.discrim <- function(object, length = 1000, fig = TRUE,
-                        se.type = c("CI", "SE"), CI.alpha = .05, ...) { 
+ROC.anota <-
+  function(object, length = 1000, fig = TRUE,
+           se.type = c("CI", "SE"), CI.alpha = .05, ...)
+{ 
   stopifnot(object$test == "A-Not A")
-  ROC.default(object$coef, object$se, , length, fig, se.type, CI.alpha, ...)
+  ROC.default(object$coef, object$se, , length, fig, se.type,
+              CI.alpha, ...) 
 }
 
 ROC <- function(object, ...) {
@@ -112,7 +115,7 @@ print.AUC <- function(x, digits = getOption("digits"), ...){
   invisible()
 }
 
-AUC.discrim <- function(d, CI.alpha = .05, ...) {
-  stopifnot(d$test == "A-Not A")
+AUC.anota <- function(d, CI.alpha = .05, ...) {
+  ## stopifnot(d$test == "A-Not A")
   AUC.default(d$coef, , d$se, CI.alpha, ...)
 }
