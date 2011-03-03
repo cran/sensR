@@ -43,6 +43,8 @@
 \newcommand{\tdots}{\hspace{10mm} \texttt{....}}
 \newcommand{\FL}[1]{\fvset{firstline= #1}}
 \newcommand{\LL}[1]{\fvset{lastline= #1}}
+\newcommand{\s}{\square}
+\newcommand{\bs}{\blacksquare}
 
 % figurer bagerst i artikel
 %% \usepackage[tablesfirst, nolists]{endfloat}
@@ -75,7 +77,7 @@
 
 \begin{abstract}
 
-The statistical methodology of sensory discrimination protocols is
+The statistical methodology of sensory discrimination analysis is
 described. This forms the basis of the implementation in the
 \textsf{sensR} package for \textsf{R}. Implementation choices will be
 motivated when appropriate and examples of analysis of sensory
@@ -140,7 +142,7 @@ how such analyses can be performed in \textsf{R} using package
 \textsf{sensR} \citep{christensen10d} co-developed by the author of
 this document. 
 
-This document is divided into section that cover topics with similar
+This document is divided into sections that cover topics with similar
 statistical methodology. Implementation choices in the \textsf{sensR}
 package will be described in connection with the statistical
 methodology whenever appropriate. Small examples illustrating the use
@@ -160,17 +162,17 @@ discrimination testing to the level of \citep[][chapter 7]{naes10}.
 \section{Classification of sensory discrimination protocols}
 \label{sec:class-sens-discr}
 
-\begin{itemize}
-\item simple binomial response
-\item compound binomial response
-\item multinomial response
-\item comparison of distances versus skimming strategy
-\item decision strategy versus decision rule
-\item protocols with response bias
-\item Forced choice methods
-\item ``nature of difference'' or ``sensory/perceptual dimension''
-  required
-\end{itemize}
+%% \begin{itemize}
+%% \item simple binomial response
+%% \item compound binomial response
+%% \item multinomial response
+%% \item comparison of distances versus skimming strategy
+%% \item decision strategy versus decision rule
+%% \item protocols with response bias
+%% \item Forced choice methods
+%% \item ``nature of difference'' or ``sensory/perceptual dimension''
+%%   required
+%% \end{itemize}
 
 The most common and simplest discrimination protocols comprise the
 2-AFC, 3-AFC, triangle, duo-trio, A-not A and same-different
@@ -193,7 +195,7 @@ The 2-AFC and 3-AFC protocols are so-called directional protocols
 since they require that the nature of the difference (e.g. sweetness)
 is provided as part of the assessor instructions. On the other hand
 the triangle and duo-trio protocols are not directional since these 
-protocols are used to test of un-specified differences. From a
+protocols are used to test un-specified differences. From a
 Thurstonian point of view, the sensory dimension or the perceptual
 dimension is fixed in the 2-AFC and 3-AFC methods. The cognitive
 decision strategy is consequently assumed different in these two
@@ -232,7 +234,7 @@ distribution of answers is therefore a binomial distribution.
 
 For the duo-trio and 2-AFC protocols the \emph{guessing probability}, $p_g$
 is 1/2. This means that if there is no discriminative difference
-between the products or samples, then the probability of a correct
+between the products, then the probability of a correct
 answers, $p_c$ is one half. Similarly for the triangle and 3-AFC
 protocols the guessing probability is 1/3. The four common
 discrimination protocols are said to be free of \emph{response bias}
@@ -286,10 +288,35 @@ psychometric function maps from $d'$ to the probability of a correct
 answer:
 \begin{equation}
   \label{eq:3}
-  p_c = f_{ps}(d')
+  p_c = f_{ps}(d').
 \end{equation}
-and expressions for the four common simple discrimination protocols
-can be found in \citet{ennis93} and \citet{brockhoff10}.  
+For the $m$-AFC method, where $m$ denotes the number of ``forced
+choices'', the psychometric function is given by
+\begin{equation}
+  \label{eq:45}
+  f_{m\textup{-AFC}}(d') = \int_{-\infty}^{\infty} \phi(z - d')
+  \Phi(z)^{m-1} ~\textup{d} z,
+\end{equation}
+where $\phi$ is the standard normal probability density function and
+$\Phi$ is the standard normal cumulative distribution function.
+The psychometric functions for the four common discrimination
+protocols are given by
+\begin{align}
+  \label{eq:43}
+  f_{\textup{3-AFC}}(d') =&~ \int_{-\infty}^{\infty} \phi(z-d')
+  \Phi(z)^{2} ~\textup{d}z \\ 
+  f_{\textup{2-AFC}}(d') =&~ \int_{-\infty}^{\infty} \phi(z-d')
+  \Phi(z) ~\textup{d}z  = \Phi ( d' / \sqrt{2} ) \\
+  f_{\textup{tri}}(d') =&~
+  2 \int_{0}^{\infty} \Big\{ \Phi \left[ -z \sqrt{3} + d' \sqrt{2/3}
+  \right]  + \Phi \left[ -z \sqrt{3} - d' \sqrt{2/3} \right]
+  \Big\} \phi(z) ~\textup{d}z \\
+  f_{\textup{duo-trio}}(d') =&~ 
+  1 - \Phi( d' / \sqrt{2}) - \Phi( d' / \sqrt{6}) + 2 \Phi( d' /
+  \sqrt{2}) \Phi( d' / \sqrt{6}).
+\end{align}
+Further information can be found in \citet{ennis93} and
+\citet{brockhoff10}. 
 
 The relations between the three scales at which a sensory difference
 is described are illustrated in
@@ -473,7 +500,7 @@ computations; these are also directly available to the package user:
   $d' = f_{ps}^{-1}(p_c)$ for the four common discrimination
   protocols, cf. eq.~\eqref{eq:6}.
 \item \texttt{psyderiv}: implements the derivative of the psychometric
-  functions, $f_{ps}'(d')$ for the four common discrimination.
+  functions, $f_{ps}'(d')$ for the four common discrimination protocols.
 \end{itemize}
 
 \subsection{Inference in simple discrimination protocols}
@@ -520,7 +547,7 @@ uncertainty when the parameter estimate is at the interior of the
 parameter space, i.e. when the parameter estimate is not at the
 boundary of its allowed range, cf. eq.~\eqref{eq:29}.
 
-Even when the parameter estimate is close, in some sense, to boundary
+Even when the parameter estimate is close, in some sense, to the boundary
 of its parameter space, the standard error is not a meaningful measure
 of uncertainty, because the uncertainty is in fact asymmetric. This
 means that symmetric confidence intervals based on the standard error
@@ -590,8 +617,8 @@ models and almost always impressively successful.
 The likelihood root statistic is given by:
 \begin{equation}
   \label{eq:15}
-  r(\mu_0) = \textup{sign}(\hat\mu - \mu_0) \sqrt{2} \left\{
-    \ell(\hat\mu; x) - \ell(\mu_0; x) \right\}
+  r(\mu_0) = \textup{sign}(\hat\mu - \mu_0) \sqrt{2 \left\{
+    \ell(\hat\mu; x) - \ell(\mu_0; x) \right\} }
 \end{equation}
 Both the Wald and likelihood root statistics asymptotically follow
 standard normal distributions under the null hypothesis. Even though
@@ -881,8 +908,8 @@ boundary of their parameter space (allowed range).
 Strictly speaking the Wald statistic~\eqref{eq:20} is not defined when
 $x/n \leq p_g$, since the standard error of $\hat p_c$ is not
 defined. However, it makes sense to use 
-$\sqrt{\hat p_c (1 - \hat p_c) / n}$ as standard error in this
-case. This is adopted in \texttt{discrim}. 
+$\sqrt{\frac{x}{n} \left( 1 - \frac{x}{n} \right) \frac{1}{n}}$ as
+standard error in this case. This is adopted in \texttt{discrim}.  
 
 Similarity testing does not make sense if $p_{c0} = 0$ under the null
 hypothesis, cf. eq.~\eqref{eq:19}, so a positive $p_{d0}$ has to be
@@ -1027,7 +1054,7 @@ been $P(X \geq 14) = 0.058$, which is not
 significant. We say that $x_c = 15$ 
 is the \emph{critical value} for this particular test on the 
 $\alpha = 5\%$ significance level because $x_c = 15$ is the smallest
-number of correct answers that renders a test significant. 
+number of correct answers that renders the test significant. 
 
 In \textsf{R} we can find the $p$-values with
 <<criticalValueExample1, results = verb, echo = t>>=
@@ -1099,9 +1126,12 @@ discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05,
            pGuess = 1/2)
 @ 
 Observe that \texttt{discrimPwr} requires that the effect size under
-the alternative hypothesis is given in terms of $d'$ rather than $p_d$
-or $p_c$, so we needed to use the \texttt{psyinv} function to convert
-from $p_{cA}$ to $d'_A$. 
+the alternative hypothesis is given in terms of $p_d$ rather than
+$p_c$ or $d'$. If the effect size under the alternative hypothesis is
+formulated in terms of $d'$, then \texttt{rescale} can be used to convert
+from $d'_A$ to $p_{dA}$, but it would be easier to use
+\texttt{d.primePwr}, which accepts $d'_A$ directly and internally
+calls \texttt{discrimPwr}. 
 
 If the significance test of interest is not that of no-difference, but
 that of a small difference versus a relevant difference, the
@@ -1191,7 +1221,7 @@ sufficient.
 \label{sec:power-calc-simul}
 
 In more complicated models it is not possible to determine an explicit
-expression for the power of a test and calculation of power based
+expression for the power of a test and calculation of power based on
 simulations can be an attractive approach. Sometimes it may also just
 be easier to let the computer do the job by running simulations rather
 than to get bugged down in derivations of explicit expressions for
@@ -1514,7 +1544,7 @@ approximation is not always strictly liberal. In the function
 compromise is used, where the while loop is started at one if the
 sample size estimated by the normal approximation is less than
 50. Otherwise the while loop is started at 90\% of the normal
-approximation estimate and sometimes even lower necessary. If the normal
+approximation estimate and sometimes even lower if necessary. If the normal
 approximation estimate is larger than 10,000, the function will
 inform of that and not attempt to estimate the sample size due to the
 expected large computation time. In addition to the sample size for
@@ -1544,6 +1574,50 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 
 
 \subsection{Related literature}
+
+%% \section{The 2-AC discrimination and preference protocol}
+%% 
+%% The statistical methodology for the 2-AC protocol is treated in detail
+%% in (refto 2-AC paper), and we refer to this source for more
+%% information. $\square \bs \s$ and $\blacksquare$ and \ldots
+%% 
+%% \begin{table}
+%%   \centering
+%%   \caption{Possible outcomes in the 2-AC protocol. 
+%%     \label{tab:twoACoutcomes}}
+%%   \begin{tabular}{lccccccc}
+%%     \hline
+%%     & \multicolumn{7}{c}{cases} \\
+%%     \cline{2-8} 
+%%     & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+%%     & $\bs \bs \bs$ & $\bs \s \s$ & $\s \bs \s$ & $\s \s \bs$ & $\bs
+%%     \bs \s$ & $\s \bs \bs$ & $\bs \s \bs$ \\
+%%     \hline
+%%     $\ell(\tau, d'_0)$ & --- & --- & 0 & --- & --- & --- & --- \\
+%%     $\ell(\hat\tau, \hat d')$ & --- & 0 & 0 & 0 & --- & --- & --- \\
+%%     $\hat\tau$ & --- & 0 & NA & 0 & NA & NA &  0 \\
+%%     $\tau_0$ & --- & 0 & NA & 0 & --- & --- & 0 \\
+%%     $\hat d'$ & --- & $-\infty$ & NA & $\infty$ & $-\infty$ & $\infty$ 
+%%     & --- \\
+%%     var-cov & --- & NA & NA & NA & NA & NA & NA \\
+%%     \hline
+%%   \end{tabular}
+%% \end{table}
+%% 
+%% Write about
+%% \begin{itemize}
+%% \item Power computations and why the error is at most $\varepsilon$
+%% \item How the likelihood root statistic when $d'_0 = 0$ is identical
+%%   to the likelihood root statistic from the 2-AFC test. This implies
+%%   that the outcome in the second cell is irrelevant for judging
+%%   deviations from $d' = 0$ and rutines for the 2-AFC protocol can be
+%%   used. However, whenever $d'_0 \neq 0$ the test statistics differ and
+%%   the 2-AFC rutines cannot be used.
+%% \item In which of the seven cases is tau constant no matter the value
+%%   of $d'$? - for $d'_0$ and $\hat d'$ separately? What is the value of
+%%   $\tau$ in those cases?
+%% \end{itemize}
+%% 
 
 \section{A-not A and same-different protocols}
 \label{sec:not-same-different}

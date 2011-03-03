@@ -42,11 +42,18 @@ normalPwr <-
            test = c("difference", "similarity"))
 {
   test <- match.arg(test)
-  stopifnot(pdA >= 0 && pdA <= 1)
-  stopifnot(pd0 >= 0 && pdA <= 1)
-  stopifnot(sample.size > 0)
-  stopifnot(alpha > 0 && alpha < 1)
-  stopifnot(pGuess >= 0 && pGuess < 1)
+  stopifnot(is.numeric(pdA) && length(pdA) == 1 &&
+            pdA >= 0 && pdA <= 1)
+  stopifnot(is.numeric(pd0) && length(pd0) == 1 &&
+            pd0 >= 0 && pd0 <= 1)
+  stopifnot(is.numeric(sample.size) && length(sample.size) == 1 &&
+            isTRUE(all.equal(round(sample.size), sample.size)) &&
+            sample.size > 0)
+  sample.size <- as.integer(sample.size)
+  stopifnot(is.numeric(alpha) && length(alpha) == 1 &&
+            alpha > 0 && alpha < 1)
+  stopifnot(is.numeric(pGuess) && length(pGuess) == 1 &&
+            pGuess >= 0 && pGuess < 1)
   if(test == "difference" && pdA <= pd0)
     stop("pdA has to be larger than pd0 for difference tests")
   if(test == "similarity" && pdA >= pd0)
@@ -56,11 +63,11 @@ normalPwr <-
   sigma0 <- sqrt(pc0*(1 - pc0)/sample.size)
   sigmaA <- sqrt(pcA*(1 - pcA)/sample.size)
   if(test == "difference") {
-    lambda <- (qnorm(1 - alpha)*sigma0 + pc0 - pcA) / sigmaA
+    lambda <- (qnorm(1 - alpha) * sigma0 + pc0 - pcA) / sigmaA
     pwr <- pnorm(lambda, lower = FALSE)
   }
   else if(test == "similarity") {
-    lambda <- (qnorm(alpha)*sigma0 + pc0 - pcA) / sigmaA
+    lambda <- (qnorm(alpha) * sigma0 + pc0 - pcA) / sigmaA
     pwr <- pnorm(lambda, lower = TRUE)
   }
   else
@@ -77,19 +84,20 @@ discrimPwr <-
   test <- match.arg(test)
   stat <- match.arg(statistic)
   ss <- sample.size
-  stopifnot(length(pdA) == 1 && length(pd0) == 1 &&
-            length(sample.size) == 1 && length(alpha) == 1 &&
-            length(pGuess) == 1)
-  if(ss != trunc(ss) || ss <= 0)
-    stop("'sample.size' has to be a positive integer")
-  if(alpha <= 0 | alpha >= 1)
-    stop("'alpha' has to be between zero and one")
-  stopifnot(length(pd0) == 1 && pd0 >= 0 && pd0 <= 1)
-  ## if(pd0 < 0 | pd0 > 1)
-  ##   stop("'pd0' has to be between zero and one")
-  if(pdA < 0 | pdA > 1)
-    stop("'pdA' has to be between zero and one")
-  ## get pc from pdA and pGuess:
+  stopifnot(is.numeric(pdA) && length(pdA) == 1 &&
+            pdA >= 0 && pdA <= 1)
+  stopifnot(is.numeric(pd0) && length(pd0) == 1 &&
+            pd0 >= 0 && pd0 <= 1)
+  stopifnot(is.numeric(sample.size) && length(sample.size) == 1 &&
+            isTRUE(all.equal(round(sample.size), sample.size)) &&
+            sample.size > 0)
+  sample.size <- as.integer(sample.size)
+  stopifnot(is.numeric(alpha) && length(alpha) == 1 &&
+            alpha > 0 && alpha < 1)
+  stopifnot(is.numeric(pGuess) && length(pGuess) == 1 &&
+            pGuess >= 0 && pGuess < 1)
+
+  ## Get pc from pdA and pGuess:
   pc <- pd2pc(pdA, pGuess)
   if(stat == "normal") {
     pwr <- normalPwr(pdA = pdA, pd0 = pd0, sample.size = ss,
@@ -265,11 +273,13 @@ discrim <-
   m <- eval.parent(m) # evaluate the *list* of arguments
   x <- m$correct;  n <- m$total
   call <- match.call()
-### FIXME: is trunc(x) the right way to do this?
-  if(x != trunc(x) || x < 0)
+  ## use round - as.integer also strips names:
+  if(!isTRUE(all.equal(round(x), x)) || x < 0)
     stop("'correct' has to be a non-negative integer")
-  if(n != trunc(n) || n <= 0)
+  x <- as.integer(x)
+  if(!isTRUE(all.equal(round(n), n)) || n <= 0)
     stop("'total' has to be a positive integer")
+  n <- as.integer(n)
   if(x > n)
     stop("'correct' cannot be larger than 'total'")
   if(pd0 < 0 || pd0 > 1)

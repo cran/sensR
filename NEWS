@@ -59,3 +59,18 @@ November 26. 2010: version 1.2.5:
 - confint.anota and plot.anota functions added and documented in the
   AnotA help file. Examples added to help page.
 
+December 9. 2010: version 1.2.6:
+
+- corrections made to Statistical Methodology vignette.
+
+March 3. 2011: version 1.2.7:
+
+- major update of twoAC implementation
+- added exact power computations for the 2-AC protocol in function
+  twoACpwr
+
+March 8. 2011: version 1.2.8:
+
+- added clm2twoAC function for extracting 2-AC parameters etc. from
+  cumulative link models (clm[m]s from package ordinal)
+- including "Examples for 2-AC paper" as vignette

@@ -314,3 +314,25 @@ delimit <- function(x, lower, upper, set.na = FALSE)
     x[x > m$upper] <- ifelse(set.na, NA, m$upper)
   return(x)
 }
+
+normalPvalue <-
+### Computes the p-value for a statistic that follows a standard
+### normal distribution under the null hypothesis.
+
+### Arguments:
+### statistic - a numerical (vector?)
+### alternative - the type of alternative hypothesis
+
+### Value:
+### the p-value, possibly a vector.
+  function(statistic, alternative = c("two.sided", "less", "greater"))
+{
+  alternative <- match.arg(alternative)
+  stopifnot(all(is.finite(statistic)))
+  p.value <-
+    switch(alternative,
+           "greater" = pnorm(statistic, lower = FALSE),
+           "less" = pnorm(statistic, lower = TRUE),
+           "two.sided" = 2 * pnorm(abs(statistic), lower = FALSE))
+  return(p.value)
+}

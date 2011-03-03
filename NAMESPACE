@@ -4,7 +4,7 @@ export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
        discrimSim, duotrio, threeAFC, triangle, twoAFC, SDT, ROC, AUC,
        samediff, findcr, betabin, samediffSim, discrimR, clls,
        samediffPwr, twoAC, rescale, psyfun, psyinv, psyderiv, pc2pd,
-       pd2pc, d.primePwr, d.primeSS) 
+       pd2pc, d.primePwr, d.primeSS, twoACpwr, clm2twoAC) 
 
 S3method(print, betabin)
 S3method(summary, betabin)
@@ -55,6 +55,8 @@ S3method(confint, twoAC)
 S3method(profile, twoAC)
 S3method(confint, profile.twoAC)
 S3method(plot, profile.twoAC)
+S3method(vcov, twoAC)
+S3method(logLik, twoAC)
 
 S3method(print, rescale)
 

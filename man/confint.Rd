@@ -14,7 +14,7 @@
 }
 \usage{
 \method{confint}{twoAC}(object, parm, level = 0.95, 
-        type = c("profile", "Wald"), \dots)
+        type = c("likelihood", "Wald"), \dots)
 
 \method{confint}{profile.twoAC}(object, parm = "d.prime", level = 0.95, \dots)
 
@@ -102,6 +102,12 @@
   \code{relative} arguments have to be \code{TRUE}.
 
 }
+\references{
+  Christensen R.H.B., lee H-S and Brockhoff P.B. (2010). Estimation of
+  the Thurstonian model for the 2-AC protocol. Manuscript for Food
+  Quality and Preference. 
+}
+
 \author{Rune Haubo B Christensen}
 \seealso{
 \code{\link{profile}} and \code{\link{confint}}
