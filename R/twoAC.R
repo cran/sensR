@@ -599,11 +599,11 @@ clm2twoAC <- function(object, ...) {
 ##    lroot <- abs(sqrt(2*(llMax + nll.d0))) ## absolute likelihood root
 ##    ## statistic
 ##    ## if(alternative == "two-sided")
-##    p.value <- 2 * pnorm(abs(lroot), lower = FALSE)
+##    p.value <- 2 * pnorm(abs(lroot), lower.tail = FALSE)
 ##    ## if(alternative == "difference")
-##    ##   p.value <- pnorm(lroot, lower = FALSE)
+##    ##   p.value <- pnorm(lroot, lower.tail = FALSE)
 ##    ## if(alternative == "similarity")
-##    ##   p.value <- pnorm(lroot, lower = TRUE)
+##    ##   p.value <- pnorm(lroot, lower.tail = TRUE)
 ##    return(c(lroot, p.value, tau))
 ##  }
 

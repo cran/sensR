@@ -275,7 +275,7 @@ findcr <-
   ## if uniroot fails, then do a simple search around the vicinity of
   ## the result from uniroot:
   max.iter <- 20 ## avoid infinite loop
-  xcr <- delimit(xcr - 10, low = -1)
+  xcr <- delimit(xcr - 10, lower = -1)
   i <- 0
   if(test == "difference") {
     while(1 - pbinom(q = xcr + i, size = ss, prob = pc) > alpha) {

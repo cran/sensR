@@ -74,3 +74,12 @@ March 8. 2011: version 1.2.8:
 - added clm2twoAC function for extracting 2-AC parameters etc. from
   cumulative link models (clm[m]s from package ordinal)
 - including "Examples for 2-AC paper" as vignette
+
+April 8. 2011: version 1.2.9:
+
+- correcting t and f as logicals in sweave vignettes to TRUE and FALSE
+  (mail from Brian Ripley 11-04-08) 
+
+May 10. 2011: version 1.2.10:
+
+- completing partially matched arguments.

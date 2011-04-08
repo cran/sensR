@@ -446,7 +446,7 @@ SE.samediff <- function(object, ...) {
 CI.vcov <- function(object, level = .95, ...) {
   co <- coef(object)
   SE <- SE.samediff(object)
-  lim <- qnorm((1 - level)/2, lower = FALSE)
+  lim <- qnorm((1 - level)/2, lower.tail = FALSE)
   CI <- matrix(rep(NA, 4), 2)
   dimnames(CI) <- list(c("", ""), c("Lower", "Upper"))
 

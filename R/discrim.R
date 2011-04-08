@@ -27,7 +27,7 @@ AnotA <-
   se <- b[2,2]
   vcov <- as.matrix(se^2) # variance-covariance
 ### FIXME: Do not use Fishers exact test here!
-  p.value <- fisher.test(xt, alternativ="greater")$p.value
+  p.value <- fisher.test(xt, alternative="greater")$p.value
   ## Naming:
   names(vcov) <- names(se) <- names(coef) <- "d-prime"
   fit <- list(coefficients = coef, res.glm = res, vcov = vcov, se = se,
@@ -64,11 +64,11 @@ normalPwr <-
   sigmaA <- sqrt(pcA*(1 - pcA)/sample.size)
   if(test == "difference") {
     lambda <- (qnorm(1 - alpha) * sigma0 + pc0 - pcA) / sigmaA
-    pwr <- pnorm(lambda, lower = FALSE)
+    pwr <- pnorm(lambda, lower.tail = FALSE)
   }
   else if(test == "similarity") {
     lambda <- (qnorm(alpha) * sigma0 + pc0 - pcA) / sigmaA
-    pwr <- pnorm(lambda, lower = TRUE)
+    pwr <- pnorm(lambda, lower.tail = TRUE)
   }
   else
     stop("'test' not recognized")
@@ -108,11 +108,11 @@ discrimPwr <-
   xcr <- findcr(ss, alpha, pGuess, test = test, pd0)
   ## compute power of the test from critical value:
   if(test == "difference") {
-    xcr <- delimit(xcr, low = 1, up = ss + 1)
+    xcr <- delimit(xcr, lower = 1, upper = ss + 1)
     power <- 1 - pbinom(q = xcr - 1, size = ss, prob = pc)
   }
   else if(test == "similarity") {
-    xcr <- delimit(xcr, low = 0, up = ss)
+    xcr <- delimit(xcr, lower = 0, upper = ss)
     power <- pbinom(q = xcr, size = ss, prob = pc)
   }
   else ## should never happen
@@ -321,13 +321,13 @@ discrim <-
     Stat <- sign(table[1,1] - pc0) *
       sqrt(2 * (logLikMax - logLikNull))
     p.value <-
-      if(test == "difference") pnorm(Stat, lower = FALSE)
+      if(test == "difference") pnorm(Stat, lower.tail = FALSE)
       else pnorm(Stat)
   }
   if(stat == "Wald") {
     Stat <- (pc.hat - pc0) / sqrt(pc.hat*(1 - pc.hat)/n)
     p.value <-
-      if(test == "difference") pnorm(Stat, lower = FALSE)
+      if(test == "difference") pnorm(Stat, lower.tail = FALSE)
       else pnorm(Stat)
     a <- (1 - conf.level)/2
     ci <- mu + se.mu * qnorm(c(a, 1 - a))
@@ -836,11 +836,11 @@ plotProf <-
 ##   xcr <- findcr(ss, alpha, Pguess, test = test, pd0)
 ##   ## compute power of the test from critical value:
 ##   if(test == "difference") {
-##     xcr <- delimit(xcr, low = 1, up = ss + 1)
+##     xcr <- delimit(xcr, lower = 1, upper = ss + 1)
 ##     power <- 1 - pbinom(q = xcr - 1, size = ss, prob = pc)
 ##   }
 ##   else if(test == "similarity") {
-##     xcr <- delimit(xcr, low = 0, up = ss)
+##     xcr <- delimit(xcr, lower = 0, upper = ss)
 ##     power <- pbinom(q = xcr, size = ss, prob = pc)
 ##   }
 ##   else ## should never happen

@@ -73,13 +73,13 @@
 \bibliographystyle{chicago}
 \maketitle
 
-\SweaveOpts{echo=t, results=verb, strip.white=t, width=4.5, height=4.5}
+\SweaveOpts{echo=TRUE, results=verb, width=4.5, height=4.5}
 \SweaveOpts{prefix.string=figs}
 \setkeys{Gin}{width=.7\textwidth}
 \fvset{listparameters={\setlength{\topsep}{0pt}}, gobble=0, fontsize=\small}
 
 
-<<Initialize, echo=f, results=hide>>=
+<<Initialize, echo=FALSE, results=hide>>=
 
 RUN <- FALSE    #redo computations and write .RData files
 ## Change options:
@@ -105,7 +105,7 @@ by the authors.
 It is assumed that we have $\bm n = (2, 2, 6)$ observations in the
 three categories. We may estimate $\tau$, $d'$ and their standard
 errors with the \texttt{twoAC} function in the \textsf{sensR} package: 
-<<example1-1, echo=t, results=verb>>=
+<<example1-1, echo=TRUE, results=verb>>=
 library(sensR)
 fit <- twoAC(c(2,2,6))
 fit
@@ -128,13 +128,13 @@ discrimination significance test where the null hypothesis is ``no
 sensory difference'', i.e., $d'_0 = 0$ using the likelihood root
 statistic are 
 immediately available using the \texttt{twoAC} function:
-<<example2, echo=t, results=verb>>=
+<<example2, echo=TRUE, results=verb>>=
 twoAC(c(2, 2, 6), d.prime0 = 0, conf.level = 0.95, 
       statistic = "likelihood", alternative = "greater")
 @ 
 The relative profile likelihood and Wald approximation can be obtained
 with:
-<<example2-fig, echo=t, results=verb, fig=t, include=f>>=
+<<example2-fig, echo=TRUE, results=verb, fig=TRUE, include=FALSE>>=
 pr <- profile(fit)
 plot(pr)
 z <- pr$d.prime$d.prime
@@ -165,7 +165,7 @@ The function \texttt{twoACpwr} computes the power for the 2-AC
 protocol and a significance test of the users choice. The power
 assuming $\tau = 0.5$, $d' = 1$, the sample size is $N = 20$ for a
 two-sided preference test with $\alpha = 0.5$ is found with:
-<<power-example, echo=t, results=verb>>=
+<<power-example, echo=TRUE, results=verb>>=
 twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05, 
          alternative = "two.sided", tol = 1e-5)
 @ 
@@ -178,7 +178,7 @@ discarded and power is computed based on the remaining 137
 samples. The fraction of samples that are discarded is determined by
 the \texttt{tol} parameter. If we set this to zero, then no samples
 are discarded, however, the increase in precision is irrelevant:
-<<power-example2, echo=t, results=verb>>=
+<<power-example2, echo=TRUE, results=verb>>=
 twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05, 
          alternative = "two.sided", tol = 0)
 @ 
@@ -291,7 +291,7 @@ confint(fm2) *  sqrt(2)
 \section{Regression model for replicated 2-AC data}
 \label{sec:regr-model-repl}
 
-<<readData, echo=f, results=hide>>=
+<<readData, echo=FALSE, results=hide>>=
 ## load("C:/Users/rhbc/Documents/Phd/Papers/twoAC/HSdata.RData")
 load("HSdata.RData")
 repData <- hs.long
@@ -302,7 +302,7 @@ writing. Assume however, that data are available in the \textsf{R}
 \texttt{data.frame} \texttt{repData}. Then the cumulative probit mixed
 model where preference depends on reference and consumers
 (\texttt{cons}) are random can be fitted with:
-<<Example6-1, echo=t, results=verb>>=
+<<Example6-1, echo=TRUE, results=verb>>=
 fm3.agq <- clmm(preference ~ reference, random = cons, nAGQ = 10, 
                 data = repData, link = "probit", Hess = TRUE)
 summary(fm3.agq)
@@ -310,25 +310,25 @@ summary(fm3.agq)
 Here we asked for the accurate 10-point adaptive Gauss-Hermite
 quadrature approximation. The 2-AC estimates are available using
 the \texttt{clm2twoAC} function:
-<<Example6-2, echo=t, results=verb>>=
+<<Example6-2, echo=TRUE, results=verb>>=
 clm2twoAC(fm3.agq)
 @ 
 The standard deviation of the consumer-specific $d'$s is given by: 
-<<example6-3, echo=t, results=verb>>=
+<<example6-3, echo=TRUE, results=verb>>=
 fm3.agq$stDev * sqrt(2)
 @ 
 The profile likelihood curve can be obtained using the
 profile method:
-<<example6-4, echo=t, results=hide, eval=f>>=
+<<example6-4, echo=TRUE, results=hide, eval=FALSE>>=
 pr <- profile(fm3.agq, range = c(.7, 1.8))
 ## save(pr, file = "profileSigma.RData")
 @ 
-<<example6-4b, echo=f, results=hide>>=
+<<example6-4b, echo=FALSE, results=hide>>=
 ## load("C:/Users/rhbc/Documents/Phd/Papers/twoAC/profileSigma.RData")
 load("profileSigma.RData")
 @ 
 And then plottet using: 
-<<example6-4-fig, echo=t, fig=t, include=f>>=
+<<example6-4-fig, echo=TRUE, fig=TRUE, include=FALSE>>=
 plpr <- plot(pr, fig = FALSE)
 plot(sqrt(2) * plpr$stDev$x, plpr$stDev$y, type = "l", 
      xlab = expression(sigma[d]),
@@ -341,7 +341,7 @@ text(2.4, .06, "99% limit")
 @ 
 The resulting figure is shown in Figure~\ref{fig:ProfileSigma}. The
 profile likelihood confidence intervals are obtained using:
-<<example6-5, echo=t, results=verb>>=
+<<example6-5, echo=TRUE, results=verb>>=
 confint(pr, level = 0.95) * sqrt(2)
 @ 
 
@@ -356,7 +356,7 @@ confint(pr, level = 0.95) * sqrt(2)
 The probabilities that consumers prefer yoghurt A, have no preference
 or prefer yoghurt B can, for an average consumer be obtained by
 predicting from the CLMM:
-<<example6-6, echo=t, results=verb>>=
+<<example6-6, echo=TRUE, results=verb>>=
 newdat <- expand.grid(preference = factor(c("A", "N", "B"), 
                         levels = c("A", "N", "B"), ordered = TRUE),
                       reference = factor(c("A", "B")))
@@ -365,7 +365,7 @@ pred <- predict(fm3.agq, newdata = newdat)
 The predictions for the extreme consumers have to be obtained by
 hand. Here we ask for the predictions for the 5th percentile and 95th
 percentile of the consumer population for reference A and B:
-<<example6-7, echo=t, results=verb>>=
+<<example6-7, echo=TRUE, results=verb>>=
 q95.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(1-.05) * 
                             fm3.agq$stDev), 1))
 q05.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(.05) * 
@@ -376,7 +376,7 @@ q05.refB <- diff(c(0, pnorm(fm3.agq$Theta - fm3.agq$beta -
                             qnorm(.05) * fm3.agq$stDev), 1))
 @ 
 Plotting follows the standard methods:
-<<example6-8, echo=t, fig=t, include=f, height=1.6>>=
+<<example6-8, echo=TRUE, fig=TRUE, include=FALSE, height=1.6>>=
 par(mar = c(0, 2, 0, .5) + 0.5)
 plot(1:3, pred[1:3], ylim = c(0, 1), axes = FALSE,
      xlab = "", ylab = "", pch = 19) ## ref A
@@ -389,7 +389,7 @@ text(2, 0.6, "Average consumer")
 legend("topright", c("Reference A", "Reference B"),
        lty = 1:2, pch = c(19, 1), bty = "n")
 @ 
-<<example6-9, echo=t, fig=t, include=f, height=1.6>>=
+<<example6-9, echo=TRUE, fig=TRUE, include=FALSE, height=1.6>>=
 par(mar = c(0, 2, 0, .5) + 0.5)
 plot(1:3, q05.refA, ylim = c(0, 1), axes = FALSE,
      xlab = "", ylab = "", pch = 19) ## ref A
@@ -401,7 +401,7 @@ lines(1:3, q05.refA) ## ref A
 lines(1:3, q05.refB, lty = 2) ## ref B
 text(2, 0.6, "5th percentile consumer")
 @
-<<example6-10, echo=t, fig=t, include=f, height=2>>=
+<<example6-10, echo=TRUE, fig=TRUE, include=FALSE, height=2>>=
 par(mar = c(2, 2, 0, .5) + 0.5)
 plot(1:3, q95.refA, ylim = c(0, 1), axes = FALSE,
      xlab = "", ylab = "", pch = 19) ## ref A

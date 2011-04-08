@@ -96,7 +96,7 @@ beta-binomial models.
 \tableofcontents
 \newpage
 
-\SweaveOpts{echo=f, results=hide, strip.white=t, width=4.5, height=4.5}
+\SweaveOpts{echo=FALSE, results=hide, width=4.5, height=4.5}
 \SweaveOpts{prefix.string=figs}
 \fvset{listparameters={\setlength{\topsep}{0pt}}, gobble=0, fontsize=\small}
 %% \fvset{gobble=0, fontsize=\small}
@@ -106,8 +106,6 @@ beta-binomial models.
 
 ## Load common packages, functions and set settings:
 library(sensR)
-## library(ordinal)
-## library(xtable)
 ## 
 RUN <- FALSE    #redo computations and write .RData files
 ## Change options:
@@ -353,7 +351,7 @@ gd4 <- psyderiv(dPrime, method = "triangle")
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
   \centering
-<<psyFunsFig, fig = t, width=5, height=5>>=
+<<psyFunsFig, fig=TRUE, width=5, height=5>>=
 
 plot(c(0, 6), c(.3, 1), type = "n", xlab = "d-prime", 
      ylab = "P(correct answer)", axes = FALSE)
@@ -367,7 +365,7 @@ legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
                         "triangle"), lty = 1:4, bty = "n")
 
 @  
-<<psyFunsFig_dprimePd, fig = t, width=5, height=5>>=
+<<psyFunsFig_dprimePd, fig=TRUE, width=5, height=5>>=
 
 plot(c(0, 6), c(0, 1), type = "n", xlab = "d-prime", 
      ylab = "P(discrimination)", axes = FALSE)
@@ -381,7 +379,7 @@ legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
                         "triangle"), lty = 1:4, bty = "n")
 
 @ 
-<<psyFunsFig_PcPd, fig = t, width=5, height=5>>=
+<<psyFunsFig_PcPd, fig=TRUE, width=5, height=5>>=
 
 plot(c(0.3, 1), c(0, 1), type = "n", 
      ylab = "P(correct answer)", 
@@ -392,7 +390,7 @@ legend("topleft", legend = c("3-AFC and triangle", "2-AFC and duo-trio"),
        lty = 1:2, bty = "n")
 
 @ 
-<<psyFunFig_psyDeriv, fig = t, width = 5, height = 5>>=
+<<psyFunFig_psyDeriv, fig=TRUE, width=5, height=5>>=
 
 plot(c(0, 6), c(0, .31), type = "n", axes = FALSE,
      xlab = "d-prime",
@@ -484,7 +482,7 @@ given in the results. The results respect the allowed ranges of the
 parameters in eq.~\eqref{eq:29}, so if the supplied $p_c$ is less than
 $p_g$, then $p_c = p_g$ is returned with $p_d$ and $d'$ at the
 appropriate levels:
-<<rescaleExample, results = verbatim, echo = t>>=
+<<rescaleExample, results=verbatim, echo=TRUE>>=
 rescale(pc = 0.25, method = "triangle")
 @ 
 
@@ -880,7 +878,7 @@ done through application of eq.~\eqref{eq:9} and \eqref{eq:10} and by
 using the user visible function \texttt{psyderiv}, which implements
 the derivative of the psychometric functions, $f_{ps}'(d')$ for the
 four common discrimination protocols:
-<<rescaleExample2, results = verbatim, echo = t>>=
+<<rescaleExample2, results=verbatim, echo=TRUE>>=
 rescale(pd = 0.2, std.err = 0.12, method = "triangle")
 @ 
 
@@ -923,7 +921,7 @@ and $d'$, their standard error and 95\% confidence intervals. We are
 also interested in the difference test of no difference and decide to
 use the likelihood root statistic for confidence intervals and tests. 
 Using the \texttt{discrim} function in \textsf{R} we obtain:
-<<discrimExample1, results = verb, echo = t>>=
+<<discrimExample1, results=verb, echo=TRUE>>=
 discrim(10, 15, method = "threeAFC", statistic = "likelihood")
 @ 
 
@@ -931,7 +929,7 @@ If instead we had observed 4 correct answers in 15 trials and were
 interested in the similarity test with $p_{d0} = 1/5$ under the null
 hypothesis, we get using the 'exact' binomial criterion for confidence
 intervals and tests:
-<<discrimExample2, results = verb, echo = t>>=
+<<discrimExample2, results=verb, echo=TRUE>>=
 discrim(4, 15, method = "threeAFC", test = "similarity", pd0 = 0.2, 
         statistic = "exact")
 @ 
@@ -946,7 +944,7 @@ likelihood function.
 
 To illustrate the auxiliary methods consider the 3-AFC example above
 where 10 correct answer were observed in 15 trials.
-<<discrimExample3, results = verb, echo = t, fig = t, include = f>>=
+<<discrimExample3, results=verb, echo=TRUE, fig=TRUE, include=FALSE>>=
 fm1 <- discrim(10, 15, method = "threeAFC", statistic = "exact")
 confint(fm1)
 plot(profile(fm1))
@@ -962,7 +960,7 @@ curves in sensory experiments is given in \citep{brockhoff10,
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
   \centering
-<<discrimExample3Fig, fig = t, include = t>>=
+<<discrimExample3Fig, fig=TRUE, include=TRUE>>=
 <<discrimExample3>>
 @ 
   \caption{Relative likelihood function for a 3-AFC experiment with 10
@@ -1057,13 +1055,13 @@ $\alpha = 5\%$ significance level because $x_c = 15$ is the smallest
 number of correct answers that renders the test significant. 
 
 In \textsf{R} we can find the $p$-values with
-<<criticalValueExample1, results = verb, echo = t>>=
+<<criticalValueExample1, results=verb, echo=TRUE>>=
 1 - pbinom(q = 15 - 1, size = 20, prob = 0.5)
 1 - pbinom(q = 14 - 1, size = 20, prob = 0.5)
 @ 
 
 The while loop looks like
-<<criticalValueExample2, results = verb, echo = t>>=
+<<criticalValueExample2, results=verb, echo=TRUE>>=
 i <- 0
 while (1 - pbinom(q = i, size = 20, prob = 0.5) > 0.05) 
   {
@@ -1074,7 +1072,7 @@ i + 1
 
 while we could also use the \texttt{findcr} function in package
 \textsf{sensR}: 
-<<criticalValueExample3, results = verb, echo = t>>=
+<<criticalValueExample3, results=verb, echo=TRUE>>=
 findcr(sample.size = 20, alpha = 0.05, p0 = 0.5)
 @ 
 
@@ -1116,12 +1114,12 @@ $p_c = 1/2 + 1/2 p_d = 3/4$. The power is the probability of observing
   \quad \textup{where} \quad X \sim \textup{binom}(3/4, 20)
 \end{equation}
 This can be obtained in \textsf{R} with
-<<differencePowerExample1, results = verb, echo = t>>=
+<<differencePowerExample1, results=verb, echo=TRUE>>=
 1 - pbinom(q = 15 - 1, size = 20, prob = 3/4)
 @ 
 or directly using the \texttt{discrimPwr} function from
 \textsf{sensR}: 
-<<differencePowerExample2, results = verb, echo = t>>=
+<<differencePowerExample2, results=verb, echo=TRUE>>=
 discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05, 
            pGuess = 1/2)
 @ 
@@ -1154,7 +1152,7 @@ is
   \textup{binom}(p_{cA} = 3/4, n = 20) 
 \end{equation}
 In \textsf{R} we could get the power of this test with
-<<differencePowerExample3, results = verb, echo = t>>=
+<<differencePowerExample3, results=verb, echo=TRUE>>=
 discrimPwr(pdA = 0.5, pd0 = 0.1, sample.size = 20, alpha = 0.05,  
            pGuess = 1/2)
 @ 
@@ -1195,7 +1193,7 @@ therefore
   \textup{power} = P(X \leq 58 | p_c = 0.5, n = 100) = 0.956
 \end{equation}
 We would compute this power in \textsf{R} with
-<<similarityPowerExample1, results = verb, echo = t>>=
+<<similarityPowerExample1, results=verb, echo=TRUE>>=
 discrimPwr(pdA = 0, pd0 = 1/3, sample.size = 100, alpha = 0.05,  
            pGuess = 1/2, test = "similarity")
 @ 
@@ -1207,7 +1205,7 @@ then the power is (the critical value remains the same):
   \textup{power} = P(X \leq 58 | p_c = 0.5(1 + 1/5), n = 100) = 0.377
 \end{equation}
 We would compute this power in \textsf{R} with
-<<similarityPowerExample1, results = verb, echo = t>>=
+<<similarityPowerExample1, results=verb, echo=TRUE>>=
 discrimPwr(pdA = 1/5, pd0 = 1/3, sample.size = 100, alpha = 0.05, 
            pGuess = 1/2, test = "similarity")
 @ 
@@ -1455,7 +1453,7 @@ pwrN <- sapply(ss, function(x)
 \setkeys{Gin}{width=.6\textwidth}
 \begin{figure}
   \centering
-<<sampleSizeFigurePlot, fig = t>>=
+<<sampleSizeFigurePlot, fig=TRUE>>=
 
 plot(range(ss), c(0.74, max(pwrN)), type = "n", xlab = "sample size",
      ylab = "power", axes = FALSE)
@@ -1491,7 +1489,7 @@ cf. Fig.~\ref{fig:xcrAlpha}.
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
   \centering
-<<xcrFig, fig = t, height = 3.5, width = 5.5>>=
+<<xcrFig, fig=TRUE, height=3.5, width=5.5>>=
 xcr <- sapply(ss, function(ss) findcr(ss, p0 = 1/3))
 plot(ss, xcr, type = "l", axes = FALSE,
      ylab = "Critical value", xlab = "Sample size")
@@ -1499,7 +1497,7 @@ points(ss, xcr, pch = 20)
 axis(1); axis(2)
 
 @ 
-<<alphaFig, fig = t, height = 3.5, width = 5.5>>=
+<<alphaFig, fig=TRUE, height=3.5, width=5.5>>=
 aa <- sapply(ss, function(n)
              1 - pbinom(findcr(n, p0 = 1/3) - 1, n, 1/3))
 plot(ss, aa, pch = 20, ylim = c(0.03, .05), axes = FALSE,
@@ -1561,13 +1559,13 @@ using the triangle protocol. We want a power of 0.80, take $\alpha =
 actual difference is $d' = 0.9$ under the alternative
 hypothesis. Using package \textsf{sensR} we may get the sample size
 for the exact binomial test with
-<<exactSSexample, results = verb, echo = t>>=
+<<exactSSexample, results=verb, echo=TRUE>>=
 (pd <- coef(rescale(d.prime = .9, method = "triangle"))$pd)
 discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
           = 1/3, test = "difference", statistic = "exact")
 @ 
 We could also obtain the normal approximation with 
-<<normalSSexample, results = verb, echo = t>>=
+<<normalSSexample, results=verb, echo=TRUE>>=
 discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
           = 1/3, test = "difference", statistic = "normal")
 @ 
@@ -1826,7 +1824,7 @@ least as good as them.
 \end{document}
 
 
-<<eval=f>>=
+<<eval=FALSE>>=
 
 
 
