@@ -415,13 +415,12 @@ twoACpwr <-
   ## pvals <- apply(Y[keep, ], 1, function(x) LRtest.2AC(x)[2]) 
 
   ## Compute the cumulative distribution of p-values:
-  df <- data.frame(dmult, pvals)
+  df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
   df <- df[order(pvals),]
   dist <- cumsum(df[,1])
   pvals <- df[,2]
   if(return.dist)
-    return(data.frame(p.value = pvals, dist = dist, dens = dmult,
-                      Y = Y[keep, ]))
+    return(structure(data.frame(dist=dist, df), row.names=1:nrow(df)))
   if(any(pvals <= alpha)) {
     power <- max(dist[pvals <= alpha])
     actual.alpha <- max(pvals[pvals <= alpha])
@@ -500,7 +499,7 @@ LRtest.2AC <-
       nll0 <- optimize(nll.2AC, c(0, 10), d.prime = d.prime0,
                        data = data[i, ])$objective
       prob <- data[i, ] / sum(data[i, ])
-    prob[prob <= 0] <- 1 ## to evaluate log safely
+      prob[prob <= 0] <- 1 ## to evaluate log safely
       llMax <- sum(data[i, ] * log(prob))
       sqrt(2 * (llMax + nll0)) ## lroot statistic
     })
@@ -525,11 +524,66 @@ LRtest.2AC <-
   return(cbind(p.value = p.value, lroot = lroot))
 }
 
+pearsonPwr <-
+  function(tau, d.prime, size, tol=1e-5, return.dist=FALSE, alpha=0.05)
+### In this function d.prime0, (i.e., d.prime under the null
+### hypothesis) is fixed at zero
+{  
+  ## All possible samples:
+  n <- as.integer(size)
+  Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
+
+  ## Get pi-vector from tau and d.prime:
+  p1 <- pnorm(-tau, d.prime, sqrt(2))
+  p2 <- pnorm(tau, d.prime, sqrt(2)) - p1
+  p3 <- 1 - p1 - p2
+  pvec <- c(p1, p2, p3)
+ 
+  ## Distribution of samples and p-values:
+  dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
+  sdmult <- sort(dmult)
+  no.discard <- sum(cumsum(sdmult) < tol) ## no. obs to discard
+  keep <- dmult > sdmult[no.discard] # obs. to keep indicator
+  if(no.discard == 0) keep <- rep(TRUE, length(dmult))
+  dmult <- dmult[keep]
+  
+  pvals <- apply(Y[keep, ], 1, Pears)
+  pvals[is.na(pvals)] <- 1
+  
+  df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
+  df <- df[order(pvals),]
+  dist <- cumsum(df[,1])
+  pvals <- df[,2]
+  if(return.dist)
+    return(structure(data.frame(dist=dist, df), row.names=1:nrow(df)))
+  if(any(pvals <= alpha)) {
+    power <- max(dist[pvals <= alpha])
+    actual.alpha <- max(pvals[pvals <= alpha])
+  }
+  else {
+    power <- 0
+    actual.alpha <- 0
+  } 
+  return(data.frame("power" = power, "actual.alpha" = actual.alpha,
+                    "samples" = nrow(Y), "discarded" = no.discard,
+                    "kept" = nrow(Y) - no.discard,
+                    "p" = round(matrix(pvec, nrow = 1), 4)))
+}
+
+Pears <- function(x) {
+  y <- (x[1] + x[3])/2
+  X <- sum((x[-2] - y)^2 / y)
+  pchisq(X, df=1, lower.tail=FALSE)
+}
+
 clm2twoAC <- function(object, ...) {
-  stopifnot("clm" %in% class(object) ||
-            "clmm" %in% class(object))
+  if(inherits(object, c("clm", "clmm")))
+    theta <- object$alpha
+  else if(inherits(object, c("clm2", "clmm2")))
+    theta <- object$Theta
+  else
+    stop("'object' not of appropriate class")
   tab <- coef(summary(object))
-  theta <- object$Theta
   stopifnot(length(theta) == 2)
   mat <- array(NA, dim = c(2, 4))
   rownames(mat) <- c("tau", "d-prime")
@@ -555,6 +609,60 @@ clm2twoAC <- function(object, ...) {
   mat <- as.data.frame(mat)
   mat[,4] <- format.pval(mat[,4])
   return(mat)
+}
+
+exact.2AC <-
+  function(x, d.prime0=0, tau0=NULL, tol=1e-5,
+           alternative = c("two.sided", "less", "greater"), ...)
+{
+  alternative <- match.arg(alternative)
+  coefs <- coef(sensR:::estimate.2AC(x, vcov=FALSE))[,1]
+  dHat <- coefs[2] 
+  n <- as.integer(sum(x))
+  Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
+
+  ## get pvec under the null hypothesis:
+  if(is.null(tau0)) ## tau0 <- coefs[1]
+    tau0 <- optimize(sensR:::nll.2AC, interval=c(0, 10),
+                     d.prime=d.prime0, data=x)$minimum
+  
+  ## Get pi-vector from tau and d.prime:  
+  p1 <- pnorm(-tau0, d.prime0, sqrt(2))
+  p2 <- pnorm(tau0, d.prime0, sqrt(2)) - p1
+  p3 <- 1 - p1 - p2
+  pvec <- c(p1, p2, p3)
+  
+  ## Distribution of samples under the null:
+  dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
+  
+  ## Discard tail of distribution - keep only those obs with large
+  ## enough probability mass to avoid computing d.prime for samples
+  ## that never occur anyway:
+  sdmult <- sort(dmult)
+  no.discard <- sum(cumsum(sdmult) < tol) ## no. obs to discard
+  keep <- dmult > sdmult[no.discard] # obs. to keep indicator
+  if(no.discard == 0) keep <- rep(TRUE, length(dmult))
+  dmult <- dmult[keep]
+
+  ## d.primes for each possible outcome:
+  d.primes <- apply(Y[keep, ], 1, function(x)
+                    coef(sensR:::estimate.2AC(x, vcov=FALSE))[2,1] )
+  df <- data.frame(dens=dmult, d.prime=d.primes)
+  df <- df[!is.na(d.primes),]
+  
+  p.value <-
+    switch(alternative,
+           "greater" = with(df, sum(dens[d.prime >= dHat])),
+           "less" = with(df, sum(dens[d.prime <= dHat])),
+           "two.sided" = with(df,
+             sum(dens[d.prime <= -dHat | d.prime >= dHat])))
+### FIXME: should be abs(dHat) here?
+  res <-
+    data.frame("p.value"=p.value, "d.prime0"=d.prime0,
+               "tau0"=tau0, "d.prime.hat"=dHat, "samples"=nrow(Y),
+               "discarded" = no.discard, "kept"=nrow(Y) - no.discard)
+  row.names(res) <- ""
+  res
 }
 
 

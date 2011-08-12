@@ -197,7 +197,7 @@ response variable \texttt{resp} and fitting a cumulative link model
 weights equal to the observed counts and a probit 
 link. Standard output contains the following coefficient table:
 <<example2-1>>=
-library(ordinal)
+## library(ordinal)
 response <- gl(3,1)
 fit.clm <- clm(response ~ 1, weights = c(2, 2, 6), link = "probit")
 (tab <- coef(summary(fit.clm)))
@@ -260,7 +260,7 @@ fm2 <- clm(response ~ gender, weights = wt, link = "probit")
 The estimate of $\tau$ (assumed constant between genders) and the
 gender specific estimates of $d'$ can be extracted by:
 <<example3-2>>=
-theta <- fm2$Theta
+theta <- fm2$alpha
 (tau <- (theta[2] - theta[1])/sqrt(2))
 (d.women <- (-theta[2] - theta[1])/sqrt(2))
 (d.men <- d.women + fm2$beta * sqrt(2))
@@ -277,7 +277,8 @@ The Wald test for gender differences is directly available from the
 coefficient table with $p = 0.0657$. The corresponding likelihood
 ratio test can be obtained by:
 <<example3-3>>=
-anova(fm2, update(fm2,location = ~.-gender))
+fm3 <- update(fm2,~.-gender)
+anova(fm2, fm3)
 @ 
 which is slightly closer to significance.
 The 95\% profile likelihood confidence interval for the difference
@@ -288,11 +289,32 @@ confint(fm2) *  sqrt(2)
 ## plot(pr, n=1e3)
 @ 
 
+The likelihood ratio test for the assumption of constant $\tau$ is
+computed in the following. 
+The likelihood ratio statistic and associated $p$-value are
+<<example3-5>>=
+logLik(fm2)
+tw <- twoAC(n.women)
+tm <- twoAC(n.men)
+(LR <- 2*(tw$logLik + tm$logLik - fm2$logLik))
+pchisq(LR, 1, lower.tail=FALSE)
+@ 
+
+The Pearson $X^2$ test of the same hypothesis is given by
+<<example3-7>>=
+freq <- matrix(fitted(fm2), nrow=2, byrow=TRUE) * 100
+Obs <- matrix(wt, nrow=2, byrow=TRUE)
+(X2 <- sum((Obs - freq)^2 / freq))
+pchisq(X2, df=1, lower.tail=FALSE)
+@ 
+so the Pearson and likelihood ratio tests are very closely equivalent
+as it is so often the case.
+
 \section{Regression model for replicated 2-AC data}
 \label{sec:regr-model-repl}
 
 <<readData, echo=FALSE, results=hide>>=
-## load("C:/Users/rhbc/Documents/Phd/Papers/twoAC/HSdata.RData")
+## load("C:/Users/rhbc/Documents/Rpackages/sensR/pkg/inst/doc/HSdata.RData")
 load("HSdata.RData")
 repData <- hs.long
 @ 
@@ -303,7 +325,7 @@ writing. Assume however, that data are available in the \textsf{R}
 model where preference depends on reference and consumers
 (\texttt{cons}) are random can be fitted with:
 <<Example6-1, echo=TRUE, results=verb>>=
-fm3.agq <- clmm(preference ~ reference, random = cons, nAGQ = 10, 
+fm3.agq <- clmm2(preference ~ reference, random = cons, nAGQ = 10, 
                 data = repData, link = "probit", Hess = TRUE)
 summary(fm3.agq)
 @ 
@@ -324,14 +346,14 @@ pr <- profile(fm3.agq, range = c(.7, 1.8))
 ## save(pr, file = "profileSigma.RData")
 @ 
 <<example6-4b, echo=FALSE, results=hide>>=
-## load("C:/Users/rhbc/Documents/Phd/Papers/twoAC/profileSigma.RData")
+## load("C:/Users/rhbc/Documents/Rpackages/sensR/pkg/inst/doc/profileSigma.RData")
 load("profileSigma.RData")
 @ 
 And then plottet using: 
 <<example6-4-fig, echo=TRUE, fig=TRUE, include=FALSE>>=
 plpr <- plot(pr, fig = FALSE)
 plot(sqrt(2) * plpr$stDev$x, plpr$stDev$y, type = "l", 
-     xlab = expression(sigma[d]),
+     xlab = expression(sigma[delta]),
      ylab = "Relative profile likelihood", xlim = c(1, 2.5),
      axes = FALSE)
 axis(1); axis(2, las = 1)
@@ -348,7 +370,7 @@ confint(pr, level = 0.95) * sqrt(2)
 \begin{figure}
   \centering
   \includegraphics[width = 0.5\textwidth]{figs-example6-4-fig}
-  \caption{Profile likelihood for $\sigma_{d'}$ Horizontal lines
+  \caption{Profile likelihood for $\sigma_{\delta}$ Horizontal lines
     indicate 95\% and 99\% confidence limits.}
   \label{fig:ProfileSigma}
 \end{figure}

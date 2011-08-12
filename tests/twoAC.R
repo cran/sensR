@@ -70,3 +70,15 @@ confint(pr5)
 pr6 <- profile(fit6, range = c(-3, 3))
 plot(pr6)
 confint(pr6)
+
+#################################
+## testing clm2twoAC:
+
+response <- gl(3,1)
+fit.clm <- clm(response ~ 1, weights = c(2, 2, 6), link = "probit")
+fit.clm2 <- clm2(response ~ 1, weights = c(2, 2, 6), link = "probit")
+
+clm2twoAC(fit.clm)
+clm2twoAC(fit.clm2)
+
+
