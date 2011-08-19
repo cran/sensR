@@ -525,10 +525,13 @@ LRtest.2AC <-
 }
 
 pearsonPwr <-
-  function(tau, d.prime, size, tol=1e-5, return.dist=FALSE, alpha=0.05)
+  function(tau, d.prime, size, tol=1e-5, return.dist=FALSE, alpha=0.05,
+           alternative = c("two.sided", "less", "greater"))
+
 ### In this function d.prime0, (i.e., d.prime under the null
 ### hypothesis) is fixed at zero
-{  
+{
+  alternative <- match.arg(alternative)
   ## All possible samples:
   n <- as.integer(size)
   Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
@@ -547,8 +550,9 @@ pearsonPwr <-
   if(no.discard == 0) keep <- rep(TRUE, length(dmult))
   dmult <- dmult[keep]
   
-  pvals <- apply(Y[keep, ], 1, Pears)
-  pvals[is.na(pvals)] <- 1
+  ## pvals <- apply(Y[keep, ], 1, Pears)
+  ## pvals[is.na(pvals)] <- 1
+  pvals <- apply(Y[keep, ], 1, function(x) Potter(x, alternative=alternative)) 
   
   df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
   df <- df[order(pvals),]
@@ -574,6 +578,72 @@ Pears <- function(x) {
   y <- (x[1] + x[3])/2
   X <- sum((x[-2] - y)^2 / y)
   pchisq(X, df=1, lower.tail=FALSE)
+}
+
+Potter <- function(x, alternative) {
+  n <- sum(x[c(1,3)])
+  if(n == 0) return(1)
+  X <- (x[1] - x[3]) / sqrt(n)
+  p.value <-
+    switch(alternative,
+           "greater" = pnorm(X, lower.tail = FALSE),
+           "less" = pnorm(X, lower.tail = TRUE),
+           "two.sided" = 2 * pnorm(abs(X), lower.tail = FALSE))
+  p.value
+}
+
+
+binPwr <-
+  function(tau, d.prime, size, tol=1e-5, return.dist=FALSE, alpha=0.05,
+           alternative = c("two.sided", "less", "greater"))
+### In this function d.prime0, (i.e., d.prime under the null
+### hypothesis) is fixed at zero
+{
+  alternative <- match.arg(alternative)
+  ## All possible samples:
+  n <- as.integer(size)
+  Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
+
+  ## Get pi-vector from tau and d.prime:
+  p1 <- pnorm(-tau, d.prime, sqrt(2))
+  p2 <- pnorm(tau, d.prime, sqrt(2)) - p1
+  p3 <- 1 - p1 - p2
+  pvec <- c(p1, p2, p3)
+ 
+  ## Distribution of samples and p-values:
+  dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
+  sdmult <- sort(dmult)
+  no.discard <- sum(cumsum(sdmult) < tol) ## no. obs to discard
+  keep <- dmult > sdmult[no.discard] # obs. to keep indicator
+  if(no.discard == 0) keep <- rep(TRUE, length(dmult))
+  dmult <- dmult[keep]
+  
+  pvals <- apply(Y[keep, ], 1, function(x) binExact(x, alternative=alternative))
+  pvals[is.na(pvals)] <- 1
+  
+  df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
+  df <- df[order(pvals),]
+  dist <- cumsum(df[,1])
+  pvals <- df[,2]
+  if(return.dist)
+    return(structure(data.frame(dist=dist, df), row.names=1:nrow(df)))
+  if(any(pvals <= alpha)) {
+    power <- max(dist[pvals <= alpha])
+    actual.alpha <- max(pvals[pvals <= alpha])
+  }
+  else {
+    power <- 0
+    actual.alpha <- 0
+  } 
+  return(data.frame("power" = power, "actual.alpha" = actual.alpha,
+                    "samples" = nrow(Y), "discarded" = no.discard,
+                    "kept" = nrow(Y) - no.discard,
+                    "p" = round(matrix(pvec, nrow = 1), 4)))
+}
+
+binExact <- function(x, alternative) {
+  n <- x[1] + x[3]
+  ifelse(n == 0, 1, binom.test(x[1], x[1]+x[3], alternative=alternative)$p.value)
 }
 
 clm2twoAC <- function(object, ...) {

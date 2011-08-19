@@ -11,8 +11,11 @@
   operating characteristic). 
 }
 \usage{
-\method{AUC}{default}(d, scale = 1, se.d, CI.alpha = 0.05, ...)
+
+\method{AUC}{default}(d, se.d, scale = 1, CI.alpha = 0.05, ...)
+
 \method{AUC}{anota}(d, CI.alpha = 0.05, ...)
+
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -65,7 +68,7 @@
 for(i in 1:5) print(AUC(d.primes[i]))
 ## Provide standard error of d-prime and compute CI:
 fm1 <- AnotA(8, 25, 1, 25)
-AUC(fm1$coef, , fm1$se)
+AUC(fm1$coef, fm1$se)
 AUC(fm1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

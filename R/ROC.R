@@ -85,7 +85,7 @@ AUC <- function(d, ...) {
   UseMethod("AUC")
 }
 
-AUC.default <- function(d, scale = 1, se.d, CI.alpha = .05, ...) {
+AUC.default <- function(d, se.d, scale = 1, CI.alpha = .05, ...) {
   int.fun <- function(u, d, scale) pnorm( (qnorm(u) + d)/scale)
   m <- match.call(expand.dots=FALSE)
   m[[1]] <- as.name("list")
