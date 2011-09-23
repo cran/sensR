@@ -514,7 +514,7 @@ plot.discrim <-
 {
   z <- seq(-5, 5, length.out = length)
   y <- dnorm(z)
-  y2 <- dnorm(z, mean = coefficients(x)[1, 3])
+  y2 <- dnorm(z, mean = coef(x)[3, 1])
   main.txt <- ifelse(main,
                      paste("Distribution of sensory intensity for the",
                            x$method, "test"), c("") )

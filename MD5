@@ -1,10 +1,10 @@
-369f2c55f5133e55053a80577a44e698 *DESCRIPTION
+897fed09ae065322e67f333f3a2a9f0b *DESCRIPTION
 73840d30f2cd23b8894db835fb5de6fc *NAMESPACE
-4c7e8347edab190949b1b941eb4437a8 *NEWS
+d6b4299fb2add2b4ca4c31ab6dcb9da0 *NEWS
 5cfc76d78163b1070515f2a48ad6eccb *R/ROC.R
 0ea9be0288667855ae50a8d5faebd8d2 *R/betaBin.R
 e3654f482953197473929f82c5abaf1f *R/clls.R
-f23b55a0c2bf54f2a73b86aefc921dfa *R/discrim.R
+dac59dbee9fab307f3e42e6d6b11a2f4 *R/discrim.R
 8aeee12edaa6a1782a0e9e60f0103666 *R/discrimR.R
 3ba3f4181faec3e8ce4709e533a236b9 *R/links.R
 72a9092f9ea45f1aa2ec9503eb2f5738 *R/samediff.R
@@ -15,11 +15,11 @@ f23b55a0c2bf54f2a73b86aefc921dfa *R/discrim.R
 a8840f67a96bd2d557e2f9f27686e4dc *inst/doc/HSdata.RData
 d2a5a139081db091f601802d64ae8ebd *inst/doc/meth.bib
 ece6208c73c96986356d3c11bb26f072 *inst/doc/methodology.Rnw
-095469cf5f029929f78e65ddee1d94f7 *inst/doc/methodology.pdf
+ca367e2580c09c14db44aa45ad1ab64f *inst/doc/methodology.pdf
 48cd9718a317e1e25fcf8266edaa463f *inst/doc/profileSigma.RData
 55ca00a85a9e0a8dd4aa14be8391bcff *inst/doc/twoAC.bib
 057d84c74ba07297ccc0f51a83205e81 *inst/doc/twoACexamples.Rnw
-b96245f92e76cbc98feac98c5c4800a1 *inst/doc/twoACexamples.pdf
+0cc827d677038fab28cc6a72ad5b45f1 *inst/doc/twoACexamples.pdf
 b62723f89c454bba8aa3083a39aa192e *man/AUC.Rd
 984b86a49eb65db8da60bddef263d3f0 *man/AnotA.Rd
 c206efe0bd675de4d9a1499c436cd6ce *man/ROC.Rd
