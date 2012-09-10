@@ -1,6 +1,7 @@
 betabin <-
   function(data, start = c(.5,.5),
-           method = c("duotrio", "threeAFC", "twoAFC", "triangle"), 
+           method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+             "triangle"),
            vcov = TRUE, corrected = TRUE, gradTol = 1e-4, ...)
 {
   m <- match.call(expand.dots = FALSE)
@@ -182,7 +183,7 @@ summary.betabin <-
 }
 
 print.summary.betabin <-
-  function(x, digits = getOption("digits"), ...)
+  function(x, digits = max(3, getOption("digits") - 3), ...)
 {
   if(x$corrected)
     cat(paste("\nChance-corrected beta-binomial model for the ", x$method,
@@ -192,15 +193,14 @@ print.summary.betabin <-
     cat(paste("\nBeta-binomial model for the ", x$method,
           " protocol\nwith ", round(100 * x$level, 3),
           " percent confidence intervals\n\n", sep = ""))
-  ## cat("\nCall: ")
-  ## cat(paste(deparse(x$call), sep = "\n", collapse = "\n"),
-  ##       "\n\n", sep = "")
-  print(x$coefficients)
-  cat("\nlog-likelihood: ", x$logLik, "\n")
-  cat("LR-test of over-dispersion, G^2:", x$LR.OD, "df:", 1,
-      "p-value:", x$p.value.OD, "\n")
-  cat("LR-test of association, G^2:", x$LR.null, "df:", 2,
-      "p-value:", x$p.value.null, "\n")
+  printCoefmat(x$coefficients, tst.ind=integer(0), cs.ind=1:4,
+               digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...) 
+  cat("\nlog-likelihood: ", round(x$logLik, digits), "\n")
+  cat("LR-test of over-dispersion, G^2:", round(x$LR.OD, digits),
+      "df:", 1, "p-value:", format.pval(x$p.value.OD, digits=digits), 
+      "\n") 
+  cat("LR-test of association, G^2:", round(x$LR.null, digits), "df:", 
+      2, "p-value:", format.pval(x$p.value.null, digits=digits), "\n") 
   invisible(x)
 }
 

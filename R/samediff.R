@@ -382,15 +382,19 @@ summary.samediff <- function(object, profile = TRUE, ...) {
 }
 
 print.summary.samediff <-
-  function(x, ..., digits = max(3, getOption("digits") - 3))
+  function(x, ..., digits = max(3, getOption("digits") - 3),
+           signif.stars = getOption("show.signif.stars"))
 {
   cat("\nCall:\n")
   cat(paste(deparse(x$call), sep = "\n", collapse = "\n"), 
       "\n\n", sep = "")
   cat("Coefficients\n")
-  print(x$table, digits = digits)
-  cat("\nLog Likelihood:", signif(x$logLik, digits),
-      "\tAIC:", signif(x$AIC, digits), "\n") 
+  printCoefmat(x$table, digits = digits,
+               signif.stars=signif.stars, tst.ind=integer(0),
+               cs.ind=1:4,
+               P.values=TRUE, has.Pvalue=TRUE,)
+  cat("\nLog Likelihood:", round(x$logLik, digits),
+      "\tAIC:", round(x$AIC, digits), "\n") 
   invisible(x)
 }
 

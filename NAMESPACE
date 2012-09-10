@@ -1,7 +1,8 @@
 
 # functions
 export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
-       discrimSim, duotrio, threeAFC, triangle, twoAFC, SDT, ROC, AUC,
+       discrimSim, duotrio, threeAFC, triangle, twoAFC, tetrad, 
+       SDT, ROC, AUC,
        samediff, findcr, betabin, samediffSim, discrimR, clls,
        samediffPwr, twoAC, rescale, psyfun, psyinv, psyderiv, pc2pd,
        pd2pc, d.primePwr, d.primeSS, twoACpwr, clm2twoAC) 

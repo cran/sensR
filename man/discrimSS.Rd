@@ -5,23 +5,23 @@
 \title{Sensory discrimination sample size calculation}
 \description{
   Computes the sample size for a difference or similarity test for a
-  sensory discrimination experiment using the binomial distribution. The
-  function returns the smallest sample size for the test that gives the
-  at least the desired target-power for the one-sided exact binomial
-  test. A normal approximation to the sample size / power may used.
+  sensory discrimination experiment using the binomial distribution. 
   \code{d.primeSS} is a convenience function that calls
   \code{discrimSS} but has arguments in terms of d-prime rather than
-  pd, the probability of discrimination.
+  pd, the expected proportion of discriminators.
 }
 \usage{
 discrimSS(pdA, pd0 = 0, target.power = 0.90, alpha = 0.05,
           pGuess = 1/2, test = c("difference", "similarity"),
-          statistic = c("exact", "normal"))
+          statistic = c("exact", "stable.exact", "both.exact",
+           "normal", "cont.normal")) 
 
 d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
-          method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+          method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+            "triangle"), 
           test = c("difference", "similarity"),
-          statistic = c("exact", "normal")) 
+          statistic = c("exact", "stable.exact", "both.exact",
+           "normal", "cont.normal")) 
 }
 \arguments{
   \item{pdA}{the probability of discrimination for the model under the
@@ -43,30 +43,77 @@ d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
   \item{test}{the type of one-sided binomial test (direction of the
     alternative hypothesis): "difference" corresponds "greater" and
     "similarity" corresponds to "less"}
-  \item{statistic}{should sample size calculation be based on the 'exact'
-    binomial test or the normal approximation to this?}
+  \item{statistic}{options are explained in the Details section below}
 }
 \details{
-  The sample size of the standard one-tailed difference test where the
-  null hypothesis of "no difference" is obtained with \code{pd0 = 0}.
+  For difference tests \code{pdA} or \code{d.primeA} (the sensory
+  difference under the alternative hypothesis) has to be larger than
+  \code{pd0} or \code{d.prime0} (the sensory  difference under the null
+  hypothesis). The sample size of the standard one-tailed difference
+  test where the null hypothesis of "no difference" is obtained with
+  \code{pd0 = 0} or \code{d.prime0 = 0}.
 
-  The probability under the null hypothesis is
-  given by \code{pd0 + pg * (1 - pd0)} where \code{pg} is the guessing
-  probability \code{pGuess}. Similarly, the probability of the
-  alternative hypothesis is given by \code{pdA + pg * (1 - pdA)}
+  For similarity tests it is required that \code{pd0} > \code{pdA} or
+  equivalently that \code{d.prime0} > \code{d.primeA}. Here, the
+  interval [0, \code{pdA}] or [0, \code{d.primeA}]
+  is the similarity region covering sensory differences for which we
+  would say that the products are similar.
+  
+  The probability of a correct answer under the null hypothesis is
+  given by \code{pd0 + pGuess * (1 - pd0)}. Similarly, the probability
+  of a correct answer under the alternative hypothesis is given by
+  \code{pdA + pGuess * (1 - pdA)}.
 
-  The sample size for the 'exact' test, the function uses 
-  the normal approximation to get a starting value for an iterative
-  search. If the sample size based on the normal approximation is larger
-  than 10,000, the function returns the normal approximation and issues
-  a warning.
+  The \code{statistic} argument:
+  \itemize{
+    \item{\code{"exact"}}{
+      is the conventional sample size for the exact binomial test:
+      The smallest sample size that gives the desired power
+      (\code{target.power}) at the given
+      significance level. Ususally slightly higher sample sizes will not
+      have the desired power, however. This is due to the non-monotonic
+      behavior of power as a function of sample size.
+    }
+    \item{\code{"stable.exact"}}{
+      is so-called stable exact sample size proposed by Ennis and
+      Jesionka (2011) which has the property that no larger sample sizes
+      has a power less than the \code{target.power}.
+    }
+    \item{\code{"both.exact"}}{
+      returns both \code{exact} and \code{stable.exact}
+      sample sizes
+    }
+    \item{\code{"normal"}}{
+      is the normal approximation to the exact binomial sample size
+      without any continuity adjustment. This usually provides a sample
+      size that is smaller than the sample size for the exact binomial
+      test. 
+    }
+    \item{\code{"cont.normal"}}{
+      is the continuity adjusted normal approximation to
+      the sample size for the exact binomial test. This sample size is
+      usually closer to the exact sample size than the unadjusted
+      approximation and usually higher than the unadjusted
+      approximation.
+    }
+  }
+
+  If the sample size based on the continuity adjusted normal
+  approximation is larger than 10,000, the function returns the normal
+  approximation and issues a warning.
 }
 \value{
-  The sample size; a scalar integer.
+  The sample size; an integer.
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B (2010). Thurstonian
+\references{
+  Brockhoff, P.B. and Christensen, R.H.B (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
-  Food Quality and Preference, 21, pp. 330-338.}
+  Food Quality and Preference, 21, pp. 330-338.
+
+  Ennis, J.M. and V. Jesionka (2011). The power of sensory
+  discrimination methods revisited. Journal of Sensory Studies, 26,
+  pp. 371-382. 
+}
 \author{Per Bruun Brockhoff and Rune Haubo B Christensen}
 
 \seealso{\code{\link{AnotA}}, \code{\link{discrimPwr}},

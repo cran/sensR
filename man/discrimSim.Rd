@@ -10,8 +10,8 @@
 }
 \usage{
 discrimSim(sample.size, replicates, d.prime, sd.indiv = 0,
-           method = c("duotrio", "halfprobit", "probit", "triangle",
-           "twoAFC", "threeAFC"))
+           method = c("duotrio", "halfprobit", "probit", "tetrad",
+             "triangle", "twoAFC", "threeAFC"))
 }
 \arguments{
   \item{sample.size}{the sample size - number of subjects}
@@ -27,12 +27,14 @@ discrimSim(sample.size, replicates, d.prime, sd.indiv = 0,
   \code{sd.indiv}. All negative values are set to zero.
 }
 \value{
-  A vector of length \code{sample.size} with the number of correct answers for
-  each subject.
+  A vector of length \code{sample.size} with the number of correct
+  answers for each subject.
 }
-\references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
+\references{
+  Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
-  Food Quality and Preference, 21, pp. 330-338.}
+  Food Quality and Preference, 21, pp. 330-338.
+}
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 \seealso{ \code{\link{triangle}}, \code{\link{twoAFC}},

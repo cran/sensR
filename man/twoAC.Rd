@@ -2,12 +2,13 @@
 \alias{twoAC}
 \alias{print.twoAC}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{2-AC Discrimination Protocol}
+\title{2-AC Discrimination and Preference Protocol}
 \description{
   Computes estimates and standard errors of d-prime and tau for the two
   alternative (2-AC) protocol. A confidence interval and
   significance test for d-prime is also provided. The 2-AC protocol is 
-  equivalent to a 2-AFC protocol with a "no-difference" option. 
+  equivalent to a 2-AFC protocol with a "no-difference" option, and
+  equivalent to a paired preference test with an "no-preference" option. 
 }
 \usage{
 
@@ -19,9 +20,10 @@ twoAC(data, d.prime0 = 0, conf.level = 0.95,
 \arguments{
   \item{data}{
     a non-negative numeric vector of length 3 with the number of
-    observations in the three response categories. If the third element
-    is larger than the first element, then the estimate of d-prime will
-    be positive. }
+    observations in the three response categories in the form ("prefer
+    A", "no-preference", "prefer B"). If the third element
+    is larger than the first element, the estimate of d-prime is
+    positive.} 
   \item{d.prime0}{the value of d-prime under the null hypothesis for the
     significance test.}
   \item{conf.level}{the confidence level.}

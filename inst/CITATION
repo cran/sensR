@@ -14,6 +14,6 @@ citEntry(entry="misc",
 
          textVersion =
          paste("Christensen, R. H. B. & P. B. Brockhoff (", year,
- 		"). sensR---An R-package for sensory discrimination",
+ 		"). sensR---An R-package for sensory discrimination ",
 		vers, ".", sep="")
 )

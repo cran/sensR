@@ -37,228 +37,10 @@ AnotA <-
   fit
 }
 
-normalPwr <-
-  function(pdA, pd0 = 0, sample.size, alpha = 0.05, pGuess = 1/2,
-           test = c("difference", "similarity"))
-{
-  test <- match.arg(test)
-  stopifnot(is.numeric(pdA) && length(pdA) == 1 &&
-            pdA >= 0 && pdA <= 1)
-  stopifnot(is.numeric(pd0) && length(pd0) == 1 &&
-            pd0 >= 0 && pd0 <= 1)
-  stopifnot(is.numeric(sample.size) && length(sample.size) == 1 &&
-            isTRUE(all.equal(round(sample.size), sample.size)) &&
-            sample.size > 0)
-  sample.size <- as.integer(sample.size)
-  stopifnot(is.numeric(alpha) && length(alpha) == 1 &&
-            alpha > 0 && alpha < 1)
-  stopifnot(is.numeric(pGuess) && length(pGuess) == 1 &&
-            pGuess >= 0 && pGuess < 1)
-  if(test == "difference" && pdA <= pd0)
-    stop("pdA has to be larger than pd0 for difference tests")
-  if(test == "similarity" && pdA >= pd0)
-    stop("pdA has to be less than pd0 for similarity tests")
-  pc0 <- pd2pc(pd0, pGuess)
-  pcA <- pd2pc(pdA, pGuess)
-  sigma0 <- sqrt(pc0*(1 - pc0)/sample.size)
-  sigmaA <- sqrt(pcA*(1 - pcA)/sample.size)
-  if(test == "difference") {
-    lambda <- (qnorm(1 - alpha) * sigma0 + pc0 - pcA) / sigmaA
-    pwr <- pnorm(lambda, lower.tail = FALSE)
-  }
-  else if(test == "similarity") {
-    lambda <- (qnorm(alpha) * sigma0 + pc0 - pcA) / sigmaA
-    pwr <- pnorm(lambda, lower.tail = TRUE)
-  }
-  else
-    stop("'test' not recognized")
-  return(pwr)
-}
-
-discrimPwr <-
-  function(pdA, pd0 = 0, sample.size, alpha = 0.05, pGuess = 1/2,
-           test = c("difference", "similarity"),
-           statistic = c("exact", "normal"))
-{
-  ## match and test arguments:
-  test <- match.arg(test)
-  stat <- match.arg(statistic)
-  ss <- sample.size
-  stopifnot(is.numeric(pdA) && length(pdA) == 1 &&
-            pdA >= 0 && pdA <= 1)
-  stopifnot(is.numeric(pd0) && length(pd0) == 1 &&
-            pd0 >= 0 && pd0 <= 1)
-  stopifnot(is.numeric(sample.size) && length(sample.size) == 1 &&
-            isTRUE(all.equal(round(sample.size), sample.size)) &&
-            sample.size > 0)
-  sample.size <- as.integer(sample.size)
-  stopifnot(is.numeric(alpha) && length(alpha) == 1 &&
-            alpha > 0 && alpha < 1)
-  stopifnot(is.numeric(pGuess) && length(pGuess) == 1 &&
-            pGuess >= 0 && pGuess < 1)
-
-  ## Get pc from pdA and pGuess:
-  pc <- pd2pc(pdA, pGuess)
-  if(stat == "normal") {
-    pwr <- normalPwr(pdA = pdA, pd0 = pd0, sample.size = ss,
-                     alpha = alpha, pGuess = pGuess, test = test)
-    return(pwr)
-  } ## stat == "exact":
-  ## critical value in one-tailed binomial test:
-  xcr <- findcr(ss, alpha, pGuess, test = test, pd0)
-  ## compute power of the test from critical value:
-  if(test == "difference") {
-    xcr <- delimit(xcr, lower = 1, upper = ss + 1)
-    power <- 1 - pbinom(q = xcr - 1, size = ss, prob = pc)
-  }
-  else if(test == "similarity") {
-    xcr <- delimit(xcr, lower = 0, upper = ss)
-    power <- pbinom(q = xcr, size = ss, prob = pc)
-  }
-  else ## should never happen
-    stop("'test' not recognized")
-  return(power)
-}
-
-d.primePwr <-
-  function(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
-           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
-           test = c("difference", "similarity"),
-           statistic = c("exact", "normal"))
-{
-  ## Convenience function that simply modifies some arguments and
-  ## calls discrimPwr
-  newCall <- call <- match.call()
-  method <- match.arg(method)
-  stopifnot(length(d.primeA) == 1 && is.numeric(d.primeA) &&
-            d.primeA >= 0)
-  stopifnot(length(d.prime0) == 1 && is.numeric(d.prime0) &&
-            d.prime0 >= 0)
-  pdA <- coef(rescale(d.prime = d.primeA, method = method))$pd
-  pd0 <- coef(rescale(d.prime = d.prime0, method = method))$pd
-  newCall$method <- newCall$d.primeA <- newCall$d.prime0 <- NULL
-  newCall$pGuess <-
-    ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-  newCall$pdA <- pdA
-  newCall$pd0 <- pd0
-  newCall[[1]] <- as.name("discrimPwr")
-  return(eval.parent(newCall))
-}
-
-normalSS <-
-  function(pdA, pd0 = 0, target.power = 0.9, alpha = 0.05,
-           pGuess = 1/2, test = c("difference", "similarity"))
-{
-  test <- match.arg(test)
-  stopifnot(pdA >= 0 && pdA <= 1)
-  stopifnot(pd0 >= 0 && pdA <= 1)
-  stopifnot(target.power > 0 && target.power < 1)
-  stopifnot(alpha > 0 && alpha < 1)
-  stopifnot(pGuess >= 0 && pGuess < 1)
-  if(test == "difference" && pdA <= pd0)
-    stop("pdA has to be larger than pd0 for difference tests")
-  if(test == "similarity" && pdA >= pd0)
-    stop("pdA has to be less than pd0 for similarity tests")
-  pc0 <- pd2pc(pd0, pGuess)
-  pcA <- pd2pc(pdA, pGuess)
-  s0 <- sqrt(pc0*(1 - pc0))
-  sA <- sqrt(pcA*(1 - pcA))
-  ## approximate sample size:
-  if(test == "difference") {
-    stopifnot(pdA > pd0)
-    n <- ((sA * qnorm(1 - target.power) - s0 * qnorm(1 - alpha)) /
-          (pc0 - pcA))^2
-  }
-  else if(test == "similarity") {
-    stopifnot(pdA < pd0)
-    n <- ((sA * qnorm(target.power) - s0 * qnorm(alpha)) /
-          (pc0 - pcA))^2
-  }
-  return(ceiling(n))
-}
-
-discrimSS <-
-  function(pdA, pd0 = 0, target.power = 0.90, alpha = 0.05,
-           pGuess = 1/2, test = c("difference", "similarity"),
-           statistic = c("exact", "normal")) 
-{
-  test <- match.arg(test)
-  call <- match.call()
-  stat <- match.arg(statistic)
-  stopifnot(length(pdA) == 1 && length(pd0) == 1 &&
-            length(target.power) == 1 && length(alpha) == 1 && 
-            length(pGuess) == 1)
-  if(pdA < 0 | pdA > 1)
-    stop("'pdA' has to be between zero and one")
-  if(alpha <= 0 | alpha >= 1)
-    stop("'alpha' has to be between zero and one")
-  if(target.power <= 0 | target.power >= 1)
-    stop("'target.power' has to be between zero and one")
-  if(pd0 < 0 | pd0 > 1)
-    stop("'pd0' has to be between zero and one")
-  if(test == "difference" && pdA <= pd0)
-    stop("pdA has to be larger than pd0 for difference tests")
-  if(test == "similarity" && pdA >= pd0)
-    stop("pdA has to be less than pd0 for similarity tests")
-  ssN <- normalSS(pdA = pdA, pd0 = pd0, target.power = target.power,
-                  alpha = alpha, pGuess = pGuess, test = test)
-  ssN <- ssN - 1
-  if(stat == "normal")
-    return(ssN + 1)
-  ## if(stat == "exact"):
-  if(ssN <= 50)
-    ssTry <- 1
-  if(ssN > 1e4) {
-    warning(paste("sample size probably > 1e4 and 'exact' option is",
-                  "not available\n",
-                  "using normal approximation instead"))
-    return(ssN)
-  }
-  if(ssN > 50 && ssN <= 1e4) {
-    for(ssTry in floor(ssN * (9:1 / 10))) {
-      tryPwr <-
-        discrimPwr(pdA = pdA, pd0 = pd0, sample.size = ssTry,
-                   alpha = alpha, pGuess = pGuess, test = test)
-      if(tryPwr < target.power)
-        break
-    }
-  }
-  while (discrimPwr(pdA = pdA, pd0 = pd0, sample.size = ssTry, 
-                    alpha = alpha, pGuess = pGuess, 
-                    test = test) < target.power)
-    ssTry <- ssTry + 1
-  return(ssTry)
-}
-
-d.primeSS <- 
-  function(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
-           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
-           test = c("difference", "similarity"),
-           statistic = c("exact", "normal")) 
-{
-  ## Convenience function that simply modifies some arguments and
-  ## calls discrimSS
-  newCall <- call <- match.call()
-  method <- match.arg(method)
-  stopifnot(length(d.primeA) == 1 && is.numeric(d.primeA) &&
-            d.primeA >= 0)
-  stopifnot(length(d.prime0) == 1 && is.numeric(d.prime0) &&
-            d.prime0 >= 0)
-  pdA <- coef(rescale(d.prime = d.primeA, method = method))$pd
-  pd0 <- coef(rescale(d.prime = d.prime0, method = method))$pd
-  newCall$method <- newCall$d.primeA <- newCall$d.prime0 <- NULL
-  newCall$pGuess <-
-    ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-  newCall$pdA <- pdA
-  newCall$pd0 <- pd0
-  newCall[[1]] <- as.name("discrimSS")
-  return(eval.parent(newCall))
-}
-
-
 discrim <-
   function(correct, total, pd0 = 0, conf.level = 0.95,
-           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
+           method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+             "triangle"), 
            statistic = c("exact", "likelihood", "score", "Wald"),
            test = c("difference", "similarity"), ...)
 {
@@ -276,10 +58,10 @@ discrim <-
   ## use round - as.integer also strips names:
   if(!isTRUE(all.equal(round(x), x)) || x < 0)
     stop("'correct' has to be a non-negative integer")
-  x <- as.integer(x)
+  x <- as.integer(round(x))
   if(!isTRUE(all.equal(round(n), n)) || n <= 0)
     stop("'total' has to be a positive integer")
-  n <- as.integer(n)
+  n <- as.integer(round(n))
   if(x > n)
     stop("'correct' cannot be larger than 'total'")
   if(pd0 < 0 || pd0 > 1)
@@ -316,10 +98,11 @@ discrim <-
   if(stat == "likelihood") {
     prof <- profBinom(x, n, nProf = 100)
     ci <- c(confint(prof, level = conf.level))
-    logLikMax <- dbinom(x, n, table[1,1], log = TRUE)
+    logLikMax <- dbinom(x, n, pc.hat, log = TRUE)
     logLikNull <- dbinom(x, n, pc0, log = TRUE)
     Stat <- sign(table[1,1] - pc0) *
       sqrt(2 * (logLikMax - logLikNull))
+### Note: Stat can get negative here.
     p.value <-
       if(test == "difference") pnorm(Stat, lower.tail = FALSE)
       else pnorm(Stat)
@@ -431,8 +214,8 @@ function (success, total,
 
 discrimSim <-
   function(sample.size, replicates, d.prime, sd.indiv = 0,
-           method = c("duotrio", "halfprobit", "probit", "triangle",
-           "twoAFC", "threeAFC"))
+           method = c("duotrio", "halfprobit", "probit", "tetrad",
+             "triangle", "twoAFC", "threeAFC"))
 {
   method <- match.arg(method)
   if(sample.size != trunc(sample.size) | sample.size <= 0)
@@ -470,7 +253,7 @@ print.anota <-
 }
 
 print.discrim <-
-  function(x, digits = getOption("digits"), ...)
+  function(x, digits = max(3, getOption("digits") - 3), ...)
 {
   text1 <- switch(x$statistic,
                   "exact" = "'exact' binomial test.",
@@ -480,28 +263,31 @@ print.discrim <-
   cat(paste("\nEstimates for the", x$method,
             "discrimination protocol with", x$data[1],
             "correct\nanswers in", 
-            x$data[2], "trials. p-value and",
+            x$data[2], "trials. One-sided p-value and",
             round(100 * x$conf.level, 3),  
-            "percent confidence intervals\nare based on the", text1,
-            "\n\n"))
+            "% two-sided confidence\nintervals are based on the",
+            text1, "\n\n"))
   print(x$coefficients, digits = digits)
   Pguess <- ifelse(x$method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
   d.prime0 <- psyinv(pd2pc(x$pd0, Pguess), method = x$method)
   cat(paste("\nResult of", x$test, "test:\n"))
   if(x$statistic == "Wald")
-    cat(paste("Wald statistic =", format(x$stat.value, digits),
-              "p-value =", format.pval(x$p.value), "\n"))
+    cat(paste("Wald statistic = ", format(x$stat.value, digits),
+              ", p-value: ", format.pval(x$p.value, digits=4), "\n",
+  sep="")) 
   if(x$statistic == "likelihood")
-    cat(paste("likelihood root statistic =",
+    cat(paste("Likelihood Root statistic = ",
               format(x$stat.value, digits), 
-              "p-value =", format.pval(x$p.value), "\n"))
+              ", p-value: ", format.pval(x$p.value, digits=4), "\n",
+  sep="")) 
   if(x$statistic == "exact")
-    cat(paste("'exact' binomial test:",
-              "p-value =", format.pval(x$p.value), "\n"))
+    cat(paste("'exact' binomial test: ",
+              "p-value =", format.pval(x$p.value, digits=4), "\n"))
   if(x$statistic == "score")
     cat(paste("Pearson X-square statistic = ",
               format(x$stat.value, digits), ", df = ", x$df,
-              ", p-value = ", format.pval(x$p.value), "\n", sep = ""))
+              ", p-value: ", format.pval(x$p.value, digits=4), "\n",
+  sep = "")) 
   cat("Alternative hypothesis: ")
   cat(paste("d-prime is",
             ifelse(x$test == "difference", "greater", "less"),
@@ -539,100 +325,80 @@ plot.anota <-
   invisible()
 }
 
-discrimr <- ## Discrim revised
-  function(formula, data, weights, start, subset, na.action, contrasts
-           = NULL, method = c("duotrio", "probit", "threeAFC",
-                     "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
-{
-  nll <- function(beta, X, y, w) { # negative log-likelihood
-    eta <- offset
-    eta <- eta + X %*% beta
-    p <- link.inv(eta)
-    if(all(p > 0 && p < 1))
-      -sum(2 * w * (y*log(p/(1 - p)) + log(1-p)))
-    else(Inf)
-  }
-  grd <- function(beta, X, y, w) { # gradient
-    eta <- offset
-    eta <- eta + X %*% beta
-    p <- link.inv(eta)
-    if(all(p > 0)) {
-      ##      cat(NROW(w), NROW(p), NROW(y), "X = ", dim(X), "\n")
-      -2 * t(X) %*% (w * muEta(eta) * (y/p - (1-y)/(1-p)))
-      ##  browser()
-    }
-    else(rep(NA, length(beta)))
-  }
-  m <- match.call(expand.dots = FALSE)
-  m$start <- m$Hess <- m$method <- m$... <- NULL
-  m[[1]] <- as.name("model.frame")
-  if (is.matrix(eval.parent(m$data)))
-    m$data <- as.data.frame(data)
-  m <- eval.parent(m)
-  Terms <- attr(m, "terms")
-  x <- model.matrix(Terms, m, contrasts)
-  n <- nrow(x)
-  cons <- attr(x, "contrasts")
-  wt <- model.weights(m)
-  if (!length(wt))
-    wt <- rep(1, n)
-  offset <- model.offset(m)
-  if (length(offset) <= 1)
-    offset <- rep(0, n)
-  y <- model.response(m)
-  if (NCOL(y) == 2) {
-    n <- y[, 1] + y[, 2]
-    y <- ifelse(n == 0, 0, y[, 1]/n)
-    wt <- wt * n
-  }
-  stopifnot(all(wt > 0))
-  if(missing(start)) start <- rep(0, ncol(x))
-  if(missing(data))
-  if(length(start) != ncol(x))
-    stop("'start' is not of correct length")
-  method <- match.arg(method)
-  dn <- dimnames(x)[[2]]
-  link.inv <- switch(method,
-                     duotrio = duotrio()$linkinv,
-                     probit = pnorm,
-                     threeAFC = threeAFC()$linkinv,
-                     triangle = triangle()$linkinv,
-                     twoAFC = twoAFC()$linkinv,
-                     logit = plogis
-###                     twoAFC = function(eta) {pnorm(eta/sqrt(2))}
-                     )
-  muEta <- switch(method,
-                  duotrio = duotrio()$mu.eta,
-                  probit = dnorm,
-                  threeAFC = threeAFC()$mu.eta,
-                  triangle = triangle()$mu.eta,
-                  twoAFC = twoAFC()$mu.eta,
-                  logit = dlogis
-                  )
-
-  fit <- optim(start, fn=nll, gr=grd, X=x, y=y, w=wt, method="BFGS", #
-               hessian = Hess, ...)
-  ## Fitted values (probabilities):
-  fit$fitted <- p <- link.inv(offset + x %*% fit$par)
-  ## Deviance:
-  fit$dev <- 2 * wt * (y * log(y/p) + (1 - y) * log((1 - y)/(1 - p)))
-  fit$deviance <-  sum(fit$dev)
-  fit$resid.dev <- sign(y - p) * sqrt(fit$dev)
-  se <- NULL
-  if(Hess) {
-    fit$vcov <- solve(fit$hessian)
-    fit$se <- sqrt(diag(fit$vcov))
-    names(fit$se) <- dn
-    dimnames(fit$vcov) <- list(dn, dn)
-  }
-  fit$coef <- fit$par
-  fit$data <- data
-  fit$test <- method
-  fit$call <- match.call()
-  names(fit$coef) <- dn
-  class(fit) <- "discrimr"
-  fit
-}
+## discrimr <- ## Discrim revised
+##   function(formula, data, weights, start, subset, na.action, contrasts
+##            = NULL, method = c("duotrio", "probit", "threeAFC",
+##                      "triangle", "twoAFC", "logit"), Hess = TRUE, ...)
+## {
+##   nll <- function(beta, X, y, w) { # negative log-likelihood
+##     eta <- offset
+##     eta <- eta + X %*% beta
+##     p <- link.inv(eta)
+##     if(all(p > 0 && p < 1))
+##       -sum(2 * w * (y*log(p/(1 - p)) + log(1-p)))
+##     else(Inf)
+##   }
+##   grd <- function(beta, X, y, w) { # gradient
+##     eta <- offset
+##     eta <- eta + X %*% beta
+##     p <- link.inv(eta)
+##     if(all(p > 0)) {
+##       ##      cat(NROW(w), NROW(p), NROW(y), "X = ", dim(X), "\n")
+##       -2 * t(X) %*% (w * muEta(eta) * (y/p - (1-y)/(1-p)))
+##       ## browser() } else(rep(NA, length(beta)))
+##     }
+##   }
+##   m <- match.call(expand.dots = FALSE) m$start <- m$Hess <-
+##     m$method  <-  m$... <- NULL
+##   m[[1]] <- as.name("model.frame") if
+##   (is.matrix(eval.parent(m$data))) m$data <- as.data.frame(data) m
+##   <- eval.parent(m) Terms <- attr(m, "terms") x <-
+##     model.matrix(Terms, m, contrasts) n <- nrow(x) cons <- attr(x,
+##                                                                 "contrasts") wt <- model.weights(m) if (!length(wt)) wt <- rep(1,
+##     n) offset <- model.offset(m) if (length(offset) <= 1) offset <-
+##     rep(0, n) y <- model.response(m) if (NCOL(y) == 2) { n <- y[, 1] +
+##     y[, 2] y <- ifelse(n == 0, 0, y[, 1]/n) wt <- wt * n }
+##     stopifnot(all(wt > 0)) if(missing(start)) start <- rep(0, ncol(x))
+##     if(missing(data)) if(length(start) != ncol(x))
+##     stop("'start' is not of correct length") method <-
+##     match.arg(method) dn <- dimnames(x)[[2]] link.inv <-
+##     switch(method, duotrio = duotrio()$linkinv, probit = pnorm,
+##     threeAFC = threeAFC()$linkinv, triangle = triangle()$linkinv,
+##     twoAFC = twoAFC()$linkinv, logit = plogis
+## ###                     twoAFC = function(eta) {pnorm(eta/sqrt(2))}
+##                      )
+##   muEta <- switch(method,
+##                   duotrio = duotrio()$mu.eta,
+##                   probit = dnorm,
+##                   threeAFC = threeAFC()$mu.eta,
+##                   triangle = triangle()$mu.eta,
+##                   twoAFC = twoAFC()$mu.eta,
+##                   logit = dlogis
+##                   )
+## 
+##   fit <- optim(start, fn=nll, gr=grd, X=x, y=y, w=wt, method="BFGS", #
+##                hessian = Hess, ...)
+##   ## Fitted values (probabilities):
+##   fit$fitted <- p <- link.inv(offset + x %*% fit$par)
+##   ## Deviance:
+##   fit$dev <- 2 * wt * (y * log(y/p) + (1 - y) * log((1 - y)/(1 - p)))
+##   fit$deviance <-  sum(fit$dev)
+##   fit$resid.dev <- sign(y - p) * sqrt(fit$dev)
+##   se <- NULL
+##   if(Hess) {
+##     fit$vcov <- solve(fit$hessian)
+##     fit$se <- sqrt(diag(fit$vcov))
+##     names(fit$se) <- dn
+##     dimnames(fit$vcov) <- list(dn, dn)
+##   }
+##   fit$coef <- fit$par
+##   fit$data <- data
+##   fit$test <- method
+##   fit$call <- match.call()
+##   names(fit$coef) <- dn
+##   class(fit) <- "discrimr"
+##   fit
+## }
 
 confint.anota <-
   function(object, parm, level = 0.95, ...)
@@ -672,8 +438,13 @@ profile.discrim <-
   }
   pg <- ifelse(fitted$method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
   prof <- prof[prof$pSeq >= pg, ]
+### FIXME: This does not handle if x/n < pg, as the relative
+### likelihood needs to be rescaled to have max in pg in that case.
+### - Really? 
   prof$d.prime <- psyinv(prof$pSeq, method = fitted$method)
+  keep <- is.finite(prof$d.prime)
   prof$pSeq <- NULL
+  prof <- prof[keep, ]
   attr(prof, "method") <- fitted$method
   class(prof) <- c("profile.discrim", "data.frame")
   return(prof)
@@ -686,7 +457,8 @@ plot.profile.discrim <-
   lim <- sapply(level, function(x) exp(-qchisq(x, df = 1)/2))
   if (fig == TRUE) {
     npl.spline <- spline(x$d.prime, x$Lroot, n = n, method = method)
-    plot(npl.spline$x, exp(-npl.spline$y^2/2), type = "l", las = 1, ylim = c(0, 1),
+    plot(npl.spline$x, exp(-npl.spline$y^2/2), type = "l", las = 1,
+         ylim = c(0, 1), 
          xlab = "d-prime", ylab = "Relative Likelihood",
          main = "", ...)
     abline(h = lim)

@@ -30,13 +30,17 @@
 \usage{
 
 rescale(pc, pd, d.prime, std.err, 
-        method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
+        method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+        "triangle")) 
 
-psyfun(d.prime, method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
+psyfun(d.prime, method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+       "triangle")) 
 
-psyinv(pc, method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
+psyinv(pc, method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+       "triangle")) 
 
-psyderiv(d.prime, method = c("duotrio", "threeAFC", "twoAFC", "triangle"))
+psyderiv(d.prime, method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
+         "triangle")) 
 
 pc2pd(pc, Pguess)
 

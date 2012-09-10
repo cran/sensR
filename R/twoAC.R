@@ -70,7 +70,7 @@ twoAC <-
 }
 
 print.twoAC <-
-  function(x, digits = .Options$digits, ...)
+  function(x, digits = max(3, getOption("digits") - 3), ...)
 {
   ## Match test statistic:
   test.stat <- switch(x$statistic,
@@ -80,6 +80,10 @@ print.twoAC <-
   ## Print estimates:
   cat(paste("Results for the 2-AC protocol with data ",
             deparse(x$call$data), ":\n", sep = ""))
+  ## printCoefmat(x$coefficients, tst.ind=integer(0), cs.ind=1:2,
+  ##              digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...) 
+### NOTE: Not using printCoefmat here because it wont print Inf and
+### -Inf parameter estimates.
   print(x$coefficients, quote = FALSE, digits = digits, ...)
 
   ## Print confidence interval for d-prime:
@@ -91,7 +95,7 @@ print.twoAC <-
               "\n", sep = ""))
     ci <- x$confint
     colnames(ci) <- c("Lower", "Upper")
-    print(ci, quote = FALSE, digits = digits, ...)
+    print(ci, digits = digits, ...) 
   }
   
   ## Print result of signifcance test:
