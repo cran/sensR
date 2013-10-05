@@ -9,11 +9,11 @@
 \usepackage[left=3.5cm,right=3.5cm]{geometry}
 
 %%\VignetteIndexEntry{Examples for 2-AC paper}
-%%\VignetteDepends{sensR}
+%%\VignetteDepends{sensR, ordinal}
 \title{\textsf{R}-companion to:\\ Estimation of the Thurstonian model
-  for the 2-AC protocol} 
+  for the 2-AC protocol}
 \author{Rune Haubo Bojesen Christensen, \\
-  Hye-Seong Lee \& \\ 
+  Hye-Seong Lee \& \\
   Per Bruun Brockhoff}
 
 %% \numberwithin{equation}{section}
@@ -95,21 +95,21 @@ options(continue=" ")
 
 This document describes how the examples in ``Estimation of the
 Thurstonian model for the 2-AC protocol'' \citep{christensen11a} can
-be executed in the free statistical software 
+be executed in the free statistical software
 \textsf{R} \citep{R11} using the free \textsf{R} packages \textsf{sensR}
 and \textsf{ordinal} \citep{christensen10c, christensen10d} developed
-by the authors.  
+by the authors.
 
 \section{Example 1: Estimation of $d'$ and $\tau$}
 
 It is assumed that we have $\bm n = (2, 2, 6)$ observations in the
 three categories. We may estimate $\tau$, $d'$ and their standard
-errors with the \texttt{twoAC} function in the \textsf{sensR} package: 
+errors with the \texttt{twoAC} function in the \textsf{sensR} package:
 <<example1-1, echo=TRUE, results=verb>>=
 library(sensR)
 fit <- twoAC(c(2,2,6))
 fit
-@ 
+@
 Alternatively we may compute $\tau$ and $d'$ manually:
 <<example1-2>>=
 n <- c(2, 2, 6)
@@ -118,7 +118,7 @@ z <- qnorm(gamma)[-3]
 z <- z * sqrt(2)
 (tau <- (z[2] - z[1])/2)
 (d <- -z[1] - tau)
-@ 
+@
 
 \section{Example 2: Inference for d-prime}
 \label{sec:example-x:-inference}
@@ -126,12 +126,12 @@ z <- z * sqrt(2)
 The likelihood based confidence intervals and the one-sided
 discrimination significance test where the null hypothesis is ``no
 sensory difference'', i.e., $d'_0 = 0$ using the likelihood root
-statistic are 
+statistic are
 immediately available using the \texttt{twoAC} function:
 <<example2, echo=TRUE, results=verb>>=
-twoAC(c(2, 2, 6), d.prime0 = 0, conf.level = 0.95, 
+twoAC(c(2, 2, 6), d.prime0 = 0, conf.level = 0.95,
       statistic = "likelihood", alternative = "greater")
-@ 
+@
 The relative profile likelihood and Wald approximation can be obtained
 with:
 <<example2-fig, echo=TRUE, results=verb, fig=TRUE, include=FALSE>>=
@@ -145,7 +145,7 @@ lines(z, exp(-w^2/2), lty = 2)
 ## text(2.7, .17, "95% limit")
 ## text(2.7, .06, "99% limit")
 
-@ 
+@
 
 \begin{figure}
   \centering
@@ -166,9 +166,9 @@ protocol and a significance test of the users choice. The power
 assuming $\tau = 0.5$, $d' = 1$, the sample size is $N = 20$ for a
 two-sided preference test with $\alpha = 0.5$ is found with:
 <<power-example, echo=TRUE, results=verb>>=
-twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05, 
+twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05,
          alternative = "two.sided", tol = 1e-5)
-@ 
+@
 Apart from the power, we are told that the actual size of the test,
 $\alpha$ is close to the nominal 5\%. The reason that the two differ
 is due to the discreteness of the observations, and hence the test
@@ -179,35 +179,35 @@ samples. The fraction of samples that are discarded is determined by
 the \texttt{tol} parameter. If we set this to zero, then no samples
 are discarded, however, the increase in precision is irrelevant:
 <<power-example2, echo=TRUE, results=verb>>=
-twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05, 
+twoACpwr(tau = 0.5, d.prime = 1, size = 20, d.prime0 = 0, alpha = 0.05,
          alternative = "two.sided", tol = 0)
-@ 
+@
 The last three numbers in the output are the cell probabilities, so
 with $\tau = 0.5$ and $d' = 1$ we should, for example, expect around
 22\% of the answers in the ``no difference'' or ``no preference''
-category.  
+category.
 
 \section{Example 4: Estimation and standard errors via cumulative
-  probit models} 
+  probit models}
 
 Estimates of $\tau$ and $d'$ and their standard errors can be obtained
 from a cumulative probit model. We begin by defining the three leveled
 response variable \texttt{resp} and fitting a cumulative link model
 (CLM) using the function \texttt{clm} in package \textsf{ordinal} with
-weights equal to the observed counts and a probit 
+weights equal to the observed counts and a probit
 link. Standard output contains the following coefficient table:
 <<example2-1>>=
-## library(ordinal)
+library(ordinal)
 response <- gl(3,1)
 fit.clm <- clm(response ~ 1, weights = c(2, 2, 6), link = "probit")
 (tab <- coef(summary(fit.clm)))
-@ 
+@
 The $\tau$ and $d'$ estimates are obtained by:
 <<example2-2>>=
 theta <- tab[,1]
 (tau <- (theta[2] - theta[1])/sqrt(2))
 (d.prime <- (-theta[2] - theta[1])/sqrt(2))
-@ 
+@
 
 The variance-covariance matrix of the parameters can be extracted by
 the \texttt{vcov} method and the standard errors computed via the
@@ -217,7 +217,7 @@ provided formulas:
 VCOV <- vcov(fit.clm)
 (se.tau <- sqrt((VCOV[1,1] + VCOV[2,2] - 2*VCOV[2,1])/2))
 (se.d.prime <- sqrt((VCOV[1,1] + VCOV[2,2] + 2*VCOV[2,1])/2))
-## 
+##
 ## (SE[2] + SE[1]) * sqrt(2) / 2
 ## theta <- fit.clm$Theta
 ## ## Delta <- theta[2] - theta[1]
@@ -228,16 +228,16 @@ VCOV <- vcov(fit.clm)
 ## ###
 ## (tau <- (theta[2] - theta[1])/sqrt(2))
 ## (d <- (-theta[2] - theta[1])/sqrt(2))
-@ 
+@
 Observe how these estimates and standard errors are identical to those
-in Example 1. 
+in Example 1.
 
 We could also have used the \texttt{clm2twoAC} function from package
 \textsf{sensR} which extract estimates and standard errors from a
-\texttt{clm} model fit object: 
+\texttt{clm} model fit object:
 <<example2-4>>=
 clm2twoAC(fit.clm)
-@ 
+@
 
 \section{Example 5: A regression model for $d'$}
 
@@ -256,7 +256,7 @@ response <- gl(3,1, length = 6)
 gender <- gl(2, 3, labels = c("women", "men"))
 fm2 <- clm(response ~ gender, weights = wt, link = "probit")
 (tab2 <- coef(summary(fm2)))
-@ 
+@
 The estimate of $\tau$ (assumed constant between genders) and the
 gender specific estimates of $d'$ can be extracted by:
 <<example3-2>>=
@@ -264,14 +264,14 @@ theta <- fm2$alpha
 (tau <- (theta[2] - theta[1])/sqrt(2))
 (d.women <- (-theta[2] - theta[1])/sqrt(2))
 (d.men <- d.women + fm2$beta * sqrt(2))
-@ 
+@
 Again we could use the \texttt{clm2twoAC} function to get the
 coefficient table for the 2-AC model from the CLM-model:
 <<example3-2_2>>=
 clm2twoAC(fm2)
-@ 
+@
 Observe that $d'$ for women is given along with the difference in $d'$
-for men and women rather than $d'$ for each of the genders. 
+for men and women rather than $d'$ for each of the genders.
 
 The Wald test for gender differences is directly available from the
 coefficient table with $p = 0.0657$. The corresponding likelihood
@@ -279,7 +279,7 @@ ratio test can be obtained by:
 <<example3-3>>=
 fm3 <- update(fm2,~.-gender)
 anova(fm2, fm3)
-@ 
+@
 which is slightly closer to significance.
 The 95\% profile likelihood confidence interval for the difference
 between men and women on the $d'$-scale is:
@@ -287,10 +287,10 @@ between men and women on the $d'$-scale is:
 confint(fm2) *  sqrt(2)
 ## pr <- profile(fm2, alpha = 1e-5)
 ## plot(pr, n=1e3)
-@ 
+@
 
 The likelihood ratio test for the assumption of constant $\tau$ is
-computed in the following. 
+computed in the following.
 The likelihood ratio statistic and associated $p$-value are
 <<example3-5>>=
 logLik(fm2)
@@ -298,7 +298,7 @@ tw <- twoAC(n.women)
 tm <- twoAC(n.men)
 (LR <- 2*(tw$logLik + tm$logLik - fm2$logLik))
 pchisq(LR, 1, lower.tail=FALSE)
-@ 
+@
 
 The Pearson $X^2$ test of the same hypothesis is given by
 <<example3-7>>=
@@ -306,7 +306,7 @@ freq <- matrix(fitted(fm2), nrow=2, byrow=TRUE) * 100
 Obs <- matrix(wt, nrow=2, byrow=TRUE)
 (X2 <- sum((Obs - freq)^2 / freq))
 pchisq(X2, df=1, lower.tail=FALSE)
-@ 
+@
 so the Pearson and likelihood ratio tests are very closely equivalent
 as it is so often the case.
 
@@ -317,7 +317,7 @@ as it is so often the case.
 ## load("C:/Users/rhbc/Documents/Rpackages/sensR/pkg/inst/doc/HSdata.RData")
 load("HSdata.RData")
 repData <- hs.long
-@ 
+@
 
 The data used in example 6 are not directly available at the time of
 writing. Assume however, that data are available in the \textsf{R}
@@ -325,34 +325,34 @@ writing. Assume however, that data are available in the \textsf{R}
 model where preference depends on reference and consumers
 (\texttt{cons}) are random can be fitted with:
 <<Example6-1, echo=TRUE, results=verb>>=
-fm3.agq <- clmm2(preference ~ reference, random = cons, nAGQ = 10, 
+fm3.agq <- clmm2(preference ~ reference, random = cons, nAGQ = 10,
                 data = repData, link = "probit", Hess = TRUE)
 summary(fm3.agq)
-@ 
+@
 Here we asked for the accurate 10-point adaptive Gauss-Hermite
 quadrature approximation. The 2-AC estimates are available using
 the \texttt{clm2twoAC} function:
 <<Example6-2, echo=TRUE, results=verb>>=
 clm2twoAC(fm3.agq)
-@ 
-The standard deviation of the consumer-specific $d'$s is given by: 
+@
+The standard deviation of the consumer-specific $d'$s is given by:
 <<example6-3, echo=TRUE, results=verb>>=
 fm3.agq$stDev * sqrt(2)
-@ 
+@
 The profile likelihood curve can be obtained using the
 profile method:
 <<example6-4, echo=TRUE, results=hide, eval=FALSE>>=
 pr <- profile(fm3.agq, range = c(.7, 1.8))
 ## save(pr, file = "profileSigma.RData")
-@ 
+@
 <<example6-4b, echo=FALSE, results=hide>>=
 ## load("C:/Users/rhbc/Documents/Rpackages/sensR/pkg/inst/doc/profileSigma.RData")
 load("profileSigma.RData")
-@ 
-And then plottet using: 
+@
+And then plottet using:
 <<example6-4-fig, echo=TRUE, fig=TRUE, include=FALSE>>=
 plpr <- plot(pr, fig = FALSE)
-plot(sqrt(2) * plpr$stDev$x, plpr$stDev$y, type = "l", 
+plot(sqrt(2) * plpr$stDev$x, plpr$stDev$y, type = "l",
      xlab = expression(sigma[delta]),
      ylab = "Relative profile likelihood", xlim = c(1, 2.5),
      axes = FALSE)
@@ -360,12 +360,12 @@ axis(1); axis(2, las = 1)
 abline(h = attr(plpr, "limits"))
 text(2.4, .17, "95% limit")
 text(2.4, .06, "99% limit")
-@ 
+@
 The resulting figure is shown in Figure~\ref{fig:ProfileSigma}. The
 profile likelihood confidence intervals are obtained using:
 <<example6-5, echo=TRUE, results=verb>>=
 confint(pr, level = 0.95) * sqrt(2)
-@ 
+@
 
 \begin{figure}
   \centering
@@ -379,24 +379,24 @@ The probabilities that consumers prefer yoghurt A, have no preference
 or prefer yoghurt B can, for an average consumer be obtained by
 predicting from the CLMM:
 <<example6-6, echo=TRUE, results=verb>>=
-newdat <- expand.grid(preference = factor(c("A", "N", "B"), 
+newdat <- expand.grid(preference = factor(c("A", "N", "B"),
                         levels = c("A", "N", "B"), ordered = TRUE),
                       reference = factor(c("A", "B")))
 pred <- predict(fm3.agq, newdata = newdat)
-@ 
+@
 The predictions for the extreme consumers have to be obtained by
 hand. Here we ask for the predictions for the 5th percentile and 95th
 percentile of the consumer population for reference A and B:
 <<example6-7, echo=TRUE, results=verb>>=
-q95.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(1-.05) * 
+q95.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(1-.05) *
                             fm3.agq$stDev), 1))
-q05.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(.05) * 
+q05.refA <- diff(c(0, pnorm(fm3.agq$Theta - qnorm(.05) *
                             fm3.agq$stDev), 1))
-q95.refB <- diff(c(0, pnorm(fm3.agq$Theta - fm3.agq$beta - 
+q95.refB <- diff(c(0, pnorm(fm3.agq$Theta - fm3.agq$beta -
                             qnorm(1-.05) * fm3.agq$stDev), 1))
-q05.refB <- diff(c(0, pnorm(fm3.agq$Theta - fm3.agq$beta - 
+q05.refB <- diff(c(0, pnorm(fm3.agq$Theta - fm3.agq$beta -
                             qnorm(.05) * fm3.agq$stDev), 1))
-@ 
+@
 Plotting follows the standard methods:
 <<example6-8, echo=TRUE, fig=TRUE, include=FALSE, height=1.6>>=
 par(mar = c(0, 2, 0, .5) + 0.5)
@@ -410,7 +410,7 @@ lines(1:3, pred[4:6], lty = 2) ## ref B
 text(2, 0.6, "Average consumer")
 legend("topright", c("Reference A", "Reference B"),
        lty = 1:2, pch = c(19, 1), bty = "n")
-@ 
+@
 <<example6-9, echo=TRUE, fig=TRUE, include=FALSE, height=1.6>>=
 par(mar = c(0, 2, 0, .5) + 0.5)
 plot(1:3, q05.refA, ylim = c(0, 1), axes = FALSE,
@@ -433,8 +433,8 @@ points(1:3, q95.refB, pch = 1) ## ref B
 lines(1:3, q95.refA) ## ref A
 lines(1:3, q95.refB, lty = 2) ## ref B
 text(2, 0.6, "95th percentile consumer")
-@ 
-The resulting figure is shown in Fig.~\ref{fig:modelFit}. 
+@
+The resulting figure is shown in Fig.~\ref{fig:modelFit}.
 
 \begin{figure}
   \centering
@@ -442,8 +442,8 @@ The resulting figure is shown in Fig.~\ref{fig:modelFit}.
   \includegraphics[width = 0.5\textwidth]{figs-example6-9}
   \includegraphics[width = 0.5\textwidth]{figs-example6-10}
   \caption{The probabilities of prefering yoghurt A, having
-    no preference, or prefering yoghurt B for an average consumer 
-    ($b = 0$) and for fairly extreme consumers 
+    no preference, or prefering yoghurt B for an average consumer
+    ($b = 0$) and for fairly extreme consumers
     ($b = \pm 1.64\sigma_b$).}
   \label{fig:modelFit}
 \end{figure}

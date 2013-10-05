@@ -17,7 +17,7 @@ discrimPwr(pdA, pd0 = 0, sample.size, alpha = 0.05, pGuess = 1/2,
 
 d.primePwr(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
            method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
-             "triangle"), 
+             "triangle"),
            test = c("difference", "similarity"),
            statistic = c("exact", "normal", "cont.normal"))
 }
@@ -34,10 +34,10 @@ d.primePwr(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
   \item{alpha}{the type I level of the test; scalar between zero and
     one}
   \item{method}{the discrimination protocol for which the power should
-    be computed} 
+    be computed}
   \item{pGuess}{the guessing probability for the discrimination
     protocol, e.g. 1/2 for duo-trio and 2-AFC, and 1/3 for
-    triangle and 3-AFC; scalar between zero and one}
+    triangle, tetrad and 3-AFC; scalar between zero and one}
   \item{test}{the type of one-sided binomial test (direction of the
     alternative hypothesis): "difference" corresponds "greater" and
     "similarity" corresponds to "less"}
@@ -64,7 +64,7 @@ d.primePwr(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
 }
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
-\seealso{\code{\link{findcr}}, 
+\seealso{\code{\link{findcr}},
   \code{\link{discrim}}, \code{\link{discrimSim}},
   \code{\link{AnotA}}, \code{\link{discrimSS}}
 }
@@ -80,10 +80,26 @@ d.primePwr(1, sample.size = 30, method = "twoAFC")
 discrimPwr(pd, sample.size = 30, statistic = "cont.normal")
 discrimPwr(pd, sample.size = 30, statistic = "normal")
 
-
 ## A similarity example:
 discrimPwr(pdA = 0.1, pd0 = 0.2, sample.size = 100, pGuess = 1/3,
            test = "similarity")
+\dontshow{
+## Testing stability of results:
+x1 <- discrimPwr(pd, sample.size = 30)
+x2 <- d.primePwr(1, sample.size = 30, method = "twoAFC")
+## x3 := dput(x2)
+x3 <- 0.917255217993622
+stopifnot(isTRUE(all.equal(x1, x2, x3)))
+
+y1 <- discrimPwr(pd, sample.size = 30, statistic = "cont.normal")
+y2 <- discrimPwr(pd, sample.size = 30, statistic = "normal")
+y3 <- discrimPwr(pdA = 0.1, pd0 = 0.2, sample.size = 100, pGuess = 1/3,
+           test = "similarity")
+y <- c(y1, y2, y3)
+## yres := dput(y)
+yres <- c(0.88466478871626, 0.921092040377824, 0.306809762270984)
+stopifnot(isTRUE(all.equal(y, yres)))
+}
 
 }
 \keyword{models}% at least one, from doc/KEYWORDS

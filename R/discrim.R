@@ -40,7 +40,7 @@ AnotA <-
 discrim <-
   function(correct, total, pd0 = 0, conf.level = 0.95,
            method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
-             "triangle"), 
+             "triangle"),
            statistic = c("exact", "likelihood", "score", "Wald"),
            test = c("difference", "similarity"), ...)
 {
@@ -87,7 +87,7 @@ discrim <-
   }
   ## Get p-value, CI and test statistic:
   if(stat == "exact") {
-    p.value <- 
+    p.value <-
       if(test == "difference")
         1 - pbinom(q = x - 1, size = n, prob = pc0)
       else
@@ -146,7 +146,7 @@ discrim <-
   class(res) <- "discrim"
   return(res)
 }
-    
+
 discrimOld <-
 function (success, total,
           method = c("duotrio", "threeAFC", "twoAFC", "triangle"),
@@ -225,7 +225,7 @@ discrimSim <-
   if(d.prime < 0) stop("'d.prime' has to be non-negative")
   if(sd.indiv < 0) stop("'sd.indiv' has to be non-negative")
   ## Individual deviations in d.prime:
-  D <- rnorm(n = sample.size, mean = 0, sd = sd.indiv) 
+  D <- rnorm(n = sample.size, mean = 0, sd = sd.indiv)
   q <- delimit(d.prime + D, lower = 0) # individual d.prime's
   ## Compute no. correct answers for the test:
   n.correct <- rbinom(n = sample.size, size = replicates,
@@ -262,9 +262,9 @@ print.discrim <-
                   "score" = "Pearson and score statistics.")
   cat(paste("\nEstimates for the", x$method,
             "discrimination protocol with", x$data[1],
-            "correct\nanswers in", 
+            "correct\nanswers in",
             x$data[2], "trials. One-sided p-value and",
-            round(100 * x$conf.level, 3),  
+            round(100 * x$conf.level, 3),
             "% two-sided confidence\nintervals are based on the",
             text1, "\n\n"))
   print(x$coefficients, digits = digits)
@@ -274,12 +274,12 @@ print.discrim <-
   if(x$statistic == "Wald")
     cat(paste("Wald statistic = ", format(x$stat.value, digits),
               ", p-value: ", format.pval(x$p.value, digits=4), "\n",
-  sep="")) 
+  sep=""))
   if(x$statistic == "likelihood")
     cat(paste("Likelihood Root statistic = ",
-              format(x$stat.value, digits), 
+              format(x$stat.value, digits),
               ", p-value: ", format.pval(x$p.value, digits=4), "\n",
-  sep="")) 
+  sep=""))
   if(x$statistic == "exact")
     cat(paste("'exact' binomial test: ",
               "p-value =", format.pval(x$p.value, digits=4), "\n"))
@@ -287,7 +287,7 @@ print.discrim <-
     cat(paste("Pearson X-square statistic = ",
               format(x$stat.value, digits), ", df = ", x$df,
               ", p-value: ", format.pval(x$p.value, digits=4), "\n",
-  sep = "")) 
+  sep = ""))
   cat("Alternative hypothesis: ")
   cat(paste("d-prime is",
             ifelse(x$test == "difference", "greater", "less"),
@@ -375,7 +375,7 @@ plot.anota <-
 ##                   twoAFC = twoAFC()$mu.eta,
 ##                   logit = dlogis
 ##                   )
-## 
+##
 ##   fit <- optim(start, fn=nll, gr=grd, X=x, y=y, w=wt, method="BFGS", #
 ##                hessian = Hess, ...)
 ##   ## Fitted values (probabilities):
@@ -404,9 +404,10 @@ confint.anota <-
   function(object, parm, level = 0.95, ...)
 ### get confint from the discrim object.
 {
-  ci <- MASS:::confint.glm(object$res, level = level)
+  ## Using confint.glm from MASS:
+  ci <- confint(object$res, level = level)
   rownames(ci) <- c("threshold", "d.prime")
-  ci[2,] <- -ci[2,]
+  ci[2,] <- rev(-ci[2,])
   return(ci)
 }
 
@@ -414,12 +415,12 @@ confint.discrim <-
   function(object, parm, level = 0.95, ...)
 ### get confint from the discrim object.
 {
-  if(level == object$conf.level) 
+  if(level == object$conf.level)
     obj <- object$coefficients[, 3:4]
   else {
     call <- update(object, conf.level = level, evaluate = FALSE)
     obj <- eval.parent(call)$coefficients[, 3:4]
-  }    
+  }
   attr(obj, "method") <- object$method
   attr(obj, "conf.level") <- object$conf.level
   attr(obj, "statistic") <- object$statistic
@@ -440,7 +441,7 @@ profile.discrim <-
   prof <- prof[prof$pSeq >= pg, ]
 ### FIXME: This does not handle if x/n < pg, as the relative
 ### likelihood needs to be rescaled to have max in pg in that case.
-### - Really? 
+### - Really?
   prof$d.prime <- psyinv(prof$pSeq, method = fitted$method)
   keep <- is.finite(prof$d.prime)
   prof$pSeq <- NULL
@@ -458,7 +459,7 @@ plot.profile.discrim <-
   if (fig == TRUE) {
     npl.spline <- spline(x$d.prime, x$Lroot, n = n, method = method)
     plot(npl.spline$x, exp(-npl.spline$y^2/2), type = "l", las = 1,
-         ylim = c(0, 1), 
+         ylim = c(0, 1),
          xlab = "d-prime", ylab = "Relative Likelihood",
          main = "", ...)
     abline(h = lim)
@@ -583,7 +584,7 @@ plotProf <-
 ##         power <- pbinom(xcr, ss, prob$linkinv(delta))
 ##     power
 ## }
-## 
+##
 
 ## discrimPwr <-
 ##   function(delta, sample.size, alpha = 0.05,
@@ -622,9 +623,9 @@ plotProf <-
 
 
 ### This is not working due to the discreteness of the binomial
-### distribution: 
+### distribution:
 ### testSS <- function(target.power, pdA, pd0, sample.size, alpha = 0.05,
-###                    pGuess, test) 
+###                    pGuess, test)
 ### ### Is sample.size the required sample size for a one-tailed binomial test?
 ### ### Result: boolean
 ###   ((discrimPwr2(pdA = pdA, pd0 = pd0, sample.size = sample.size,

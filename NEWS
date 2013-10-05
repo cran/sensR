@@ -17,8 +17,8 @@ June 17. 2010: version 1.2.0:
 
 - the twoAC() function and its print method is introduced for
   estimation of d-prime and tau in the 2-AC protocol
-- the clls function and its methods are no longer supported. 
-  The user is adviced to use clm() from package ordinal instead. 
+- the clls function and its methods are no longer supported.
+  The user is adviced to use clm() from package ordinal instead.
 
 July 20. 2010: version 1.2.1:
 
@@ -38,19 +38,19 @@ October 13. 2010: version 1.2.2:
 - revision of findcr function. It is now faster and more reliable
   since it is using uniroot rather than a simple while loop and an
   explicit test that the return value is in fact the critical value is
-  conducted.  
+  conducted.
 - Error in discrimSim for the threeAFC method corrected.
 
 October 28. 2010: version 1.2.3:
 
 - major revision of discrim, discrimPwr and discrimSS including
   confint.discrim, profile.discrim, print.discrim and
-  plot.profile.discrim. 
+  plot.profile.discrim.
 
 November 25. 2010: version 1.2.4:
 
 - Vignette 'Methodology' describes the statistical methodology of
-  sensory discrimination tests. 
+  sensory discrimination tests.
 - Added the convenience functions d.primePwr and d.primeSS.
 
 November 26. 2010: version 1.2.5:
@@ -78,7 +78,7 @@ March 8. 2011: version 1.2.8:
 April 8. 2011: version 1.2.9:
 
 - correcting t and f as logicals in sweave vignettes to TRUE and FALSE
-  (mail from Brian Ripley 11-04-08) 
+  (mail from Brian Ripley 11-04-08)
 
 May 10. 2011: version 1.2.10:
 
@@ -95,19 +95,19 @@ August 19. 2011: version 1.2.12:
 September 23. 2011: version 1.2.13:
 
 - bug in plot.discrim (mean separation of perceptual curves was wrong)
-  corrected. 
+  corrected.
 
 November 14. 2011: version 1.2.14:
 
-- completing partially matched argument lower -> lower.tail in pnorm. 
+- completing partially matched argument lower -> lower.tail in pnorm.
 
 January 26-27. 2012: version 1.2.15:
 
 - formatting coefficient table and p-values from print.summary.betabin
   with printCoefmat and format.pval.
 - updating the description of the data argument to the twoAC
-  function. 
-- printing coef table in print.twoAC with more reasonable no. digits. 
+  function.
+- printing coef table in print.twoAC with more reasonable no. digits.
 - printing coef table in print.summary.samediff with printCoefmat.
 - moving vignettes to vignette subdirectory.
 - considerable improvements to the triangle family object using the
@@ -123,7 +123,7 @@ January 26-27. 2012: version 1.2.15:
 February 6. 2012: version 1.2.16:
 
 - triangle()$mu.eta() now using a direct expression rather than
-  numDeriv::grad. 
+  numDeriv::grad.
 - major update of duotrio and twoAFC family objects; they now work in
   boundary cases and use effecient computations.
 
@@ -135,7 +135,7 @@ June 7. 2012: version 1.2-17:
 
 October 30. 2012: version 1.2-18:
 
-- power functions singled out in R/power.R 
+- power functions singled out in R/power.R
 - minor adjustments to print.discrim
 
 March 15. 2013: version 1.2-19:
@@ -145,4 +145,36 @@ March 15. 2013: version 1.2-19:
   normal approximate sample sizes are provided.
 - print.discrim now says that the p-value is one-sided and that the
   confidence interval is two-sided.
+
+July 24. 2013: version 1.2-20:
+
+- Documentation bug reported by Mike Allerhand (2013-07-09) in SDT
+  fixed.
+
+September 5. 2013: version 1.2-22:
+
+- Adding support for ANOVA-type tests of d-primes using the functions
+  dprime_compare, dprime_test, dprime_table and
+  posthoc.dprime_compare/posthoc.dprime_test.
+
+September 10. 2013:
+
+- updating various man-pages with 'tetrad' information and links.
+
+October 1. 2013:
+
+- Removing calls to '::' and ':::' in R codebase.
+- Moving 'ordinal' from Depends to Suggests, 'numDeriv' from Depends
+  to Imports, 'MASS' from Suggests to Imports.
+- Adding ByteCompile: yes to Description file.
+- Now using import(MASS) to fetch the confint.glm method from MASS and
+  adding test for confing.anota to check that the right confint method
+  is actually used.
+- Deprecating function 'clls'.
+- Using if(require(ordinal)) in examples, tests and vignettes where
+  needed.
+- Adding 'ordinal' to vignetteDepends for the twoACexamples vignette.
+- Adding \dontshow{} tests to examples in .Rd files rather than having
+  an .Rout.save file in ./tests/Examples to avoid problems with
+  minor numerical differences across platforms and architectures.
 

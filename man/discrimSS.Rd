@@ -5,7 +5,7 @@
 \title{Sensory discrimination sample size calculation}
 \description{
   Computes the sample size for a difference or similarity test for a
-  sensory discrimination experiment using the binomial distribution. 
+  sensory discrimination experiment using the binomial distribution.
   \code{d.primeSS} is a convenience function that calls
   \code{discrimSS} but has arguments in terms of d-prime rather than
   pd, the expected proportion of discriminators.
@@ -14,14 +14,14 @@
 discrimSS(pdA, pd0 = 0, target.power = 0.90, alpha = 0.05,
           pGuess = 1/2, test = c("difference", "similarity"),
           statistic = c("exact", "stable.exact", "both.exact",
-           "normal", "cont.normal")) 
+           "normal", "cont.normal"))
 
 d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
           method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
-            "triangle"), 
+            "triangle"),
           test = c("difference", "similarity"),
           statistic = c("exact", "stable.exact", "both.exact",
-           "normal", "cont.normal")) 
+           "normal", "cont.normal"))
 }
 \arguments{
   \item{pdA}{the probability of discrimination for the model under the
@@ -36,10 +36,10 @@ d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
   \item{alpha}{the type I level of the test; scalar between zero and
     one}
   \item{method}{the discrimination protocol for which the sample size
-    should be computed} 
+    should be computed}
   \item{pGuess}{the guessing probability for the discrimination
     protocol, e.g. 1/2 for duo-trio and 2-AFC, and 1/3 for
-    triangle and 3-AFC; scalar between zero and one}
+    triangle, tetrad and 3-AFC; scalar between zero and one}
   \item{test}{the type of one-sided binomial test (direction of the
     alternative hypothesis): "difference" corresponds "greater" and
     "similarity" corresponds to "less"}
@@ -58,7 +58,7 @@ d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
   interval [0, \code{pdA}] or [0, \code{d.primeA}]
   is the similarity region covering sensory differences for which we
   would say that the products are similar.
-  
+
   The probability of a correct answer under the null hypothesis is
   given by \code{pd0 + pGuess * (1 - pd0)}. Similarly, the probability
   of a correct answer under the alternative hypothesis is given by
@@ -87,7 +87,7 @@ d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
       is the normal approximation to the exact binomial sample size
       without any continuity adjustment. This usually provides a sample
       size that is smaller than the sample size for the exact binomial
-      test. 
+      test.
     }
     \item{\code{"cont.normal"}}{
       is the continuity adjusted normal approximation to
@@ -112,17 +112,20 @@ d.primeSS(d.primeA, d.prime0 = 0, target.power = 0.90, alpha = 0.05,
 
   Ennis, J.M. and V. Jesionka (2011). The power of sensory
   discrimination methods revisited. Journal of Sensory Studies, 26,
-  pp. 371-382. 
+  pp. 371-382.
 }
 \author{Per Bruun Brockhoff and Rune Haubo B Christensen}
 
 \seealso{\code{\link{AnotA}}, \code{\link{discrimPwr}},
-  \code{\link{samediff}}, \code{\link{findcr}}} 
+  \code{\link{samediff}}, \code{\link{findcr}}}
 
 \examples{
 ## Finding the smallest necessary sample size:
 discrimSS(pdA = 0.5, pd0 = 0, target.power = 0.80, alpha = 0.05,
    pGuess = 1/2, test = "difference", statistic = "exact")
+## The stable-exact sample size is larger:
+discrimSS(pdA = 0.5, pd0 = 0, target.power = 0.80, alpha = 0.05,
+   pGuess = 1/2, test = "difference", statistic = "stable.exact")
 
 ## Give identical results:
 pd <- coef(rescale(d.prime = 1, method = "twoAFC"))$pd
@@ -133,6 +136,26 @@ d.primeSS(1, target.power = 0.90, method = "twoAFC")
 ## A similarity example:
 discrimSS(pdA = 0.1, pd0 = 0.2, target.power = 0.80, alpha = 0.05,
    pGuess = 1/2, test = "similarity", statistic = "exact")
+\dontshow{
+## Test stability of code:
+## Finding the smallest necessary sample size:
+a <- discrimSS(pdA = 0.5, pd0 = 0, target.power = 0.80, alpha = 0.05,
+   pGuess = 1/2, test = "difference", statistic = "exact")
+a2 <- discrimSS(pdA = 0.5, pd0 = 0, target.power = 0.80, alpha = 0.05,
+   pGuess = 1/2, test = "difference", statistic = "stable.exact")
 
+## Give identical results:
+pd <- coef(rescale(d.prime = 1, method = "twoAFC"))$pd
+b <- discrimSS(pdA = pd, pd0 = 0, target.power = 0.90, alpha = 0.05,
+   pGuess = 1/2, test = "difference", statistic = "exact")
+c <- d.primeSS(1, target.power = 0.90, method = "twoAFC")
+
+## A similarity example:
+d <- discrimSS(pdA = 0.1, pd0 = 0.2, target.power = 0.80, alpha = 0.05,
+   pGuess = 1/2, test = "similarity", statistic = "exact")
+
+expect <- c(23, 28, 30, 30, 604)
+stopifnot(c(a, a2, b, c, d) == expect)
+}
 }
 \keyword{models}% at least one, from doc/KEYWORDS

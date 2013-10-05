@@ -74,11 +74,13 @@ confint(pr6)
 #################################
 ## testing clm2twoAC:
 
-response <- gl(3,1)
-fit.clm <- clm(response ~ 1, weights = c(2, 2, 6), link = "probit")
-fit.clm2 <- clm2(response ~ 1, weights = c(2, 2, 6), link = "probit")
+if(require(ordinal)) {
+    response <- gl(3,1)
+    fit.clm <- clm(response ~ 1, weights = c(2, 2, 6), link = "probit")
+    fit.clm2 <- clm2(response ~ 1, weights = c(2, 2, 6), link = "probit")
 
-clm2twoAC(fit.clm)
-clm2twoAC(fit.clm2)
+    clm2twoAC(fit.clm)
+    clm2twoAC(fit.clm2)
+}
 
 

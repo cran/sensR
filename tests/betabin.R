@@ -4,9 +4,9 @@
 library(sensR)
 
 ## Data hunter 2, tab1, dataset 1:
-x=c(0, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
+x <- c(0, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 9, 9)
-X=matrix(c(x,rep(12,24)),ncol=2,byrow=F)
+X <- matrix(c(x,rep(12,24)),ncol=2,byrow=F)
 summary(bbc <- betabin(X, corr = TRUE, method = "triangle"))
 
 target <- c(0.1175015, 0.2146566)
@@ -17,12 +17,19 @@ vcov(bbc)
 AIC(bbc)
 bbc
 
-summary(betabin(X, corr = TRUE, method = "twoAFC"))
+sb <- summary(betabin(X, corr = TRUE, method = "twoAFC"))
+b <- as.vector(coef(sb)[, 1])
+b.expected <- c(0, 1, .5, 0, 0)
+stopifnot(isTRUE(
+    all.equal(b, b.expected, tol=1e-4)
+    ))
+
 ## summary(betabin(X, corr = FALSE, pGuess = 1/3,
 ##                 method = "alpha-beta"))
 ## summary(betabin(X, corr = TRUE, pGuess = 1/3,
 ##                 method = "alpha-beta"))
-summary(betabin(X, corr = TRUE, method = "threeAFC"))
+sb <- summary(betabin(X, corr = TRUE, method = "threeAFC"))
+print(coef(sb), digits=3)
 
 ## Hunter experiment 3, data set 2.
 x <- c(2, 2, 3, 4, 5, 5, 5, 5, 6, 6, 6, 7,
@@ -49,8 +56,14 @@ summary(betabin(X3, cor = 0, method = "triangle"))
 x <- c(0, 1,1,1, 2,2,2, 3,3,3,3,3)
 X4 <- cbind(x, 4)
 sum(x)/(12*4) # 5
-summary(betabin(X4, method = "triangle"))
-summary(betabin(X4, cor = 0, method = "triangle"))
+b <- coef(summary(betabin(X4, method = "triangle")))
+stopifnot(isTRUE(
+    all.equal(as.vector(b)[1:2], c(.25, 0), tol=1e-2)
+    ))
+b <- coef(summary(betabin(X4, cor = 0, method = "triangle")))
+stopifnot(isTRUE(
+    all.equal(as.vector(b)[1:2], c(.5, 0), tol=1e-4)
+    ))
 ## summary(betabin(X4, pGuess=1/3, method = "a"))
 ## summary(betabin(X4, cor = 0, pGuess=1/3, method = "a"))
 

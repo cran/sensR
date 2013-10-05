@@ -5,7 +5,7 @@
 
 
 twoAC <-
-  function(data, d.prime0 = 0, conf.level = 0.95, 
+  function(data, d.prime0 = 0, conf.level = 0.95,
            statistic = c("likelihood", "Wald"),
            alternative = c("two.sided", "less", "greater"),
            ## test = c("difference", "similarity"),
@@ -26,13 +26,13 @@ twoAC <-
   statName <- match.arg(statistic)
   alt <- match.arg(alternative)
 
-  ## Initial argument consistency testing: 
-  if(!isTRUE(all.equal(round(data), data))) 
+  ## Initial argument consistency testing:
+  if(!isTRUE(all.equal(round(data), data)))
     stop("non-integer numbers not allowed in 'data'")
   data <- as.integer(data)
   if(length(data) != 3)
     stop("'data' argument should be of length 3")
-  stopifnot(is.numeric(conf.level) && length(conf.level) == 1 && 
+  stopifnot(is.numeric(conf.level) && length(conf.level) == 1 &&
             conf.level > 0 && conf.level < 1)
   stopifnot(is.numeric(d.prime0) && length(d.prime0) == 1)
 
@@ -46,15 +46,15 @@ twoAC <-
                 conf.level = conf.level, call = match.call(),
                 d.prime0 = d.prime0), res)
   class(res) <- "twoAC"
-  
+
   ## Compute test statistic:
-  if(statName == "likelihood") 
+  if(statName == "likelihood")
     res$stat.value <-
       as.vector(LRtest.2AC(data, d.prime0 = d.prime0,
                            alternative = alt)[,"lroot"])
-  if(statName == "Wald" && !is.null(res$vcov)) 
+  if(statName == "Wald" && !is.null(res$vcov))
     res$stat.value <- (d.prime - d.prime0) / se.d.prime
-  
+
   ## Compute p-value:
   if(!is.null(res$stat.value))
     res$p.value <- normalPvalue(statistic = res$stat.value,
@@ -62,7 +62,7 @@ twoAC <-
 
   ## Get confidence intervals:
   if(!is.null(res$vcov))
-    res$confint <- confint(res, parm = "d.prime", level = conf.level, 
+    res$confint <- confint(res, parm = "d.prime", level = conf.level,
                            type = statName)
 
   ## return object:
@@ -81,7 +81,7 @@ print.twoAC <-
   cat(paste("Results for the 2-AC protocol with data ",
             deparse(x$call$data), ":\n", sep = ""))
   ## printCoefmat(x$coefficients, tst.ind=integer(0), cs.ind=1:2,
-  ##              digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...) 
+  ##              digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...)
 ### NOTE: Not using printCoefmat here because it wont print Inf and
 ### -Inf parameter estimates.
   print(x$coefficients, quote = FALSE, digits = digits, ...)
@@ -95,9 +95,9 @@ print.twoAC <-
               "\n", sep = ""))
     ci <- x$confint
     colnames(ci) <- c("Lower", "Upper")
-    print(ci, digits = digits, ...) 
+    print(ci, digits = digits, ...)
   }
-  
+
   ## Print result of signifcance test:
   if(is.null(x$stat.value) && x$statistic == "Wald")
     cat("\nSignificance test not available - try with the likelihood statistic\n")
@@ -111,7 +111,7 @@ print.twoAC <-
                 "p-value =", format.pval(x$p.value), "\n"))
     if(x$statistic == "likelihood")
       cat(paste(" Likelihood root statistic =",
-                format(x$stat.value, digits), 
+                format(x$stat.value, digits),
                 "p-value =", format.pval(x$p.value), "\n"))
     cat(" Alternative hypothesis: ")
     cat(paste("d-prime is", switch(x$alternative,
@@ -119,10 +119,10 @@ print.twoAC <-
                                    "less" = "less than",
                                    "greater" = "greater than"),
               format(x$d.prime0, digits), "\n"))
-  }  
+  }
   return(invisible(x))
 }
-  
+
 profile.twoAC <-
   function(fitted, alpha = 1e-3, nSteps = 1e2, range, ...)
 {
@@ -172,15 +172,15 @@ profile.twoAC <-
 
 confint.twoAC <-
   function(object, parm, level = 0.95, type = c("likelihood", "Wald"),
-           ...) 
+           ...)
 {
   type <- match.arg(type)
   if(type == "Wald") {
     cf <- coef(object)[,1]
     pnames <- names(cf)
-    if (missing(parm)) 
+    if (missing(parm))
         parm <- pnames
-    else if (is.numeric(parm)) 
+    else if (is.numeric(parm))
         parm <- pnames[parm]
     a <- (1 - level)/2
     a <- c(a, 1 - a)
@@ -192,7 +192,7 @@ confint.twoAC <-
     ci[] <- cf[parm] + ses %o% fac
   }  else
   if(type == "likelihood") {
-    object <- profile(object, alpha = (1 - level) / 4, ...) 
+    object <- profile(object, alpha = (1 - level) / 4, ...)
     ci <- confint(object, level=level, ...)
   }
   return(ci)
@@ -259,16 +259,16 @@ plot.profile.twoAC <-
 }
 
 nll.2AC <- function(tau, d.prime = 0, data)
-### Computes the negative log-likelihood of the 2-AC protocol 
+### Computes the negative log-likelihood of the 2-AC protocol
 {
-  ## get probability vector (prob) from 2-AC parameters: 
+  ## get probability vector (prob) from 2-AC parameters:
   p1 <- pnorm(-tau, d.prime, sqrt(2))
-  p12 <- pnorm(tau, d.prime, sqrt(2)) 
+  p12 <- pnorm(tau, d.prime, sqrt(2))
   prob <- c(p1, p12 - p1, 1 - p12)
   prob[prob <= 0] <- 1 ## to evaluate log safely
 
   ## Evaluate negative log likelihood:
-  -sum(data * log(prob)) 
+  -sum(data * log(prob))
 }
 
 estimate.2AC <- function(data, vcov = TRUE, warn = TRUE)
@@ -282,19 +282,19 @@ estimate.2AC <- function(data, vcov = TRUE, warn = TRUE)
   ## test data argument?
   vcov <- as.logical(vcov)
   stopifnot(is.logical(vcov))
-  
+
   ## Define negative log-likelihood:
   nll <- function(par) {
     tau <- par[1]
     d.prime <- par[2]
     p1 <- pnorm(-tau, d.prime, sqrt(2))
-    p12 <- pnorm(tau, d.prime, sqrt(2)) 
+    p12 <- pnorm(tau, d.prime, sqrt(2))
     prob <- c(p1, p12 - p1, 1 - p12)
     prob[prob <= 0] <- 1 ## to evaluate log safely
     ## Evaluate negative log likelihood:
-    -sum(data * log(prob)) 
+    -sum(data * log(prob))
   }
-  
+
   ## Get ML estimates:
   x <- data
   if(x[1] > 0 && x[2] == 0 && x[3] == 0) { # case 1
@@ -338,7 +338,7 @@ estimate.2AC <- function(data, vcov = TRUE, warn = TRUE)
               logLik = logLikMax)
 
   ## Get Hessian, vcov and standard errors:
-  if(vcov) { 
+  if(vcov) {
     makeWarn <- TRUE
     ## If all coef are finite and tau < 0:
     if(all(is.finite(coef[,1])) && tau > 0) {
@@ -358,16 +358,16 @@ estimate.2AC <- function(data, vcov = TRUE, warn = TRUE)
       warning("vcov and standard errors are not available",
               call. = FALSE)
   } ## end vcov
-  
+
   ## Return results
   return(res)
 }
- 
+
 vcov.twoAC <- function(object, ...) object$vcov
 logLik.twoAC <- function(object, ...) object$logLik
 
 twoACpwr <-
-  function(tau, d.prime, size, d.prime0 = 0, alpha = 0.05, tol = 1e-5, 
+  function(tau, d.prime, size, d.prime0 = 0, alpha = 0.05, tol = 1e-5,
            return.dist = FALSE, statistic = "likelihood",
            alternative = c("two.sided", "less", "greater"))
   ## allow for statistic = c("likelihood", "Wald")?
@@ -390,7 +390,7 @@ twoACpwr <-
   stopifnot(is.numeric(tol) && length(tol) == 1,
             tol >= 0 && tol < 1)
   stopifnot(is.logical(return.dist))
-  
+
   ## All possible samples:
   n <- as.integer(size)
   Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
@@ -400,7 +400,7 @@ twoACpwr <-
   p2 <- pnorm(tau, d.prime, sqrt(2)) - p1
   p3 <- 1 - p1 - p2
   pvec <- c(p1, p2, p3)
-  
+
   ## Distribution of samples and p-values:
   dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
 
@@ -416,7 +416,7 @@ twoACpwr <-
   ## Compute p-values:
   pvals <- LRtest.2AC(Y[keep, ], d.prime0 = d.prime0,
                       alternative = alternative)[,1]
-  ## pvals <- apply(Y[keep, ], 1, function(x) LRtest.2AC(x)[2]) 
+  ## pvals <- apply(Y[keep, ], 1, function(x) LRtest.2AC(x)[2])
 
   ## Compute the cumulative distribution of p-values:
   df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
@@ -432,7 +432,7 @@ twoACpwr <-
   else {
     power <- 0
     actual.alpha <- 0
-  } 
+  }
   return(data.frame("power" = power, "actual.alpha" = actual.alpha,
                     "samples" = nrow(Y), "discarded" = no.discard,
                     "kept" = nrow(Y) - no.discard,
@@ -464,7 +464,7 @@ LRtest.2AC <-
     stop("'data' should be a vector of length 3 or a matrix with 3 cols")
   ## test that isTRUE(all.equal(round(data), data)) ignored here
   ## because of speed.
-  
+
   ## Make indicator variable with the seven possible data cases:
   cases <- integer(length = nrow(data))
   cases[data[,3] == 0] <- 4L
@@ -474,7 +474,7 @@ LRtest.2AC <-
   cases[data[,1] == 0 & data[,3] == 0] <- 2L
   cases[data[,1] == 0 & data[,2] == 0] <- 3L
 
-  ## Compute the signed likelihood root statistic in all seven cases: 
+  ## Compute the signed likelihood root statistic in all seven cases:
   lroot <- numeric(length = nrow(data))
   if(sum(ind <- (cases == 1)))
     lroot[ind] <- sapply(which(ind), function(i) {
@@ -545,7 +545,7 @@ pearsonPwr <-
   p2 <- pnorm(tau, d.prime, sqrt(2)) - p1
   p3 <- 1 - p1 - p2
   pvec <- c(p1, p2, p3)
- 
+
   ## Distribution of samples and p-values:
   dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
   sdmult <- sort(dmult)
@@ -553,11 +553,11 @@ pearsonPwr <-
   keep <- dmult > sdmult[no.discard] # obs. to keep indicator
   if(no.discard == 0) keep <- rep(TRUE, length(dmult))
   dmult <- dmult[keep]
-  
+
   ## pvals <- apply(Y[keep, ], 1, Pears)
   ## pvals[is.na(pvals)] <- 1
-  pvals <- apply(Y[keep, ], 1, function(x) Potter(x, alternative=alternative)) 
-  
+  pvals <- apply(Y[keep, ], 1, function(x) Potter(x, alternative=alternative))
+
   df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
   df <- df[order(pvals),]
   dist <- cumsum(df[,1])
@@ -571,7 +571,7 @@ pearsonPwr <-
   else {
     power <- 0
     actual.alpha <- 0
-  } 
+  }
   return(data.frame("power" = power, "actual.alpha" = actual.alpha,
                     "samples" = nrow(Y), "discarded" = no.discard,
                     "kept" = nrow(Y) - no.discard,
@@ -613,7 +613,7 @@ binPwr <-
   p2 <- pnorm(tau, d.prime, sqrt(2)) - p1
   p3 <- 1 - p1 - p2
   pvec <- c(p1, p2, p3)
- 
+
   ## Distribution of samples and p-values:
   dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
   sdmult <- sort(dmult)
@@ -621,10 +621,10 @@ binPwr <-
   keep <- dmult > sdmult[no.discard] # obs. to keep indicator
   if(no.discard == 0) keep <- rep(TRUE, length(dmult))
   dmult <- dmult[keep]
-  
+
   pvals <- apply(Y[keep, ], 1, function(x) binExact(x, alternative=alternative))
   pvals[is.na(pvals)] <- 1
-  
+
   df <- data.frame(dens=dmult, p.value=pvals, Y=Y[keep, ])
   df <- df[order(pvals),]
   dist <- cumsum(df[,1])
@@ -638,7 +638,7 @@ binPwr <-
   else {
     power <- 0
     actual.alpha <- 0
-  } 
+  }
   return(data.frame("power" = power, "actual.alpha" = actual.alpha,
                     "samples" = nrow(Y), "discarded" = no.discard,
                     "kept" = nrow(Y) - no.discard,
@@ -690,25 +690,25 @@ exact.2AC <-
            alternative = c("two.sided", "less", "greater"), ...)
 {
   alternative <- match.arg(alternative)
-  coefs <- coef(sensR:::estimate.2AC(x, vcov=FALSE))[,1]
-  dHat <- coefs[2] 
+  coefs <- coef(estimate.2AC(x, vcov=FALSE))[,1]
+  dHat <- coefs[2]
   n <- as.integer(sum(x))
   Y <- do.call(rbind, lapply(0:n, function(j) cbind(n-j, 0:j, j:0)))
 
   ## get pvec under the null hypothesis:
   if(is.null(tau0)) ## tau0 <- coefs[1]
-    tau0 <- optimize(sensR:::nll.2AC, interval=c(0, 10),
+    tau0 <- optimize(nll.2AC, interval=c(0, 10),
                      d.prime=d.prime0, data=x)$minimum
-  
-  ## Get pi-vector from tau and d.prime:  
+
+  ## Get pi-vector from tau and d.prime:
   p1 <- pnorm(-tau0, d.prime0, sqrt(2))
   p2 <- pnorm(tau0, d.prime0, sqrt(2)) - p1
   p3 <- 1 - p1 - p2
   pvec <- c(p1, p2, p3)
-  
+
   ## Distribution of samples under the null:
   dmult <- apply(Y, 1, function(x) dmultinom(x, prob = pvec))
-  
+
   ## Discard tail of distribution - keep only those obs with large
   ## enough probability mass to avoid computing d.prime for samples
   ## that never occur anyway:
@@ -720,10 +720,10 @@ exact.2AC <-
 
   ## d.primes for each possible outcome:
   d.primes <- apply(Y[keep, ], 1, function(x)
-                    coef(sensR:::estimate.2AC(x, vcov=FALSE))[2,1] )
+                    coef(estimate.2AC(x, vcov=FALSE))[2,1] )
   df <- data.frame(dens=dmult, d.prime=d.primes)
   df <- df[!is.na(d.primes),]
-  
+
   p.value <-
     switch(alternative,
            "greater" = with(df, sum(dens[d.prime >= dHat])),
@@ -744,40 +744,40 @@ exact.2AC <-
 ##  LRtest.2AC.old <- function(x, ...) {
 ##  ### With the fomulation below, this function is only applicable when
 ##  ### d.prime0 = 0, i.e. when value of d.prime under the null hypothesis
-##  ### is zero. 
+##  ### is zero.
 ##  ### x: vector of length 3 containing the data for the 2-AC protocol.
 ##  ### d.prime0: Value under the null hypothesis
 ##  ### alternative = c("two-sided", "greater", "less")
 ##  ### statistic = c("likelihood", "Wald")
 ##    nll.tau <- function(tau, d = 0, data) {
 ##      p1 <- pnorm(-tau, d, sqrt(2))
-##      p12 <- pnorm(tau, d, sqrt(2)) 
+##      p12 <- pnorm(tau, d, sqrt(2))
 ##      prob <- c(p1, p12 - p1, 1 - p12)
 ##      prob[prob <= 0] <- 1 ## to evaluate log safely
 ##      -sum(data * log(prob)) # negative log likelihood
 ##    }
-##    
+##
 ##    ## log-likelihood at ML estimates:
 ##    prob <- x / sum(x)
 ##    prob[prob <= 0] <- 1 ## to evaluate log safely
 ##    llMax <- sum(x * log(prob))
-##    
+##
 ##    ## log-likelihood and tau at d-prime = 0:
 ##    if(x[2] == 0) { # & other x arbitrary
 ##      tau <- 0
 ##      nll.d0 <- nll.tau(0, 0, x)
 ##    }
-##    else if(x[1] == 0 && x[3] == 0) { # & x[2] > 0 
+##    else if(x[1] == 0 && x[3] == 0) { # & x[2] > 0
 ##      tau <- Inf
 ##      nll.d0 <- 0
 ##    }
-##    else {  
+##    else {
 ##      fit <- optimize(nll.tau, c(0, 10), data = x)
 ##      nll.d0 <- fit$objective
 ##      tau <- fit$minimum
 ##    }
 ##    ## Signed likelihood root statistic:
-##    ## lroot <- sign(d.prime.hat - d.prime0) * sqrt(2*(llMax + nll.d0)) 
+##    ## lroot <- sign(d.prime.hat - d.prime0) * sqrt(2*(llMax + nll.d0))
 ##    lroot <- abs(sqrt(2*(llMax + nll.d0))) ## absolute likelihood root
 ##    ## statistic
 ##    ## if(alternative == "two-sided")

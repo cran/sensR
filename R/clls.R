@@ -2,21 +2,23 @@ clls <-
   function(location, scale, data, weights, start,..., subset,
            na.action, contrasts = NULL, Hess = FALSE, model = TRUE,
            method = c("logistic", "probit", "cloglog", "cauchit"))
-{                 
+{
+    .Deprecated("clm", package="sensR",
+                msg="'clls' is deprecated: use 'clm' from package 'ordinal' instead")
   logit <- function(p) log(p/(1 - p))
-  fmin <- function(beta) { 
+  fmin <- function(beta) {
     theta <- beta[pc + 1:q]
     ctheta <- c(-100, theta, 100)
     eta <- moffset
-    if (pc > 0) 
+    if (pc > 0)
       eta <- eta + drop(x %*% beta[1:pc])
     esigma <- exp(Moffset)
     if(k > 0)
       esigma <- esigma * exp(drop(z %*% beta[pc+q + 1:k]))
     pr <- pfun((ctheta[y + 1] - eta)/esigma ) -
       pfun((ctheta[y] - eta)/esigma)
-    if (all(pr > 0)) 
-      -2*sum(wt * log(pr)) 
+    if (all(pr > 0))
+      -2*sum(wt * log(pr))
     else Inf
   }
   gmin <- function(beta) {
@@ -26,41 +28,41 @@ clls <-
     sigma <- exp(Moffset)
     if(k > 0)
       sigma <- sigma * exp(drop(z %*% beta[pc+q + 1:k]))
-    if (pc > 0) 
+    if (pc > 0)
       eta <- eta + drop(x %*% beta[1:pc])
     m1 <- ctheta[y + 1] - eta
     m2 <- ctheta[y] - eta
     M1 <- m1/sigma
-    M2 <- m2/sigma    
+    M2 <- m2/sigma
     pr <- pfun(M1) - pfun(M2)
     p1 <- dfun(M1)
     p2 <- dfun(M2)
     g3 <- if(k > 0)
       t(z) %*% (wt * (m1*p1 - m2*p2)/(pr * sigma))
     else numeric(0)
-    g1 <- if (pc > 0) 
+    g1 <- if (pc > 0)
       t(x) %*% (wt * (p1 - p2)/(pr * sigma))
     else numeric(0)
     xx <- .polrY1 * p1 - .polrY2 * p2
     g2 <- -t(xx) %*% (wt/(pr * sigma))
-    g2 <- t(g2) 
-    if (all(pr > 0)) 
+    g2 <- t(g2)
+    if (all(pr > 0))
       c(g1, g2, g3)
     else rep(NA, pc + q + k)
   }
 
-  warning("This function is no longer supported.\nThe user is adviced to use clm() from package ordinal instead.")
+  ### warning("This function is no longer supported.\nThe user is adviced to use clm() from package ordinal instead.")
   m <- match.call(expand.dots = FALSE)
   if(missing(location))
     stop("Model needs a specification of the location")
   if(missing(scale))
     m$scale <- ~1 ## No model for the scale is assumed
   method <- match.arg(method)
-  pfun <- switch(method, logistic = plogis, probit = pnorm, 
+  pfun <- switch(method, logistic = plogis, probit = pnorm,
                  cloglog = pgumbel, cauchit = pcauchy)
-  dfun <- switch(method, logistic = dlogis, probit = dnorm, 
+  dfun <- switch(method, logistic = dlogis, probit = dnorm,
                  cloglog = dgumbel, cauchit = dcauchy)
-  if (is.matrix(eval.parent(m$data))) 
+  if (is.matrix(eval.parent(m$data)))
     m$data <- as.data.frame(data)
   m$start <- m$Hess <- m$model <- m$... <- m$method <- NULL
   m[[1]] <- as.name("model.frame")
@@ -81,7 +83,7 @@ clls <-
     M$weights <- wt ## Trick to avoid warning message in
     ##'eval.parent(M)' when scale part is omitted.
   }
-  M <- eval.parent(M) 
+  M <- eval.parent(M)
   TermsM <- attr(M, "terms")
   z <- model.matrix(TermsM, M, contrasts)
   zint <- match("(Intercept)", colnames(z), nomatch = 0)
@@ -99,23 +101,23 @@ clls <-
   if(k > 0 && n != nrow(z))
     stop("Model needs same dataset in location and scale")
   moffset <- model.offset(m)
-  if(length(moffset) <= 1) 
+  if(length(moffset) <= 1)
     moffset <- rep(0, n)
   Moffset <- model.offset(M)
-  if(length(Moffset) <= 1) 
+  if(length(Moffset) <= 1)
     Moffset <- rep(0, n)
   y <- model.response(m)
-  if(!is.factor(y)) 
+  if(!is.factor(y))
     stop("response must be a factor")
   lev <- levels(y)
-  if (length(lev) <= 2) 
+  if (length(lev) <= 2)
     stop("response must have 3 or more levels")
   y <- unclass(y) # numeric levels
   q <- length(lev) - 1 # No. estimable intercepts
   Y <- matrix(0, n, q)
   .polrY1 <- col(Y) == y
   .polrY2 <- col(Y) == y - 1
- 
+
   ## Get starting values:
   if(missing(start)) {
     ## try logistic/probit regression on 'middle' cut
@@ -169,7 +171,7 @@ clls <-
     Sigma <- 1
   if (pc > 0) {
     names(beta) <- colnames(x)
-    eta <- drop(x %*% beta) 
+    eta <- drop(x %*% beta)
   }
   else
     eta <- rep(0, n)
@@ -180,11 +182,11 @@ clls <-
 
   dimnames(fitted) <- list(row.names(m), lev)
   res <- list(coefficients = c(beta, theta, sigma),
-              beta = beta, theta = theta, sigma = sigma, 
+              beta = beta, theta = theta, sigma = sigma,
               tau = tau, deviance = deviance,
-              fitted = fitted.case, 
+              fitted = fitted.case,
               fitted.values = fitted, lev = lev, terms.location =
-              Termsm, terms.scale = TermsM,               
+              Termsm, terms.scale = TermsM,
               df.residual = sum(wt) - pc - q - k, edf = pc + q + k,
               n = sum(wt), nobs = sum(wt),
               call = match.call(),
@@ -226,7 +228,7 @@ print.clls <- function(x, ...)
     } else {
         cat("\nNo Scale coefficients\n")
     }
-    
+
     cat("\nIntercepts:\n")
     print(x$theta, ...)
     cat("\nResidual Deviance:", format(x$deviance, nsmall=2), "\n")
@@ -244,9 +246,9 @@ vcov.clls <- function(object, ...)
     utils::flush.console()
     object <- update(object, Hess=TRUE, start = coef(object))
   }
-  
+
   structure(solve(object$Hessian), dimnames =
-            dimnames(object$Hessian)) 
+            dimnames(object$Hessian))
 }
 
 summary.clls <- function(object, digits = max(3, .Options$digits - 3),
@@ -267,7 +269,7 @@ summary.clls <- function(object, digits = max(3, .Options$digits - 3),
     object$q <- q
     object$k <- k
     object$digits <- digits
-    
+
     if(correlation)
         object$correlation <- (vc/sd)/rep(sd, rep(pc+q+k, pc+q+k))
     class(object) <- "summary.clls"
@@ -337,7 +339,7 @@ anova.clls <- function (object, ..., test = c("Chisq", "none"))
   rsp <- unique(sapply(mlist, function(x) {
                        tmp <- x$terms.location
                        class(tmp) <- "formula"
-                       paste(tmp[2]) } ))  
+                       paste(tmp[2]) } ))
   mds <- sapply(mlist, function(x) {
                 tmp1 <- x$terms.location
                 tmp2 <- x$terms.scale

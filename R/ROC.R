@@ -6,7 +6,7 @@ SDT <- function(tab, method = c("probit", "logit")) {
     cs <- cumsum(x)
     l <- length(cs)
     if(method == "probit") {
-      cp <- cs/cs[l]    
+      cp <- cs/cs[l]
       qnorm(cp[-l])}
     else if(method == "logit")
       log( cs[-l] / (cs[l]-cs[-l]))
@@ -31,9 +31,9 @@ SDT <- function(tab, method = c("probit", "logit")) {
 }
 
 
-ROC.default <- 
-  function (object, se.d, scale = 1, length = 1000, fig = TRUE, 
-            se.type = c("CI", "SE"), CI.alpha = 0.05, ...) 
+ROC.default <-
+  function (object, se.d, scale = 1, length = 1000, fig = TRUE,
+            se.type = c("CI", "SE"), CI.alpha = 0.05, ...)
 {
     m <- match.call(expand.dots = FALSE)
     m$se.type <- NULL
@@ -49,13 +49,13 @@ ROC.default <-
       plot.default(fpr, tpr, type = "l", xlim = c(0, 1),
                    ylim = c(0, 1),
                    xlab = "True positive ratio",
-                   ylab = "False positive ratio", 
+                   ylab = "False positive ratio",
                    main = "", ...)
       lines(fpr, fpr, lty = 2)
       if (!missing(se.d)) {
-        if (se.type == "CI") 
+        if (se.type == "CI")
           tol <- se.d * qnorm(1 - CI.alpha/2)
-        else if (se.type == "SE") 
+        else if (se.type == "SE")
           tol <- se.d
         lower <- pnorm((q.fpr + d - tol)/scale)
         upper <- pnorm((q.fpr + d + tol)/scale)
@@ -71,10 +71,10 @@ ROC.default <-
 ROC.anota <-
   function(object, length = 1000, fig = TRUE,
            se.type = c("CI", "SE"), CI.alpha = .05, ...)
-{ 
+{
   stopifnot(object$test == "A-Not A")
   ROC.default(object$coef, object$se, , length, fig, se.type,
-              CI.alpha, ...) 
+              CI.alpha, ...)
 }
 
 ROC <- function(object, ...) {
@@ -86,30 +86,37 @@ AUC <- function(d, ...) {
 }
 
 AUC.default <- function(d, se.d, scale = 1, CI.alpha = .05, ...) {
-  int.fun <- function(u, d, scale) pnorm( (qnorm(u) + d)/scale)
-  m <- match.call(expand.dots=FALSE)
-  m[[1]] <- as.name("list")
-  eval.parent(m)
-  auc <- integrate(int.fun, 0, 1, d=d, scale=scale, ...)
-  res <- list(value = auc$value, res.int = auc)
-  if(!missing(se.d)) {
-    tol <- se.d * qnorm(1 - CI.alpha/2)
-    lower <- integrate(int.fun, 0, 1, d = d - tol, scale =
-                       scale, ...)$value 
-    upper <- integrate(int.fun, 0, 1, d = d + tol, scale =
-                       scale, ...)$value 
-    res$lower <- lower
-    res$upper <- upper
-    res$CI.alpha = CI.alpha
-  }
-  class(res) <- "AUC"
-  res
+    stopifnot(is.numeric(d),
+              length(d) == 1L,
+              d >= 0)
+    stopifnot(is.numeric(scale),
+              length(scale) == 1L,
+              scale > 0)
+    stopifnot(is.numeric(CI.alpha),
+              length(CI.alpha) == 1L,
+              CI.alpha > 0,
+              CI.alpha < 1)
+    if(!missing(se.d) && !is.null(se.d)) {
+        stopifnot(is.numeric(se.d),
+                  length(se.d) == 1L,
+                  se.d >= 0)
+    }
+    ## Compute AUC:
+    res <- list(value = pnorm(d / sqrt(2)))
+    if(!missing(se.d) && !is.null(se.d)) {
+        tol <- se.d * qnorm(1 - CI.alpha/2)
+        res$lower <- pnorm((d - tol)/sqrt(2))
+        res$upper <- pnorm((d + tol)/sqrt(2))
+        res$CI.alpha = CI.alpha
+    }
+    class(res) <- "AUC"
+    res
 }
 
 print.AUC <- function(x, digits = getOption("digits"), ...){
   cat(paste("AUC:", signif(x$value, digits)), "\n")
   if(!is.null(x$lower)) {
-    cat(paste(1-x$CI.alpha,"% CI: [", signif(x$lower, digits), 
+    cat(paste(1-x$CI.alpha,"% CI: [", signif(x$lower, digits),
                 ", ", signif(x$upper, digits), "]", sep=""), "\n")
   }
   invisible()
@@ -117,5 +124,5 @@ print.AUC <- function(x, digits = getOption("digits"), ...){
 
 AUC.anota <- function(d, CI.alpha = .05, ...) {
   ## stopifnot(d$test == "A-Not A")
-  AUC.default(d$coef, , d$se, CI.alpha, ...)
+  AUC.default(d=d$coef, se.d=d$se, CI.alpha=CI.alpha, ...)
 }

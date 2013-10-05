@@ -8,7 +8,7 @@
 \description{
   This is the default AUC function for scalar d-primes, which will
   compute Area Under the ROC curve (ROC is an acronym for receiver
-  operating characteristic). 
+  operating characteristic).
 }
 \usage{
 
@@ -21,13 +21,13 @@
 \arguments{
   \item{d}{a unit lenght vector with the value of d-prime for which AUC
     is to be computed or a \code{anota} object from the fitting of a
-    A-not A test with \code{\link{AnotA}}} 
+    A-not A test with \code{\link{AnotA}}}
   \item{scale}{a unit length vector giving the ratio of scale (ie. standard
     deviation) of the latent distribution for the no-class items
-    relative to that of the yes-class items} 
+    relative to that of the yes-class items}
   \item{se.d}{standard error of \code{d} (d-prime). If provided, the
     function will compute confidence limits of value of AUC---cf. in
-    section value.} 
+    section value.}
   \item{CI.alpha}{the type I level of the confidence interval of AUC}
   \item{\dots}{additional arguments passed \code{integrate}}
 }
@@ -47,7 +47,7 @@
   A list with components. If \code{se.d} is supplied to the default
   method or if a discrim object is supplied, the object contains the
   latter three additional elements.
-  
+
   \item{value}{the estimated value of AUC}
   \item{res.int}{the result from the call to \code{integrate}}
   \item{lower}{the lower confidence limit}
@@ -56,20 +56,41 @@
 }
 %% \references{}
 \author{Rune Haubo B Christensen}
-%%\note{ ~~further notes~~ 
+%%\note{ ~~further notes~~
 %%
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 %%}
 %%\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
+
+## Compute AUC from d-prime and confindence interval for the AUC:
+fm1 <- AnotA(8, 25, 1, 25)
+AUC(d=fm1$coef, se.d=fm1$se)
+## The AUC-method for AnotA-objects can be used for convenience:
+AUC(fm1)
+
+\dontshow{
+## Test agreement of AUC computations:
+x <- AUC(fm1$coef, fm1$se)
+y <- AUC(fm1)
+z <- pnorm(fm1$coef/sqrt(2))
+## w := dput(as.vector(z))
+w <- 0.817851857437929
+
+stopifnot(
+  isTRUE(all.equal(as.vector(x$value), as.vector(y$value),
+                   as.vector(z), w)),
+  isTRUE(all.equal(x$lower, y$lower)),
+  isTRUE(all.equal(x$upper, y$upper))
+)
+
+## Don't actually know what this is supposed to illustrate:
 (odor <- matrix(c(112, 112, 72, 53, 22, 4, 7, 38, 50, 117, 101, 62), 2,
                byrow = TRUE))
 (d.primes <- SDT(odor)[,3])
 for(i in 1:5) print(AUC(d.primes[i]))
-## Provide standard error of d-prime and compute CI:
-fm1 <- AnotA(8, 25, 1, 25)
-AUC(fm1$coef, fm1$se)
-AUC(fm1)
+}
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

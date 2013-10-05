@@ -1,11 +1,28 @@
+## import(ordinal)
+importFrom(numDeriv,
+           grad,
+           hessian)
+importFrom(graphics, plot, contour)
+import(MASS) ## to get the confint.glm method
+importFrom(stats, coef, confint, logLik, profile, vcov, update,
+           family, extractAIC)
+importFrom(multcomp, contrMat)
 
 # functions
 export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
-       discrimSim, duotrio, threeAFC, triangle, twoAFC, tetrad, 
+       discrimSim, duotrio, threeAFC, triangle, twoAFC, tetrad,
        SDT, ROC, AUC,
        samediff, findcr, betabin, samediffSim, discrimR, clls,
        samediffPwr, twoAC, rescale, psyfun, psyinv, psyderiv, pc2pd,
-       pd2pc, d.primePwr, d.primeSS, twoACpwr, clm2twoAC) 
+       pd2pc, d.primePwr, d.primeSS, twoACpwr, clm2twoAC,
+       dprime_table, dprime_test, dprime_compare, posthoc)
+
+S3method(posthoc, dprime_test)
+S3method(posthoc, dprime_compare)
+S3method(print, dprime_test)
+S3method(print, dprime_compare)
+S3method(print, posthoc.dprime_test)
+S3method(print, posthoc.dprime_compare)
 
 S3method(print, betabin)
 S3method(summary, betabin)
@@ -60,9 +77,4 @@ S3method(vcov, twoAC)
 S3method(logLik, twoAC)
 
 S3method(print, rescale)
-
-importFrom(graphics, plot, contour)
-## importFrom(MASS, confint.glm)
-importFrom(stats, coef, confint, logLik, profile, vcov, update,
-           family, extractAIC)
 

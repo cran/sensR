@@ -2,15 +2,15 @@
 \alias{betabin}
 \alias{summary.betabin}
 \title{Beta-binomial and chance-corrected beta-binomial models for
-  over-dispersed binomial data} 
+  over-dispersed binomial data}
 \description{
   Fits the beta-binomial model and the chance-corrected beta-binomial
   model to (over-dispersed) binomial data.
 }
 \usage{
-betabin(data, start = c(.5,.5), 
+betabin(data, start = c(.5,.5),
         method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
-          "triangle"), 
+          "triangle"),
         vcov = TRUE, corrected = TRUE, gradTol = 1e-4, ...)
 
 \method{summary}{betabin}(object, level = 0.95, ...)
@@ -66,7 +66,7 @@ Confidens intervals are computed as Wald (normal-based) intervals on the
 mu-scale and the confidence limits are subsequently transformed to the
 Pc, Pd and d-prime scales. Confidence limits are restricted to the
 allowed ranges of the parameters, for example no confidence limits will
-be less than zero. 
+be less than zero.
 
 Standard errors, and therefore also confidence intervals, are only
 available if the parameters are not at the boundary of their allowed
@@ -152,7 +152,7 @@ The following additional methods are implemented objects of class
 \author{Rune Haubo B Christensen}
 
 \seealso{ \code{\link{triangle}}, \code{\link{twoAFC}},
-  \code{\link{threeAFC}}, \code{\link{duotrio}},
+  \code{\link{threeAFC}}, \code{\link{duotrio}}, \code{\link{tetrad}}
 }
 
 \examples{
@@ -161,13 +161,38 @@ x <- c(3,2,6,8,3,4,6,0,9,9,0,2,1,2,8,9,5,7)
 n <- c(10,9,8,9,8,6,9,10,10,10,9,9,10,10,10,10,9,10)
 dat <- data.frame(x, n)
 
-(bb <- betabin(dat, method = "duotrio"))
+## Chance corrected beta-binomial model:
+(bb0 <- betabin(dat, method = "duotrio"))
+summary(bb0)
+## Un-corrected beta-binomial model:
 (bb <- betabin(dat, corrected = FALSE, method = "duotrio"))
 summary(bb)
 vcov(bb)
 logLik(bb)
 AIC(bb)
 coef(bb)
+\dontshow{
+## Testing:
+## Chance corrected model:
+x <- as.vector(coef(summary(bb0)))
+## x2 := dput(x)
+x2 <- c(0.176050917183022, 0.504272625540766, 0.588025458591511, 0.176050917183022,
+1.03723538712345, 0.0827416835966564, 0.166754897796229, 0.0413708417983282,
+0.0827416835966564, 0.274652313643027, 0.0138801973133669, 0.177439031614499,
+0.506940098656683, 0.0138801973133669, 0.276003094947466, 0.338221637052677,
+0.831106219467033, 0.669110818526339, 0.338221637052677,
+1.53322252140796)
 
+stopifnot(isTRUE(all.equal(x, x2)))
+
+## Un-corrected model:
+x <- as.vector(coef(summary(bb)))
+## x2 := dput(x)
+x2 <- c(0.493812345858779, 0.31442578341548, 0.5, 0, 0, 0.0723816596143461,
+0.0861846136283124, NA, NA, NA, 0.351946899873424, 0.145507044682488,
+0.5, 0, 0, 0.635677791844135, 0.483344522148472, 0.635677791844135,
+0.27135558368827, 1.33527484290736)
+stopifnot(isTRUE(all.equal(x, x2)))
+}
 }
 \keyword{models}% at least one, from doc/KEYWORDS

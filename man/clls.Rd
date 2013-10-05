@@ -1,4 +1,5 @@
-\name{clls}
+\name{clls-deprecated}
+\alias{clls-deprecated}
 \alias{clls}
 
 \title{
@@ -6,8 +7,8 @@
 }
 \description{
   IMPORTANT: This function and its methods are no longer supported. The
-  user is adviced to use clm() from package ordinal instead. 
-  
+  user is adviced to use clm() from package ordinal instead.
+
   Fits a cumulative link location-scale model to an ordered response
   variable. When the scale part is left unspecified, the model reduces
   to a cumulative link model assuming a constant scale. With the default
@@ -15,7 +16,7 @@
   Odds Model}. With the probit link and a single two-level factor in both
   location and scale parts, the model is known as the \emph{Binormal}
   model in the Signal Detection Theory and the Psychometric
-  literature. 
+  literature.
 }
 \usage{
   clls(location, scale, data, weights, start, ..., subset,
@@ -27,7 +28,7 @@
   a formula expression as for regression models, of the form
   \code{response ~ predictors}. The response should be a factor
   (preferably an ordered factor), which will be interpreted as an
-  ordinal response, with levels ordered as in the factor.  
+  ordinal response, with levels ordered as in the factor.
   The model must have an intercept: attempts to remove one will
   lead to a warning and be ignored. An offset may be used.  See the
   documentation of \code{\link{formula}} for other details.
@@ -86,8 +87,8 @@
 
   Note that standard errors are appropriate for \code{tau} =
   log \code{sigma} and not for \code{sigma}, because the profile
-  likelihood is usually more symmetric for \code{tau} than for 
-  \code{sigma}. Therefore \code{vcov} will give the 
+  likelihood is usually more symmetric for \code{tau} than for
+  \code{sigma}. Therefore \code{vcov} will give the
   variance-covariance matrix of the parameters with \code{tau} rather
   than \code{sigma} and \code{summary.clls} will report standard errors
   for log \code{sigma}. Notice also that a relevant test for
@@ -98,7 +99,7 @@
   There are methods for the standard model-fitting functions, including
   \code{\link{summary}}, \code{\link{vcov}},
   \code{\link{anova}}, and an
-  \code{extractAIC} method. 
+  \code{extractAIC} method.
 }
 \value{
   A object of class \code{"clls"}. This has components
@@ -113,18 +114,18 @@
     ie. \code{tau} = log \code{sigma}.}
   \item{deviance}{the residual deviance.}
   \item{fitted.values}{a matrix, with a column for each level of the
-    response with the fitted probabilities.} 
+    response with the fitted probabilities.}
   \item{fitted.case}{a vector of same length as \code{response}, with
     the fitted probabilities on a case-by-case basis.}
   \item{lev}{the names of the response levels.}
   \item{terms.location}{a \code{terms} structure describing the location
     part.}
   \item{terms.scale}{a \code{terms} structure describing the scale
-    part.} 
+    part.}
   \item{df.residual}{the number of residual degrees of freedoms,
     calculated using the weights.}
   \item{edf}{the (effective) number of degrees of freedom used by the
-    model} 
+    model}
   \item{n, nobs}{the (effective) number of observations, calculated
     using the weights.}
   \item{call}{the matched call.}
@@ -145,29 +146,31 @@
   Christensen, R. H. B., Brockhoff, P. B. and Cleaver, G. (2008)
   Estimation and Inference in the A-Not A test with Sureness. Manuscript
   for \emph{Food Quality and Preference}.
-  
+
   Venables, W. N. and Ripley, B. D. (2002)
   \emph{Modern Applied Statistics with S.} Fourth edition.  Springer.
 }
 \seealso{
   \code{\link[MASS]{polr}}, \code{\link{optim}}, \code{\link{glm}},
-  \code{\link[nnet]{multinom}}. 
+  \code{\link[nnet]{multinom}}.
 }
 \examples{
-options(contrasts = c("contr.treatment", "contr.poly"))
-## Extend example from polr in package MASS:
-## Fit model from polr example:
-data(housing, package = "MASS")
-fm1 <- clls(Sat ~ Infl + Type + Cont, weights = Freq, data = housing)
-fm1
-summary(fm1)
-## With probit link:
-summary(update(fm1, method = "probit"))
+\dontrun{
+  options(contrasts = c("contr.treatment", "contr.poly"))
+  ## Extend example from polr in package MASS:
+  ## Fit model from polr example:
+  data(housing, package = "MASS")
+  fm1 <- clls(Sat ~ Infl + Type + Cont, weights = Freq, data = housing)
+  fm1
+  summary(fm1)
+  ## With probit link:
+  summary(update(fm1, method = "probit"))
 
-## Allow scale to depend on Cont-variable
-summary(fm2 <- update(fm1, scale =~ Cont))
-anova(fm1, fm2)
-## which seems to improve the fit
+  ## Allow scale to depend on Cont-variable
+  summary(fm2 <- update(fm1, scale =~ Cont))
+  anova(fm1, fm2)
+  ## which seems to improve the fit
+}
 
 }
 \keyword{models}

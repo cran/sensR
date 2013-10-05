@@ -46,14 +46,14 @@ AnotA(x1, n1, x2, n2, ...)
     (standard error of d-prime}
   \item{data}{a named vector with the data supplied to the function}
   \item{p.value}{one-sided p-value from Fisher's exact test
-    (\code{fisher.test})} 
+    (\code{fisher.test})}
   \item{test}{a string with the name of the test (\code{A-Not A}) for
     the print method}
   \item{call}{the matched call}
 
   For \code{plot} a figure of the distributions of sensory intensity is
   produced, and for \code{confint} a 2-by-2 matrix of confidence
-  intervals is returned. 
+  intervals is returned.
 }
 \references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
   models for sensory discrimination tests as generalized linear models.
@@ -79,6 +79,19 @@ plot(m1)
 ## likelihood based confidence intervals:
 confint(m1)
 
+\dontshow{
+  ## Testing
+  x <- as.vector(c(coef(m1), m1$se, m1$p.value))
+  ## y := dput(x)
+  y <- c(1.03643338948988, 0.442500608613267, 0.0203711975124656)
+  ## z := dput(as.vector(confint(m1)))
+  z <- c(-0.550522667455557, 0.190017579324113, 0.550522667455557,
+    1.93313337684111)
+  stopifnot(
+    isTRUE(all.equal(x, y)),
+    isTRUE(all.equal(as.vector(confint(m1)), z))
+  )
+}
 ## Extended example plotting the profile likelihood
 xt <- cbind(c(3, 10), c(20 - 3, 20 - 10))
 lev <- gl(2, 1)

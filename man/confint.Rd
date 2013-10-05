@@ -13,7 +13,7 @@
   profile likelihood function for d.prime.
 }
 \usage{
-\method{confint}{twoAC}(object, parm, level = 0.95, 
+\method{confint}{twoAC}(object, parm, level = 0.95,
         type = c("likelihood", "Wald"), \dots)
 
 \method{confint}{profile.twoAC}(object, parm = "d.prime", level = 0.95, \dots)
@@ -43,7 +43,7 @@
     For \code{confint.twoAC}:
     for \code{type = "Wald"} a specification of which parameters the
     confidence interval is required for. Ignored for \code{type =
-    "profile"}. 
+    "profile"}.
   }
   \item{level}{
     the confidence level required.
@@ -85,11 +85,11 @@
   \code{d.prime} and not \code{tau}.
 
   \code{profile.twoAC}: a \code{data.frame} with the profile of
-  \code{d.prime}. 
+  \code{d.prime}.
 
   \code{plot.profile.twoAC} invisibly returns the spline approcimation to
   the profile.
-  
+
 }
 \details{
   These \code{confint} methods call
@@ -105,7 +105,7 @@
 \references{
   Christensen R.H.B., lee H-S and Brockhoff P.B. (2010). Estimation of
   the Thurstonian model for the 2-AC protocol. Manuscript for Food
-  Quality and Preference. 
+  Quality and Preference.
 }
 
 \author{Rune Haubo B Christensen}
@@ -127,6 +127,16 @@ plot(pr1)
 plot(pr1, Log = FALSE, relative = TRUE)
 plot(pr1, Log = TRUE, relative = TRUE)
 plot(pr1, Log = TRUE, relative = FALSE)
+\dontshow{
+## Test stability of CIs:
+ci <- c(confint(fm1), confint(fm1, type = "Wald"))
+## ci2 := dput(ci)
+ci2 <- c(-0.27098319957656, 1.85925113345333, -0.108182667530717, -0.287401447110179,
+0.940127921188124, 1.83592051925275)
+stopifnot(
+isTRUE(all.equal(ci, ci2))
+)
+}
 
 }
 \keyword{models}

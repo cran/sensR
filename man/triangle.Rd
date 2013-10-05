@@ -4,18 +4,18 @@
 \title{Create triangle binomial family}
 \description{
   Creates af copy of the binomial family with the inverse link function
-  changed to equal 
+  changed to equal
   the triangle psychometric function and correspondingly changed link
-  function and derivative of the 
+  function and derivative of the
   inverse link function.}
 \usage{
 triangle()
 }
 \value{
   A binomial family object for models. Among other things it inludes the
-  psychometric function as 
+  psychometric function as
   \code{linkinv} and the inverse psychometric function (for direct
-  dprime computation) as 
+  dprime computation) as
   \code{linkfun}.
 }
 \references{Brockhoff, P.B. and Christensen, R.H.B. (2010). Thurstonian
@@ -28,16 +28,29 @@ triangle()
 }
 
 \seealso{\code{\link{duotrio}}, \code{\link{twoAFC}},
-  \code{\link{threeAFC}}, \code{\link{discrim}},
+  \code{\link{tetrad}}, \code{\link{threeAFC}}, \code{\link{discrim}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
   \code{\link{AnotA}}, \code{\link{discrimSS}},
   \code{\link{samediff}}, \code{\link{findcr}}}
 
 \examples{
+
+## Estimating d-prime using glm for a Triangle test:
 xt <- matrix(c(10, 5), ncol = 2) ## data: 10 correct answers, 5 incorrect
 res <- glm(xt ~ 1, family = triangle)
 summary(res)
+## Equivalent to (Estimate and Std. Error):
+discrim(10, 15, method="triangle")
 
+\dontshow{
+## Test agreement of glm and discrim results:
+x <- coef(summary(res))[, 1:2]
+y <- coef(discrim(10, 15, method="triangle"))["d-prime", 1:2]
+stopifnot(
+  isTRUE(all.equal(as.vector(x), as.vector(y), tol=1e-5)),
+  isTRUE(all.equal(res$deviance, 0))
+)
+}
 ## Extended example plotting the profile likelihood
 ## data: 10 correct answers, 9 incorrect
 xt <- matrix(c(10, 9), ncol = 2)

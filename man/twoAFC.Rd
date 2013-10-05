@@ -30,16 +30,28 @@ dprime computation) as
 \author{Rune Haubo B Christensen and Per Bruun Brockhoff}
 
 \seealso{\code{\link{triangle}}, \code{\link{threeAFC}},
-  \code{\link{duotrio}}, \code{\link{discrim}},
+  \code{\link{tetrad}}, \code{\link{duotrio}}, \code{\link{discrim}},
   \code{\link{discrimPwr}}, \code{\link{discrimSim}},
   \code{\link{AnotA}}, \code{\link{discrimSS}},
   \code{\link{samediff}}, \code{\link{findcr}}}
 
 \examples{
+## Estimating d-prime using glm for a 2-AFC test:
 xt <- matrix(c(10, 5), ncol = 2) ## data: 10 correct answers, 5 incorrect
 res <- glm(xt ~ 1, family = twoAFC)
 summary(res)
+## Equivalent to (Estimate and Std. Error):
+discrim(10, 15, method="twoAFC")
 
+\dontshow{
+## Test agreement of glm and discrim results:
+x <- coef(summary(res))[, 1:2]
+y <- coef(discrim(10, 15, method="twoAFC"))["d-prime", 1:2]
+stopifnot(
+  isTRUE(all.equal(as.vector(x), as.vector(y))),
+  isTRUE(all.equal(res$deviance, 0))
+)
+}
 ## Extended example plotting the profile likelihood
 ## data: 10 correct and 8 incorrect:
 xt <- matrix(c(10, 8), ncol = 2)
@@ -61,6 +73,7 @@ lines(delta, exp(-(delta - coef(res))^2 /
 lim <- sapply(level, function(x)
               exp(-qchisq(x, df=1)/2) )
 abline(h = lim, col = "grey")
+
 }
 \keyword{models}% at least one, from doc/KEYWORDS
 

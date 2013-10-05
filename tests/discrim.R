@@ -26,3 +26,14 @@ vcov(bb)
 logLik(bb)
 AIC(bb)
 coef(bb)
+
+## Testing that the A-not A confidence interval finds the right
+## confint method for glm objects in MASS:
+m1 <- AnotA(10, 20, 3, 20)
+
+## Make ci.res:
+## ci.res := dput(as.vector(confint(m1)))
+## Compare with current results:
+ci.res <- c(-0.550522667455557, 0.190017579324113, 0.550522667455557,
+            1.93313337684111)
+stopifnot(isTRUE(all.equal(ci.res, as.vector(confint(m1)))))
