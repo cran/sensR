@@ -190,8 +190,8 @@ test_that("Tetrad linkfun, linkinv and deriv return what we expect", {
 
     ## mu.eta - lower limit
     expect_equal(tetrad()$mu.eta(0), 0)
-    expect_equal(tetrad()$mu.eta(1e-14), 0)
-    expect_true(tetrad()$mu.eta(1e-13) > 0)
+    expect_equal(tetrad()$mu.eta(1e-8), 0)
+    expect_true(tetrad()$mu.eta(1e-7) > 0)
 })
 
 

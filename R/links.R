@@ -1,14 +1,14 @@
-## duotrio <- function () 
+## duotrio <- function ()
 ## {
 ##   duotrio <- binomial()
 ##   duotrio$link <- "Link for the duo-trio test"
 ##   duotrio$linkinv <- function(eta) {
-##     tres <- 1 - pnorm(eta/sqrt(2)) - pnorm(eta/sqrt(6)) + 
+##     tres <- 1 - pnorm(eta/sqrt(2)) - pnorm(eta/sqrt(6)) +
 ##       2 * pnorm(eta/sqrt(2)) * pnorm(eta/sqrt(6))
 ##     tres[eta < 0] <- 0.5
 ##     tres
 ##   }
-##   duotrio$mu.eta <- function(eta) -dnorm(eta/sqrt(2))/sqrt(2) - 
+##   duotrio$mu.eta <- function(eta) -dnorm(eta/sqrt(2))/sqrt(2) -
 ##     dnorm(eta/sqrt(6))/sqrt(6) + 2 *
 ##       (dnorm(eta/sqrt(2)) * pnorm(eta/sqrt(6))/sqrt(2) +
 ##        pnorm(eta/sqrt(2)) * dnorm(eta/sqrt(6))/sqrt(6))
@@ -16,11 +16,11 @@
 ##     duotriog <- function(d, p) duotrio$linkinv(d) - p
 ##     tres <- mu
 ##     for(i in 1:length(mu)) {
-##       if(mu[i] <= 0.5) 
+##       if(mu[i] <= 0.5)
 ##         tres[i] <- 0
 ##       else if(mu[i] > 1-1e-9)
 ##         tres[i] <- Inf
-##       else 
+##       else
 ##         tres[i] <- uniroot(duotriog, c(0, 14), p = mu[i])$root
 ##     }
 ##     tres
@@ -78,7 +78,7 @@ duotrio <- function() {
 }
 
 ## `threeAFC` <-
-##   function () 
+##   function ()
 ## {
 ##   threeAFC <- binomial()
 ##   threeAFC$link <- "Link for the 3-AFC test"
@@ -86,14 +86,14 @@ duotrio <- function() {
 ##     threeAFCg <- function(x, d) dnorm(x - d) * pnorm(x)^2
 ##     tres <- eta
 ##     for (i in 1:length(eta)) {
-##       if (eta[i] > 0) 
+##       if (eta[i] > 0)
 ##         tres[i] <- integrate(threeAFCg, -Inf, Inf, d = eta[i])$value
 ##       else tres[i] <- 1/3
 ##     }
 ##     tres
 ##   }
 ##   threeAFC$mu.eta <- function(eta) {
-##     threeAFCgd <- function(x, d) (x - d) * dnorm(x - d) * 
+##     threeAFCgd <- function(x, d) (x - d) * dnorm(x - d) *
 ##       pnorm(x)^2
 ##     tres <- eta
 ##     for (i in 1:length(eta)) tres[i] <-
@@ -104,9 +104,9 @@ duotrio <- function() {
 ##     threeAFCg2 <- function(d, p) -p + threeAFC$linkinv(d)
 ##     tres <- mu
 ##     for (i in 1:length(mu)) {
-##       if (mu[i] > 1/3) 
+##       if (mu[i] > 1/3)
 ##         res <- uniroot(threeAFCg2, c(0, 10), p = mu[i])$root
-##       if (mu[i] <= 1/3) 
+##       if (mu[i] <= 1/3)
 ##         res <- 0
 ##       tres[i] <- res
 ##     }
@@ -115,7 +115,7 @@ duotrio <- function() {
 ##   threeAFC
 ## }
 
-threeAFC <- function () 
+threeAFC <- function ()
 {
   threeAFC <- binomial()
   threeAFC$link <- "Link for the 3-AFC test"
@@ -132,7 +132,7 @@ threeAFC <- function ()
   }
   threeAFC$mu.eta <- function(eta) {
     ok <- eta > 0 & eta < 9
-    eta[eta <= 0] <- 0 
+    eta[eta <= 0] <- 0
     eta[eta >= 9] <- 0
 ### Note: integration is not reliable for eta > 9
     if(sum(ok)) {
@@ -159,7 +159,7 @@ threeAFC <- function ()
 }
 
 ## `triangle` <-
-##   function () 
+##   function ()
 ## {
 ##   triangle <- binomial()
 ##     triangle$link <- "Link for the triangle test"
@@ -169,14 +169,14 @@ threeAFC <- function ()
 ##        pnorm(-x * sqrt(3) - d * sqrt(2/3)))
 ##     tres <- eta
 ##     for (i in 1:length(eta)) {
-##       if (eta[i] > 0) 
+##       if (eta[i] > 0)
 ##         tres[i] <- integrate(triangleg, 0, Inf, d = eta[i])$value
 ##       else tres[i] <- 1/3
 ##     }
 ##     tres
 ##   }
 ##   triangle$mu.eta <- function(eta) {
-##     trianglegd <- function(x, d) 2 * sqrt(2/3) * dnorm(x) * 
+##     trianglegd <- function(x, d) 2 * sqrt(2/3) * dnorm(x) *
 ##       (dnorm(-x * sqrt(3) + d * sqrt(2/3)) -
 ##        dnorm(-x * sqrt(3) - d * sqrt(2/3)))
 ##     tres <- eta
@@ -188,9 +188,9 @@ threeAFC <- function ()
 ##     triangleg2 <- function(d, p) -p + triangle$linkinv(d)
 ##     tres <- mu
 ##     for (i in 1:length(mu)) {
-##       if (mu[i] > 1/3) 
+##       if (mu[i] > 1/3)
 ##         tres[i] <- uniroot(triangleg2, c(0, 10), p = mu[i])$root
-##       if (mu[i] <= 1/3) 
+##       if (mu[i] <= 1/3)
 ##         tres[i] <- 0
 ##     }
 ##     tres
@@ -206,14 +206,14 @@ triangle <- function()
     ok <- eta > 0 & eta < 20
     eta[eta <= 0] <- 1/3
     eta[eta >= 20] <- 1
-    if(sum(ok)) 
+    if(sum(ok))
       eta[ok] <-
         pf(q=3, df1=1, df2=1, ncp=eta[ok]^2*2/3, lower.tail=FALSE)
     pmin(pmax(eta, 1/3), 1) ## restrict to [1/3, 1] - just to be sure
   }
   triangle$mu.eta <- function(eta) {
     ok <- eta > 0 & eta < 20
-    eta[eta <= 0] <- 0 
+    eta[eta <= 0] <- 0
     eta[eta >= 20] <- 0
     if(sum(ok)) {
       d <- eta[ok]
@@ -255,18 +255,16 @@ tetrad <- function()
         dnorm(z) * (2 * pnorm(z) * pnorm(z - delta) -
                     pnorm(z - delta)^2)
       eta[ok] <- sapply(eta[ok], function(eta) {
-        1 - 2*integrate(tetrads.fun, -Inf, Inf, delta=eta)$value }) 
+        1 - 2*integrate(tetrads.fun, -Inf, Inf, delta=eta)$value })
     }
     pmin(pmax(eta, 1/3), 1) ## restrict to [1/3, 1] - just to be sure
   }
   tetrad$mu.eta <- function(eta) {
-    ok <- eta > 0 & eta < 9
-    eta[eta <= 0] <- 0 
+    eps <- 1e-8
+    ok <- eta > eps & eta < 9
+    eta[eta <= eps] <- 0
     eta[eta >= 9] <- 0
-    ## ok <- eta >= -9 & eta < 9
-    ## eta[eta < 0] <- 0 ## Is this value right?
-    ## eta[eta >= 9] <- 0
-    if(sum(ok)) {
+     if(sum(ok)) {
       Linkinv <- function(eta) {
         tetrads.fun <- function(z, delta)
           dnorm(z) * (2 * pnorm(z) * pnorm(z - delta) -
@@ -300,9 +298,9 @@ tetrad <- function()
 ##   twoAFC$linkfun <- function(mu) {
 ##     tres <- mu
 ##     for (i in 1:length(mu)) {
-##       if (mu[i] > 0.5) 
+##       if (mu[i] > 0.5)
 ##         tres[i] <- sqrt(2) * qnorm(mu[i])
-##       if (mu[i] <= 0.5) 
+##       if (mu[i] <= 0.5)
 ##         tres[i] <- 0
 ##     }
 ##     tres

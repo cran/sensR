@@ -321,7 +321,7 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 
 
 ###################################################
-### code chunk number 28: methodology.Rnw:1829-1832 (eval = FALSE)
+### code chunk number 28: methodology.Rnw:1828-1831 (eval = FALSE)
 ###################################################
 ## 
 ## 

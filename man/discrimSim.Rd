@@ -53,7 +53,7 @@ set.seed(1)
 a <- discrimSim(sample.size = 10, replicates = 3, d.prime = 2,
            method = "triangle", sd.indiv = 1)
 expect <- c(3L, 3L, 2L, 3L, 3L, 1L, 3L, 3L, 1L, 2L)
-stopifnot(identical(a, expect))
+stopifnot(all(a == expect))
 }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

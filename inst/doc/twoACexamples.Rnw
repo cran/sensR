@@ -4,7 +4,6 @@
 \usepackage{bm}%Use 'bm.sty' to get `bold math' symbols
 \usepackage{natbib}
 \usepackage{Sweave}
-\usepackage{subfigure}
 \usepackage{float}%Use `float.sty'
 \usepackage[left=3.5cm,right=3.5cm]{geometry}
 
