@@ -42,7 +42,7 @@ pdPwr <-
   ## Get pc from pdA and pGuess:
   if(missing(pcA))  pcA <- pd2pc(pdA, pGuess)
   ## Get critical value in one-tailed binomial test:
-  crit <- if(is.null(crit)) 
+  crit <- if(is.null(crit))
     findcr(sample.size=ss, alpha=alpha, p0=pGuess, pd0=pd0,
            test=test)
   ## compute power of the test from critical value:
@@ -82,15 +82,15 @@ discrimPwr <-
   stopifnot(is.numeric(pGuess) && length(pGuess) == 1 &&
             pGuess >= 0 && pGuess < 1)
   ## Test admissibility of pdA and pd0:
-  if(test == "difference" && pdA <= pd0)
+  if(test == "difference" && pdA < pd0)
     stop("pdA has to be larger than pd0 for difference tests")
-  if(test == "similarity" && pdA >= pd0)
+  if(test == "similarity" && pdA > pd0)
     stop("pdA has to be less than pd0 for similarity tests")
   ## Get appropriate power:
-  if(stat == "normal") 
+  if(stat == "normal")
     pwr <- normalPwr(pdA = pdA, pd0 = pd0, sample.size = ss,
                      alpha = alpha, pGuess = pGuess, test = test)
-  else if(stat == "cont.normal") 
+  else if(stat == "cont.normal")
     pwr <- normalPwr(pdA=pdA, pd0=pd0, sample.size=ss,
                      alpha=alpha, pGuess=pGuess, test=test,
                      continuity=TRUE)
@@ -104,7 +104,7 @@ discrimPwr <-
 d.primePwr <-
   function(d.primeA, d.prime0 = 0, sample.size, alpha = 0.05,
            method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
-             "triangle"), 
+             "triangle"),
            test = c("difference", "similarity"),
            statistic = c("exact", "normal", "cont.normal"))
 {

@@ -50,25 +50,25 @@
 %% \renewcommand{\efloatseparator}{\vspace{.5cm}}
 
 
-\usepackage{lineno}
-% \linenumbers
-\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
-\expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
-\expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
-\renewenvironment{#1}%
-{\linenomath\csname old#1\endcsname}%
-{\csname oldend#1\endcsname\endlinenomath}}%
-\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
- \patchAmsMathEnvironmentForLineno{#1}%
- \patchAmsMathEnvironmentForLineno{#1*}}%
-\AtBeginDocument{%
-\patchBothAmsMathEnvironmentsForLineno{equation}%
-\patchBothAmsMathEnvironmentsForLineno{align}%
-\patchBothAmsMathEnvironmentsForLineno{flalign}%
-\patchBothAmsMathEnvironmentsForLineno{alignat}%
-\patchBothAmsMathEnvironmentsForLineno{gather}%
-\patchBothAmsMathEnvironmentsForLineno{multline}%
-}
+%%  \usepackage{lineno}
+%%  % \linenumbers
+%%  \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+%%  \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+%%  \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+%%  \renewenvironment{#1}%
+%%  {\linenomath\csname old#1\endcsname}%
+%%  {\csname oldend#1\endcsname\endlinenomath}}%
+%%  \newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+%%   \patchAmsMathEnvironmentForLineno{#1}%
+%%   \patchAmsMathEnvironmentForLineno{#1*}}%
+%%  \AtBeginDocument{%
+%%  \patchBothAmsMathEnvironmentsForLineno{equation}%
+%%  \patchBothAmsMathEnvironmentsForLineno{align}%
+%%  \patchBothAmsMathEnvironmentsForLineno{flalign}%
+%%  \patchBothAmsMathEnvironmentsForLineno{alignat}%
+%%  \patchBothAmsMathEnvironmentsForLineno{gather}%
+%%  \patchBothAmsMathEnvironmentsForLineno{multline}%
+%%  }
 
 \begin{document}
 \bibliographystyle{chicago}
@@ -87,7 +87,7 @@ tests, confidence intervals, and power and sample size calculations
 for the four common discrimination protocols: 2-AFC, 3-AFC, triangle
 and duo-trio; analysis of replicated experiments with the four common
 discrimination protocols using the beta-binomial and chance-corrected
-beta-binomial models. 
+beta-binomial models.
 
 \end{abstract}
 
@@ -105,7 +105,7 @@ beta-binomial models.
 
 ## Load common packages, functions and set settings:
 library(sensR)
-## 
+##
 RUN <- FALSE    #redo computations and write .RData files
 ## Change options:
 op <- options() ## To be able to reset settings
@@ -137,13 +137,13 @@ The aim of this document is 1) to describe the statistical methodology
 for sensory discrimination testing and analysis, and 2) to describe
 how such analyses can be performed in \textsf{R} using package
 \textsf{sensR} \citep{christensen10d} co-developed by the author of
-this document. 
+this document.
 
 This document is divided into sections that cover topics with similar
 statistical methodology. Implementation choices in the \textsf{sensR}
 package will be described in connection with the statistical
 methodology whenever appropriate. Small examples illustrating the use
-of functions in the \textsf{sensR} package will appear throughout. 
+of functions in the \textsf{sensR} package will appear throughout.
 
 This is not a hands-on practical tutorial to analysis of sensory
 discrimination experiments with the \textsf{sensR} package, neither is
@@ -154,7 +154,7 @@ not really exist\footnote{this is on the to-do list of the author of
 (yet), and for the latter document, we refer the reader to
 \citep[][chapter 7]{naes10}. We will assume throughout that the reader
 has basic statistical training and is familiar with sensory
-discrimination testing to the level of \citep[][chapter 7]{naes10}. 
+discrimination testing to the level of \citep[][chapter 7]{naes10}.
 
 \section{Classification of sensory discrimination protocols}
 \label{sec:class-sens-discr}
@@ -174,7 +174,7 @@ discrimination testing to the level of \citep[][chapter 7]{naes10}.
 The most common and simplest discrimination protocols comprise the
 2-AFC, 3-AFC, triangle, duo-trio, A-not A and same-different
 protocols. The first four protocols are designed such that the
-response follows a binomial distribution in the simplest experimental 
+response follows a binomial distribution in the simplest experimental
 setting. On the other hand responses from A-not A and same-different
 protocols are distributed according to a compound or product binomial
 distribution in the simplest experimental setting. An extension of the
@@ -191,7 +191,7 @@ with their particular cognitive interpretation.
 The 2-AFC and 3-AFC protocols are so-called directional protocols
 since they require that the nature of the difference (e.g. sweetness)
 is provided as part of the assessor instructions. On the other hand
-the triangle and duo-trio protocols are not directional since these 
+the triangle and duo-trio protocols are not directional since these
 protocols are used to test un-specified differences. From a
 Thurstonian point of view, the sensory dimension or the perceptual
 dimension is fixed in the 2-AFC and 3-AFC methods. The cognitive
@@ -199,13 +199,13 @@ decision strategy is consequently assumed different in these two
 classes of protocols. When the perceptual dimension is fixed, the
 assessors may use the more effective skimming strategy, while
 assessors are forced to use the inferior comparison of distances
-strategy when using the un-directional protocols.  
+strategy when using the un-directional protocols.
 
 The A-not A and same-different protocols are methods with so-called
 response bias. Response bias refers to the concept that one type of
 response is preferred over another despite the sensory distance remains
 unchanged. For instance some assessors may prefer the ``A'' response over
-the ``not A'' response. 
+the ``not A'' response.
 
 The four simple protocols are without response bias since no response
 can be consistently preferred over another without affecting the
@@ -221,7 +221,7 @@ stabilized.
 The four common sensory discrimination protocols are often used in
 practical applications in the food industry as well as in other
 areas. They are also of considerable interest in the scientific
-literature about sensory discrimination. 
+literature about sensory discrimination.
 
 The protocols have one important thing in common from a statistical
 perspective: their statistical models can all be described as variants
@@ -235,9 +235,9 @@ between the products, then the probability of a correct
 answers, $p_c$ is one half. Similarly for the triangle and 3-AFC
 protocols the guessing probability is 1/3. The four common
 discrimination protocols are said to be free of \emph{response bias}
-in contrast to the A-not A and same-different protocols. 
+in contrast to the A-not A and same-different protocols.
 %% Response bias
-%% will be described in section~\ref{sec:not-same-different}. 
+%% will be described in section~\ref{sec:not-same-different}.
 
 If we assume for a moment that the population of assessors (be that
 judges in an expert panel or consumers) is comprised of ignorants who
@@ -249,13 +249,13 @@ distance of the objects (or discriminative ability of the assessors
 is the \emph{proportion of discriminators}, $p_d$ in the population of
 interest. It is almost always an unreasonable assumption that some
 assessors are either always discriminating or always guessing
-\citep{ennis93}, but we 
+\citep{ennis93}, but we
 may still talk about the \emph{probability of discrimination}. This
 probability may refer to particular individuals or to a population; in
 this section we will adopt a population perspective.
 %% and in
 %% section~\ref{sec:repl-simple-discr} we will include an individual
-%% perspective. 
+%% perspective.
 
 The relation between the probability of a correct answer and the
 probability of discrimination is
@@ -274,7 +274,7 @@ reverse relation is
 Another way to summarize the sensory distance is through a measure
 known as $d'$ (pronounced ``d-prime'') from signal detection theory
 \citep[SDT,][]{green66, macmillan05}, or equivalently \emph{the Thurstonian delta},
-$\delta$ \citep{thurstone27, thurstone27b, thurstone27c}. 
+$\delta$ \citep{thurstone27, thurstone27b, thurstone27c}.
 These two concepts are identical and will be
 used synonymously throughout, and they are actually based on the same
 underlying psychophysical model for the cognitive process. Whereas
@@ -303,19 +303,19 @@ protocols are given by
 \begin{align}
   \label{eq:43}
   f_{\textup{3-AFC}}(d') =&~ \int_{-\infty}^{\infty} \phi(z-d')
-  \Phi(z)^{2} ~\textup{d}z \\ 
+  \Phi(z)^{2} ~\textup{d}z \\
   f_{\textup{2-AFC}}(d') =&~ \int_{-\infty}^{\infty} \phi(z-d')
   \Phi(z) ~\textup{d}z  = \Phi ( d' / \sqrt{2} ) \\
   f_{\textup{tri}}(d') =&~
   2 \int_{0}^{\infty} \Big\{ \Phi \left[ -z \sqrt{3} + d' \sqrt{2/3}
   \right]  + \Phi \left[ -z \sqrt{3} - d' \sqrt{2/3} \right]
   \Big\} \phi(z) ~\textup{d}z \\
-  f_{\textup{duo-trio}}(d') =&~ 
+  f_{\textup{duo-trio}}(d') =&~
   1 - \Phi( d' / \sqrt{2}) - \Phi( d' / \sqrt{6}) + 2 \Phi( d' /
   \sqrt{2}) \Phi( d' / \sqrt{6}).
 \end{align}
 Further information can be found in \citet{ennis93} and
-\citet{brockhoff10}. 
+\citet{brockhoff10}.
 
 The relations between the three scales at which a sensory difference
 is described are illustrated in
@@ -347,14 +347,14 @@ gd2 <- psyderiv(dPrime, method = "threeAFC")
 gd3 <- psyderiv(dPrime, method = "duotrio")
 gd4 <- psyderiv(dPrime, method = "triangle")
 
-@ 
+@
 
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
   \centering
 <<psyFunsFig, fig=TRUE, width=5, height=5>>=
 
-plot(c(0, 6), c(.3, 1), type = "n", xlab = "d-prime", 
+plot(c(0, 6), c(.3, 1), type = "n", xlab = "d-prime",
      ylab = "P(correct answer)", axes = FALSE)
 axis(1)
 axis(2, las = 1)
@@ -365,10 +365,10 @@ with(coef.triangle, lines(d.prime, pc, lty = 4))
 legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
                         "triangle"), lty = 1:4, bty = "n")
 
-@  
+@
 <<psyFunsFig_dprimePd, fig=TRUE, width=5, height=5>>=
 
-plot(c(0, 6), c(0, 1), type = "n", xlab = "d-prime", 
+plot(c(0, 6), c(0, 1), type = "n", xlab = "d-prime",
      ylab = "P(discrimination)", axes = FALSE)
 axis(1)
 axis(2, las = 1)
@@ -379,18 +379,18 @@ with(coef.triangle, lines(d.prime, pd, lty = 4))
 legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
                         "triangle"), lty = 1:4, bty = "n")
 
-@ 
+@
 <<psyFunsFig_PcPd, fig=TRUE, width=5, height=5>>=
 
-plot(c(0.3, 1), c(0, 1), type = "n", 
-     ylab = "P(correct answer)", 
+plot(c(0.3, 1), c(0, 1), type = "n",
+     ylab = "P(correct answer)",
      xlab = "P(discrimination)", axes = FALSE)
 axis(1); axis(2, las = 1)
 segments(c(1/3, .5), 0, 1, 1, lty = 1:2)
-legend("topleft", legend = c("3-AFC and triangle", "2-AFC and duo-trio"), 
+legend("topleft", legend = c("3-AFC and triangle", "2-AFC and duo-trio"),
        lty = 1:2, bty = "n")
 
-@ 
+@
 <<psyFunFig_psyDeriv, fig=TRUE, width=5, height=5>>=
 
 plot(c(0, 6), c(0, .31), type = "n", axes = FALSE,
@@ -404,11 +404,11 @@ lines(dPrime, gd4, lty = 4)
 legend("topright", legend = c("2-AFC", "3-AFC", "duo-trio",
                      "triangle"), lty = 1:4, bty = "n")
 
-@ 
+@
   \caption{The connection between $d'$, $p_c$ and $p_d$ for the four
     common sensory discrimination protocols. The so-called
     psychometric functions; $P_c$ as a function of $d'$, are shown in
-    the upper left figure.} 
+    the upper left figure.}
   \label{fig:psychometricFunctions}
 \end{figure}
 
@@ -434,12 +434,12 @@ underlying value. As such $p_c$ cannot be lower than the guessing
 probability for the discrimination protocol that was used and cannot
 exceed 1. The usual estimator of a binomial probability is just the
 sample proportion, $x/n$, but this is not the case here, and it is
-exactly this feature that makes discrimination testing interesting 
-statistically. 
+exactly this feature that makes discrimination testing interesting
+statistically.
 
 The maximum likelihood (ML) estimator\footnote{Following standard
   statistical practice we use the hat-notation to denote an estimator
-  or an estimate} of $p_c$ is given by: 
+  or an estimate} of $p_c$ is given by:
 \begin{equation}
   \label{eq:5}
   \hat p_c = \left\{
@@ -457,7 +457,7 @@ eq.~\eqref{eq:3}, given by
 \end{equation}
 where $f_{ps}^{-1}(\cdot)$ (which should not be confused with
 $f_{ps}(\cdot)^{-1} = 1 / f_{ps}(\cdot)$)  is the inverse psychometric
-function. 
+function.
 
 The allowed ranges (parameter space) for these three parameters are
 given by
@@ -470,7 +470,7 @@ negative $d'$ values are not possible in the discrimination protocols
 that we consider here. They are possible in preference tests
 and theoretically possible in Thurstonian models based on other
 assumptions, see section XXX for more background information on this
-topic. 
+topic.
 
 
 \subsubsection{Implementation in \textsf{sensR}}
@@ -485,7 +485,7 @@ $p_g$, then $p_c = p_g$ is returned with $p_d$ and $d'$ at the
 appropriate levels:
 <<rescaleExample, results=verbatim, echo=TRUE>>=
 rescale(pc = 0.25, method = "triangle")
-@ 
+@
 
 Function \texttt{rescale} use a number of auxiliary functions for its
 computations; these are also directly available to the package user:
@@ -494,7 +494,7 @@ computations; these are also directly available to the package user:
 \item \texttt{pd2pc}: maps from the $p_d$-scale to the $p_c$-scale.
 \item \texttt{psyfun}: implements the psychmetric functions $p_c =
   f_{ps}(d')$ for the four common discrimination protocols,
-  cf. eq.~\eqref{eq:3}. 
+  cf. eq.~\eqref{eq:3}.
 \item \texttt{psyinv}: implements the inverse psychometric functions,
   $d' = f_{ps}^{-1}(p_c)$ for the four common discrimination
   protocols, cf. eq.~\eqref{eq:6}.
@@ -539,7 +539,7 @@ The standard error of $d'$ can similarly be found as
   \textup{se}(p_c) = \frac{1}{f_{ps}'(d')} \textup{se}(p_c)
 \end{equation}
 where $f_{ps}'(d')$ is the derivative of the psychometric function
-with respect to $d'$; expressions are given by \citet{brockhoff10}. 
+with respect to $d'$; expressions are given by \citet{brockhoff10}.
 
 Standard errors are only defined and only meaningful as measures of
 uncertainty when the parameter estimate is at the interior of the
@@ -568,7 +568,7 @@ distribution is given by
 \end{equation}
 where $C = \log {n \choose x}$ is a constant with respect to $p_c$. The
 log-likelihood function for $p_d$ or $d'$ is given by combining
-eq.~\eqref{eq:12} with \eqref{eq:2} or \eqref{eq:6}. 
+eq.~\eqref{eq:12} with \eqref{eq:2} or \eqref{eq:6}.
 
 In general, standard errors can be found as the square root of
 the diagonal elements of the variance-covariance matrix of the
@@ -576,7 +576,7 @@ parameters. The variance-covariance matrix can be found as the inverse
 of the negative Hessian matrix (the matrix of second order derivatives)
 of the log-likelihood function evaluated at the ML estimates. Here
 there is only one parameter (either one of $p_c$, $p_d$ or $d'$), so
-the matrices are merely scalars. 
+the matrices are merely scalars.
 
 It can be shown that the same standard errors as those derived in
 eq. \eqref{eq:7}, \eqref{eq:9} and \eqref{eq:10} can be derived by
@@ -594,10 +594,10 @@ parameters with a standard error is the traditional Wald interval:
   \label{eq:13}
   CI:~\hat\mu \pm z_{1 - \alpha/2} \textup{se}(\hat\mu),
 \end{equation}
-where $z_{1 - \alpha/2} = \Phi^{-1}(1 - \alpha/2)$ is the upper 
+where $z_{1 - \alpha/2} = \Phi^{-1}(1 - \alpha/2)$ is the upper
 $\alpha / 2$ quantile of the standard normal distribution. This CI
 is based on the Wald statistic\footnote{actually the original
-  definition used $\textup{se}(\mu_0)$ in the denominator.}: 
+  definition used $\textup{se}(\mu_0)$ in the denominator.}:
 \begin{equation}
   \label{eq:20}
   w(\mu_0) = (\hat\mu - \mu_0) / \textup{se}(\hat\mu).
@@ -608,11 +608,11 @@ follows a standard normal distribution under the null hypothesis as:
   \label{eq:14}
   CI:~ \{\mu; |t(\mu)| < z_{1 - \alpha/2} \}.
 \end{equation}
-Using $w$ as $t$ in \eqref{eq:14} gives the interval \eqref{eq:13}. 
+Using $w$ as $t$ in \eqref{eq:14} gives the interval \eqref{eq:13}.
 
-Another general approach is to use the likelihood root statistic 
+Another general approach is to use the likelihood root statistic
 (inverted likelihood ratio test) which applies to all likelihood based
-models and almost always impressively successful. 
+models and almost always impressively successful.
 The likelihood root statistic is given by:
 \begin{equation}
   \label{eq:15}
@@ -624,7 +624,7 @@ standard normal distributions under the null hypothesis. Even though
 their asymptotic behavior is in fact identical, their finite
 sample properties may be quite different and often favor the
 likelihood root statistic since it removes nonlinear parameterization
-effects. 
+effects.
 
 A disadvantage of Wald intervals is that they are not invariant to
 nonlinear transformations of the parameter. This means that a Wald CI
@@ -640,7 +640,7 @@ either computing the likelihood CI for $d'$ directly or by
 transforming the limits of the likelihood CI for $p_c$ through the
 inverse psychometric function --- they give the same answer. The evidence
 provided by the likelihood CI is therefore invariant to the choice of
-scale. 
+scale.
 
 Another approach to generate CIs consistent across parameter scales
 would be to compute an appropriate CI for, say, $p_c$ and then
@@ -650,7 +650,7 @@ difference, of course. If an appropriate CI can be computed on any one
 scale, this would provide appropriate CIs on the other scales as
 well. There exists a wide range of CIs for the binomial probability
 parameter (refs), for instance the score interval and the so-called
-exact interval in addition to the Wald and likelihood intervals. 
+exact interval in addition to the Wald and likelihood intervals.
 
 The 'exact' binomial interval is given by inversion of the 'exact'
 binomial test and known as the Clopper-Pearson interval
@@ -663,28 +663,28 @@ values of $p_c$ that solve:
 \end{equation}
 where $X \sim \textup{binom}(p_c, n)$. Rather than solving these
 equations numerically, the limits can be found directly as quantiles
-of the beta 
+of the beta
 distribution, $\textup{Beta}(a, b)$: the lower limit is the
 $\alpha / 2$ quantile of $\textup{Beta}(x, n - x + 1)$ and the upper
 limit is the $1 - \alpha / 2$ quantile of $\textup{Beta}(x + 1, n -
-x)$. 
+x)$.
 
 Another commonly applied statistic is based on the normal
-approximation of the binomial distribution. Asymptotically 
+approximation of the binomial distribution. Asymptotically
 $(X - n p_c) / \sqrt{n p_c (1 - p_c)}$ behaves like a standard normal
 random variable, so we may use
 \begin{equation}
   \label{eq:49}
-  w^*(p_{c0}) = \frac{x - n p_{c0}}{\sqrt{n p_{c0} (1 - p_{c0})}}, 
+  w^*(p_{c0}) = \frac{x - n p_{c0}}{\sqrt{n p_{c0} (1 - p_{c0})}},
 \end{equation}
 as test statistic. This statistic is in fact
 identical to the Wald statistic~\eqref{eq:20} if $\textup{se}(\mu_0)$
-is used in the denominator instead of $\textup{se}(\hat\mu)$. 
+is used in the denominator instead of $\textup{se}(\hat\mu)$.
 
 The statistic $w^*$ is related to the Pearson $\chi^2$ statistic
 \begin{equation}
   \label{eq:50}
-  X^2(p_{c0}) = \frac{(x - n p_{c0})^2}{n p_{c0}} + 
+  X^2(p_{c0}) = \frac{(x - n p_{c0})^2}{n p_{c0}} +
   \frac{(n - x - n (1 - p_{c0}))^2}{n(1 - p_{c0})}
 \end{equation}
 since $w*$ is the signed square root of $X^2$. Similarly the
@@ -721,13 +721,13 @@ $p_{c0} = p_g$, $p_{d0} = 0$ and $d'_0 = 0$ making the null hypothesis
 an equality rather than an inequality.
 
 The $p$-value of a difference test is the probability of
-observing a number of successes that is as large or larger than that 
+observing a number of successes that is as large or larger than that
 observed given the null hypothesis that the probability of a correct
 answer is $p_{c0}$. The $p$-value based on the 'exact' binomial test
 is therefore:
 \begin{equation}
   \label{eq:21}
-  p\textup{-value} = P(X \geq x) = 1 - 
+  p\textup{-value} = P(X \geq x) = 1 -
   \sum_{i=0}^{x-1} {n \choose i} p_{c0}^i (1 - p_{c0})^{n - i}~,
 \end{equation}
 where $X \sim \textup{binom}(p_{c0}, n)$
@@ -740,7 +740,7 @@ given by:
   p\textup{-value} = P\{Z \geq t(\mu_0)\} = 1 - \Phi\{ t(\mu_0) \},
 \end{equation}
 where $Z$ is a standard normal random variable and $\Phi$ is the
-standard normal cumulative distribution function. 
+standard normal cumulative distribution function.
 
 
 \subsubsection{Sensory similarity tests}
@@ -753,29 +753,29 @@ A sensory similarity test is a test of
   \begin{array}{l}
     p_c \geq p_{c0} \\
     p_d \geq p_{d0} \\
-    d' \geq d'_0 
+    d' \geq d'_0
   \end{array} \quad \textup{versus} \quad
   H_A:
   \begin{array}{l}
     p_c < p_{c0} \\
     p_d < p_{d0} \\
-    d' < d'_0    
+    d' < d'_0
   \end{array},
 \end{equation}
 where subject matter considerations and possibly power computations
-will guide the choice of 
+will guide the choice of
 $p_{c0}$, $p_{d0}$ or $d'_0$. Observe that $d'_0$ has to be positive
-for the test to make sense.  
+for the test to make sense.
 
 The $p$-value of a similarity test is the probability of
-observing a number of successes that is as large or less than that 
+observing a number of successes that is as large or less than that
 observed given the null hypothesis that the probability of a correct
-answer is $p_{c0}$. 
+answer is $p_{c0}$.
 The $p$-value based on the 'exact' binomial test
 is therefore:
 \begin{equation}
   \label{eq:22}
-  p\textup{-value} = P(X \leq x) = 
+  p\textup{-value} = P(X \leq x) =
   \sum_{i = 0}^x {n \choose i} p_{c0}^i (1 - p_{c0})^{n - i}~,
 \end{equation}
 where $X \sim \textup{binom}(p_{c0}, n)$
@@ -809,13 +809,13 @@ confidence intervals should be two-sided even if the appropriate test
 may be one-sided \citep{boyles08}. We will use two-sided confidence
 intervals throughout and use these in conjunction with $p$-values from
 one-sided difference and similarity tests. This is also implemented in
-\textsf{sensR}. 
+\textsf{sensR}.
 
 Confidence intervals may, however, be one-sided in a slightly
 different respect since it may happen, for instance, that the lower
 confidence limit is at the guessing probability, $p_g$. If the
 observed proportion of correct answers is less than $p_g$, the lower
-confidence limit will also be higher than the observed proportion. 
+confidence limit will also be higher than the observed proportion.
 
 Confidence intervals may be degenerate in the sense that both limits
 can be zero; this is obviously not very informative. This may happen
@@ -825,11 +825,11 @@ for $d'$ will, however, exceed zero.
 
 Confidence intervals can be used for difference and similarity
 testing as argued by \citet{MacRae95} and \citet{Carr95} when it is
-enough to know if the alternative hypothesis is 
+enough to know if the alternative hypothesis is
 rejected or not. Comparing the formulas for the 'exact' Clopper-Pearson
 confidence limits \eqref{eq:44} with the formulas for $p$-values in
 difference and similarity tests also based on the exact test, it is
-clear that there is a close connection. 
+clear that there is a close connection.
 
 If $p_{c0}$ under $H_0$ is below the lower confidence limit in a $1 -
 \alpha$ level interval, then the $p$-value of a difference test will
@@ -838,7 +838,7 @@ $\alpha/2$-level. Thus, if $p_{c0}$ is below the lower confidence
 limit in a 90\% interval, then the difference test is significant at
 the 5\% level. Similarly, if $p_{c0}$ is above the upper confidence
 limit in a 90\% interval, then the similarity test is significant at
-the 5\% level. 
+the 5\% level.
 
 In difference testing the binomial test is not too liberal even if
 there is variability in $p_d$ under the alternative hypothesis,
@@ -872,7 +872,7 @@ chance-corrected beta-binomial distribution.
 \label{sec:implementation-2}
 
 The function \texttt{rescale} that was described in
-section~\ref{sec:implementation-1} has an additional optional argument 
+section~\ref{sec:implementation-1} has an additional optional argument
 \texttt{std.err} which allows one to get the standard error of, say,
 $p_d$ and $d'$ if the standard error of $p_c$ is supplied. This is
 done through application of eq.~\eqref{eq:9} and \eqref{eq:10} and by
@@ -881,7 +881,7 @@ the derivative of the psychometric functions, $f_{ps}'(d')$ for the
 four common discrimination protocols:
 <<rescaleExample2, results=verbatim, echo=TRUE>>=
 rescale(pd = 0.2, std.err = 0.12, method = "triangle")
-@ 
+@
 
 The \texttt{discrim} function is the primary function for inference in
 the duo-trio, triangle, 2-AFC and 3-AFC protocols. Given the number of
@@ -897,18 +897,18 @@ $d'$ scales as discussed in section
 statistics including the 'exact' binomial, likelihood, Wald and
 score statistics. The score option leads to the so-called Wilson or
 score interval, while the $p$-value is based on the $w^*$ statistic,
-cf. eq.~\eqref{eq:49}. 
+cf. eq.~\eqref{eq:49}.
 
 Estimates and confidence intervals reported by \texttt{discrim}
 respect the allowed range of the parameters, cf. eq.~\eqref{eq:29} and
 standard errors are not reported if the parameter estimates are on the
-boundary of their parameter space (allowed range). 
+boundary of their parameter space (allowed range).
 
 Strictly speaking the Wald statistic~\eqref{eq:20} is not defined when
 $x/n \leq p_g$, since the standard error of $\hat p_c$ is not
-defined. However, it makes sense to use 
+defined. However, it makes sense to use
 $\sqrt{\frac{x}{n} \left( 1 - \frac{x}{n} \right) \frac{1}{n}}$ as
-standard error in this case. This is adopted in \texttt{discrim}.  
+standard error in this case. This is adopted in \texttt{discrim}.
 
 Similarity testing does not make sense if $p_{c0} = 0$ under the null
 hypothesis, cf. eq.~\eqref{eq:19}, so a positive $p_{d0}$ has to be
@@ -920,26 +920,26 @@ Suppose we have performed a 3-AFC discrimination test and observed 10
 correct answers in 15 trials. We want estimates of the $p_c$, $p_d$
 and $d'$, their standard error and 95\% confidence intervals. We are
 also interested in the difference test of no difference and decide to
-use the likelihood root statistic for confidence intervals and tests. 
+use the likelihood root statistic for confidence intervals and tests.
 Using the \texttt{discrim} function in \textsf{R} we obtain:
 <<discrimExample1, results=verb, echo=TRUE>>=
 discrim(10, 15, method = "threeAFC", statistic = "likelihood")
-@ 
+@
 
 If instead we had observed 4 correct answers in 15 trials and were
 interested in the similarity test with $p_{d0} = 1/5$ under the null
 hypothesis, we get using the 'exact' binomial criterion for confidence
 intervals and tests:
 <<discrimExample2, results=verb, echo=TRUE>>=
-discrim(4, 15, method = "threeAFC", test = "similarity", pd0 = 0.2, 
+discrim(4, 15, method = "threeAFC", test = "similarity", pd0 = 0.2,
         statistic = "exact")
-@ 
+@
 
 A few auxiliary methods for \texttt{discrim} objects are
 available. \texttt{confint} returns the confidence intervals computed
 in the \texttt{discrim} object, \texttt{profile} extracts the
 (profile) likelihood function and \texttt{plot.profile} plots the
-likelihood function. 
+likelihood function.
 
 \paragraph{Example}
 
@@ -949,21 +949,21 @@ where 10 correct answer were observed in 15 trials.
 fm1 <- discrim(10, 15, method = "threeAFC", statistic = "exact")
 confint(fm1)
 plot(profile(fm1))
-@ 
+@
 The resulting graph is shown in
 Fig.~\ref{fig:plotProfileExample}. Observe that the likelihood
 (profile) function may be extracted from a \texttt{discrim} object
 that is not fitted with \texttt{statistic = "likelihood"}. Further
 information about the use and interpretation of (profile) likelihood
 curves in sensory experiments is given in \citep{brockhoff10,
-  christensen09}. 
+  christensen09}.
 
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
   \centering
 <<discrimExample3Fig, fig=TRUE, include=TRUE>>=
 <<discrimExample3>>
-@ 
+@
   \caption{Relative likelihood function for a 3-AFC experiment with 10
 correct answers in 15 trials. The maximum likelihood estimate is at
 $d' = 1.12$ and the two horizontal lines determine the 95\% and 99\%
@@ -979,14 +979,14 @@ likelihood based confidence intervals.}
 The power of a test is the probability of getting a significant result
 for a particular test given data, significance level and a particular
 difference. In other words, it is the probability of observing a
-difference that is actually there. 
+difference that is actually there.
 Power and sample size calculations require that a model under the null
 hypothesis and a model under the alternative hypothesis are decided
 upon. The null model is often implied by the null hypothesis and is
 used to calculate the critical value. The alternative model has to lie
 under the alternative hypothesis and involves a subject matter
 choice. Power is then calculated for that particular choice of
-alternative model. 
+alternative model.
 
 In the following we will consider
 calculation of power and sample size based directly on the binomial
@@ -999,21 +999,21 @@ approximation and based on simulations.
 
 Formally the critical value, $x_c$ of a one-sided binomial test where
 the alternative hypothesis is \emph{difference}, or equivalently
-\emph{greater},  is the smallest integer number that satisfies 
+\emph{greater},  is the smallest integer number that satisfies
 \begin{equation}
   \label{eq:30}
-  P(X \geq x_c) \leq \alpha \quad \textup{where} 
+  P(X \geq x_c) \leq \alpha \quad \textup{where}
   \quad X \sim \textup{binom}(p_{c0}, n)
 \end{equation}
 and $p_{c0}$ is the probability of a correct answer under the null
-hypothesis. 
+hypothesis.
 Similarly the critical value, $x_c$ of a one-sided binomial test where
 the alternative hypothesis is \emph{similarity}, or equivalently
 \emph{less}, is the largest integer number that satisfies
 \begin{equation}
   \label{eq:31}
-  P(X \leq x_c) \leq \alpha \quad \textup{where} 
-  \quad X \sim \textup{binom}(p_{c0}, n)  
+  P(X \leq x_c) \leq \alpha \quad \textup{where}
+  \quad X \sim \textup{binom}(p_{c0}, n)
 \end{equation}
 
 If the sample size is small for the desired $\alpha$, there may not be
@@ -1022,7 +1022,7 @@ a possible critical value that satisfies~\eqref{eq:30} or
 $x = n$ correct answers, i.e. all correct answers for the test to be
 significant at the required $\alpha$. Similarly, it may not be enough
 to observe no correct answers ($x = 0$) for the similarity test to be
-significant at the required $\alpha$. 
+significant at the required $\alpha$.
 
 A simple way to compute $x_c$ is to use a small while loop (shown here
 for a difference test):
@@ -1036,7 +1036,7 @@ for a difference test):
 However, if $x_c$ is a large number, many iterations of the loop would
 be required, so instead in the \texttt{findcr} function in package
 \textsf{sensR} eq.~\eqref{eq:30} and \eqref{eq:31} are solved
-numerically for $x_c$. One complication 
+numerically for $x_c$. One complication
 with this method is that $P(X \geq x_c)$ is discontinuous in $x_c$
 and that requires special attention.
 
@@ -1045,37 +1045,37 @@ and that requires special attention.
 
 Consider the situation that $X = 15$ correct answers are observed out
 of $n = 20$ trials in a duo-trio test.
-The exact binomial $p$-value of a no-difference test is   
+The exact binomial $p$-value of a no-difference test is
 $P(X \geq 15) = 1 - P(X \leq 15-1) = 0.021$, where $X \sim
 \textup{binom}(0.5, 20)$ so this is significant. If on
 the other hand we had observed $X = 14$, then the $p$-value would have
 been $P(X \geq 14) = 0.058$, which is not
-significant. We say that $x_c = 15$ 
-is the \emph{critical value} for this particular test on the 
+significant. We say that $x_c = 15$
+is the \emph{critical value} for this particular test on the
 $\alpha = 5\%$ significance level because $x_c = 15$ is the smallest
-number of correct answers that renders the test significant. 
+number of correct answers that renders the test significant.
 
 In \textsf{R} we can find the $p$-values with
 <<criticalValueExample1, results=verb, echo=TRUE>>=
 1 - pbinom(q = 15 - 1, size = 20, prob = 0.5)
 1 - pbinom(q = 14 - 1, size = 20, prob = 0.5)
-@ 
+@
 
 The while loop looks like
 <<criticalValueExample2, results=verb, echo=TRUE>>=
 i <- 0
-while (1 - pbinom(q = i, size = 20, prob = 0.5) > 0.05) 
+while (1 - pbinom(q = i, size = 20, prob = 0.5) > 0.05)
   {
     i <- i + 1
   }
 i + 1
-@ 
+@
 
 while we could also use the \texttt{findcr} function in package
-\textsf{sensR}: 
+\textsf{sensR}:
 <<criticalValueExample3, results=verb, echo=TRUE>>=
 findcr(sample.size = 20, alpha = 0.05, p0 = 0.5)
-@ 
+@
 
 
 
@@ -1085,7 +1085,7 @@ findcr(sample.size = 20, alpha = 0.05, p0 = 0.5)
 The power of a difference test is
 \begin{equation}
   \label{eq:32}
-  \textup{power} = P(X \geq x_c) \quad \textup{where} 
+  \textup{power} = P(X \geq x_c) \quad \textup{where}
   \quad X \sim \textup{binom}(p_{cA}, n) ,
 \end{equation}
 where $p_{cA}$ is the probability of a correct answer under the
@@ -1095,70 +1095,70 @@ hypothesis and the significance level, $\alpha$.
 
 Power increases with the difference between $p_{c0}$ and $p_{cA}$,
 the sample size and $\alpha$. Power can be computed directly once the
-critical value, $p_{cA}$ 
+critical value, $p_{cA}$
 and $n$ are known, so the only computational challenge is in the
 computation of the critical value.
 
 \paragraph{Example:}
 
 The power of the test considered in the previous example is the
-probability of getting this $p$-value or 
+probability of getting this $p$-value or
 one that is smaller. This depends on the actual sensory difference of
 the objects/the proportion of discriminators. If half the population
 are discriminators or equivalently if each assessor has a 50\% of
-correctly discriminating a set of samples, then 
+correctly discriminating a set of samples, then
 $p_c = 1/2 + 1/2 p_d = 3/4$. The power is the probability of observing
 15 or more correct answers:
 \begin{equation}
   \label{eq:24}
-  \textup{power} = P(X \geq 15) = 1 - P(X \leq 15-1) = 0.617 
+  \textup{power} = P(X \geq 15) = 1 - P(X \leq 15-1) = 0.617
   \quad \textup{where} \quad X \sim \textup{binom}(3/4, 20)
 \end{equation}
 This can be obtained in \textsf{R} with
 <<differencePowerExample1, results=verb, echo=TRUE>>=
 1 - pbinom(q = 15 - 1, size = 20, prob = 3/4)
-@ 
+@
 or directly using the \texttt{discrimPwr} function from
-\textsf{sensR}: 
+\textsf{sensR}:
 <<differencePowerExample2, results=verb, echo=TRUE>>=
-discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05, 
+discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05,
            pGuess = 1/2)
-@ 
+@
 Observe that \texttt{discrimPwr} requires that the effect size under
 the alternative hypothesis is given in terms of $p_d$ rather than
 $p_c$ or $d'$. If the effect size under the alternative hypothesis is
 formulated in terms of $d'$, then \texttt{rescale} can be used to convert
 from $d'_A$ to $p_{dA}$, but it would be easier to use
 \texttt{d.primePwr}, which accepts $d'_A$ directly and internally
-calls \texttt{discrimPwr}. 
+calls \texttt{discrimPwr}.
 
 If the significance test of interest is not that of no-difference, but
 that of a small difference versus a relevant difference, the
-computation of the critical value is slightly different. The 
+computation of the critical value is slightly different. The
 power calculation remain essentially the same.
 
 If the limit between irrelevant and relevant differences is at $p_d =
 0.1$, so $p_c = 1/2 + 1/2 \cdot 0.1 = 0.55$, then
 $P(X \geq 16| p_{c0} = 0.55, n = 20) = 1 - P(X \leq 16-1) = 0.019$
-while 
+while
 $P(X \geq 15| p_{c0} = 0.55, n = 20) = 1 - P(X \leq 15-1) =
 0.055$. The critical value is therefore 16 and the power of the test
-is 
+is
 \begin{equation}
   \label{eq:25}
-  \textup{power} = P(X \geq 16) = 
-  %% 1 - P(X \leq 16-1) = 
+  \textup{power} = P(X \geq 16) =
+  %% 1 - P(X \leq 16-1) =
   0.415
-  \quad \textup{where} \quad X \sim 
-  \textup{binom}(p_{cA} = 3/4, n = 20) 
+  \quad \textup{where} \quad X \sim
+  \textup{binom}(p_{cA} = 3/4, n = 20)
 \end{equation}
 In \textsf{R} we could get the power of this test with
 <<differencePowerExample3, results=verb, echo=TRUE>>=
-discrimPwr(pdA = 0.5, pd0 = 0.1, sample.size = 20, alpha = 0.05,  
+discrimPwr(pdA = 0.5, pd0 = 0.1, sample.size = 20, alpha = 0.05,
            pGuess = 1/2)
-@ 
+@
 Note the \texttt{pd0} argument which should match the value of $p_d$
-under the null hypothesis. 
+under the null hypothesis.
 
 \subsubsection{The power of similarity tests}
 \label{sec:power-simil-tests}
@@ -1166,7 +1166,7 @@ under the null hypothesis.
 The power of a similarity test is
 \begin{equation}
   \label{eq:32b}
-  \textup{power} = P(X \leq x_c) \quad \textup{where} 
+  \textup{power} = P(X \leq x_c) \quad \textup{where}
   \quad X \sim \textup{binom}(p_{cA}, n) ,
 \end{equation}
 and $p_{cA}$ is the probability of a correct answer under the
@@ -1180,10 +1180,10 @@ Assume that we want to calculate the power of a similarity test using
 the duo-trio protocol with $n = 100$, and that we want to show that
 the probability of discrimination is less than 1/3,
 while we believe that there is actually no difference between the
-objects, so the true probability of discrimination is zero. 
+objects, so the true probability of discrimination is zero.
 The null hypothesis is
 therefore $H_0:~ p_c \geq 1/2 + 1/2 \cdot 1/3 = 2/3$ and the alternative
-hypothesis is $H_A:~ p_c < 2/3$. 
+hypothesis is $H_A:~ p_c < 2/3$.
 The critical value of this test is
 $x_c = 58$ since
 $p = P(X \leq 58 | p_c = 2/3, n = 100) = 0.042 \leq 0.05$
@@ -1195,9 +1195,9 @@ therefore
 \end{equation}
 We would compute this power in \textsf{R} with
 <<similarityPowerExample1, results=verb, echo=TRUE>>=
-discrimPwr(pdA = 0, pd0 = 1/3, sample.size = 100, alpha = 0.05,  
+discrimPwr(pdA = 0, pd0 = 1/3, sample.size = 100, alpha = 0.05,
            pGuess = 1/2, test = "similarity")
-@ 
+@
 If in fact there is a small difference between the objects, so that
 there is a positive probability of discrimination, say $p_d = 1/5$,
 then the power is (the critical value remains the same):
@@ -1207,14 +1207,14 @@ then the power is (the critical value remains the same):
 \end{equation}
 We would compute this power in \textsf{R} with
 <<similarityPowerExample1, results=verb, echo=TRUE>>=
-discrimPwr(pdA = 1/5, pd0 = 1/3, sample.size = 100, alpha = 0.05, 
+discrimPwr(pdA = 1/5, pd0 = 1/3, sample.size = 100, alpha = 0.05,
            pGuess = 1/2, test = "similarity")
-@ 
+@
 Observe how the power of the similarity test is quite good if there is
 absolutely no observable difference between the objects, while if
 there is in fact a small probability that a difference can be
 observed, the power is horrible and the sample size far from
-sufficient. 
+sufficient.
 
 \subsubsection{Power calculation based on simulations}
 \label{sec:power-calc-simul}
@@ -1224,7 +1224,7 @@ expression for the power of a test and calculation of power based on
 simulations can be an attractive approach. Sometimes it may also just
 be easier to let the computer do the job by running simulations rather
 than to get bugged down in derivations of explicit expressions for
-power even though they may in fact be possible to derive. 
+power even though they may in fact be possible to derive.
 
 Recall that power is the probability of getting a significant result
 when there is in fact a difference, thus in the long run it is the
@@ -1240,7 +1240,7 @@ alternative hypothesis and then
 perform the significance test. We can even do that many many times and
 record the $p$-values allowing us to calculate the power via
 eq.~\eqref{eq:28}. In the following we will do exactly that for a
-binomial test for which we know the right answer. 
+binomial test for which we know the right answer.
 
 <<powerSimul>>=
 ## Simulating power of a duo-trio no-difference test:
@@ -1255,28 +1255,28 @@ sum(pp <= 0.05)
 (se.power <- sqrt(power * (1 - power) / 1e4))
 ## confidence interval:
 power + c(-1,1) * qnorm(.975) * se.power
-@ 
+@
 
 Consider the no-difference example above in
 section~\ref{sec:power-diff-tests} where $n = 20$ and the power of a
 no-difference test was 0.617 when $p_d = 1/2$, so $p_c = 3/4$. We will
 estimate the power via simulation by generating 10,000 (pseudo) random
-draws, $X_i$, $i = 1,\ldots, 10,000$ from 
+draws, $X_i$, $i = 1,\ldots, 10,000$ from
 $X_i \sim \textup{binom}(p_c = 3/4, n = 20)$. For each of
-these draws we calculate the $p$-value as 
+these draws we calculate the $p$-value as
 $p_i = P(X \geq x_i | p_c = 1/2, n = 20)$. Among these $p$-values 6184
 were below 0.05, so the power estimated by simulation is
 0.6184. Observe that this is close to, but not exactly the power that
 we obtained analytically (0.617). If we did the power calculation over
 again, we would most likely get a slightly different power estimate
 although probably also close to 0.617 because we would obtain a
-slightly different set of random draws. 
+slightly different set of random draws.
 This illustrates that although power calculation via simulation is
-simple, the result varies a little from one run to another. 
+simple, the result varies a little from one run to another.
 
 Fortunately we can estimate the uncertainty in the estimated power from
 standard binomial principles. The standard error of the estimated
-power is 
+power is
 $\textup{se}(\hat{\textup{power}}) = \sqrt{\textup{power} ( 1 -
   \textup{power}) / n_{\textup{sim}}} = \sqrt{0.6814(1 -
   0.6814)/10,000} = 0.0049$ and an approximate Wald 95\% CI for the
@@ -1310,7 +1310,7 @@ then under the null hypothesis approximately
   \label{eq:52}
   \frac{\hat p - p_0}{\sigma_0} \sim N(0, 1)
 \end{equation}
-and under the alternative hypothesis approximately 
+and under the alternative hypothesis approximately
 \begin{equation}
   \label{eq:53}
   \frac{\hat p - p_A}{\sigma_A} \sim N(0, 1) ,
@@ -1339,7 +1339,7 @@ and the power is
 \begin{equation}
   \label{eq:57}
   \textup{power} = P\left( Z > \frac{z_{1 - \alpha} \sigma_0 + p_0 -
-      p_A}{\sigma_A}\right ) = 
+      p_A}{\sigma_A}\right ) =
   1 - \Phi \left( \frac{z_{1 - \alpha} \sigma_0 + p_0 - p_A}{\sigma_A}
   \right )
 \end{equation}
@@ -1347,9 +1347,9 @@ Equivalent considerations for the equivalence hypotheses lead to
 \begin{equation}
   \label{eq:59}
   \textup{power} = P\left( Z < \frac{z_{\alpha} \sigma_0 + p_0 -
-      p_A}{\sigma_A}\right ) = 
+      p_A}{\sigma_A}\right ) =
   \Phi \left( \frac{z_{\alpha} \sigma_0 + p_0 - p_A}{\sigma_A}
-  \right )  
+  \right )
 \end{equation}
 
 
@@ -1365,7 +1365,7 @@ Equivalently for similarity tests:
 \begin{equation}
   \label{eq:60}
   \textup{sample size} = \left ( \frac{z_{1 - \beta} \sqrt{p_A(1 -
-        p_A)} - z_{\alpha} \sqrt{p_0(1 - p_0)}}{p_0 - p_A} \right )^2 ,  
+        p_A)} - z_{\alpha} \sqrt{p_0(1 - p_0)}}{p_0 - p_A} \right )^2 ,
 \end{equation}
 where $z_{1 - \beta} = \Phi^{-1}(\textup{power})$. The sample sizes
 given by \eqref{eq:58} and \eqref{eq:60} should be rounded up to the
@@ -1375,7 +1375,7 @@ nearest integer.
 \subsubsection{Sample size determination}
 \label{sec:sample-size-determ}
 
-In principle sample size determination is simple; 
+In principle sample size determination is simple;
 find the sample size such that the power is sufficiently high
 for a particular test at some significance level given some true
 difference. Computationally, however, it can be a challenge.
@@ -1384,7 +1384,7 @@ Formally, the required sample size, $n^*$ for a sensory difference test
 is the smallest integer number, $n^*$ that satisfies
 \begin{equation}
   \label{eq:33}
-  P(X \geq x_c) \geq \textup{target-power} \quad \textup{where} 
+  P(X \geq x_c) \geq \textup{target-power} \quad \textup{where}
   \quad X \sim \textup{binom}(p_c, n^*) ,
 \end{equation}
 and $P(X \geq x_c)$ is the \emph{actual power} of the test. Power
@@ -1397,7 +1397,7 @@ Similarly, the required sample size, $n^*$ for a similarity test is the
 smallest integer number, $n^*$ that satisfies
 \begin{equation}
   \label{eq:34}
-  P(X \leq x_c) \geq \textup{target-power} \quad \textup{where} 
+  P(X \leq x_c) \geq \textup{target-power} \quad \textup{where}
   \quad X \sim \textup{binom}(p_c, n^*) ,
 \end{equation}
 and $P(X \leq x_c)$ is the \emph{actual power} of the test. Power
@@ -1408,7 +1408,7 @@ the alternative hypothesis.
 
 The sample size depends on the particulars of the null and alternative
 hypotheses as well as the significance level of the test,
-i.e. $\alpha$ and the desired minimum power; the \emph{target-power}. 
+i.e. $\alpha$ and the desired minimum power; the \emph{target-power}.
 
 So much for the formal definitions: practical sample size
 determination is in fact not as simple as the definitions may lead one
@@ -1416,7 +1416,7 @@ to believe. Consider a situation in which we want to know which sample
 size to choose in a difference test using the triangle protocol where
 the null hypothesis is no difference, target power is 0.80, and we
 believe the actual difference is $d' = 0.9$ under the alternative
-hypothesis. Standard sample size calculations under the 
+hypothesis. Standard sample size calculations under the
 definition~\eqref{eq:33} tells us that 297 tests are enough; this
 leads to an actual power of 0.802. However, had we decided to use,
 say, 300 tests---for convenience and just to be on the safe side, the
@@ -1426,11 +1426,11 @@ samples do we need to be sure that all larger sample sizes also lead
 to a power above 0.80? It is natural to expect power to
 increase with every increase in sample size (a monotonic increase in
 power with sample size), but this is not the case as is illustrated in
-Fig.~\ref{fig:powerSampleSize}. 
+Fig.~\ref{fig:powerSampleSize}.
 
 Power generally increases with the sample size, but it does so in a
 zig-zag way due to the discreteness of the binomial distribution. As
-is seen 
+is seen
 in Fig.~\ref{fig:powerSampleSize}, the smallest sample size for which
 power is higher than 0.80 is 297 (actual power = 0.802). The next
 sample size that gives a power above 0.80 is 302, but the actual power
@@ -1443,13 +1443,13 @@ than 0.80.
 <<sampleSizeFigure>>=
 ss <- 275:325
 (pd <- coef(rescale(d.prime = .9, method = "triangle"))$pd)
-pwr <- sapply(ss, function(x) 
+pwr <- sapply(ss, function(x)
               discrimPwr(pdA = pd, sample.size = x, pGuess = 1/3))
-pwrN <- sapply(ss, function(x) 
+pwrN <- sapply(ss, function(x)
                discrimPwr(pdA = pd, sample.size = x, pGuess = 1/3,
                           statistic = "normal"))
 
-@ 
+@
 
 \setkeys{Gin}{width=.6\textwidth}
 \begin{figure}
@@ -1468,12 +1468,12 @@ legend("topleft", legend = c("exact binomial", "normal approx.",
 ## axis(2, at = c(0.72, 0.75, 0.80, 0.85))
 axis(2, las = 1)
 axis(1, at = c(275, 297, 297+21, 325))
-segments(297, 0.6, 297, 
+segments(297, 0.6, 297,
          discrimPwr(pd, sample.size = 297, pGuess = 1/3), lty = 3)
 segments(297+21, 0.6, 297+21, discrimPwr(pd, sample.size = 297+21,
                                          pGuess = 1/3), lty = 3)
 
-@ 
+@
   \caption{The relation between sample size and power for a difference
 test with the triangle protocol. The null hypothesis is that of no
 difference and $d' = 0.9$ is assumed under the alternative model. A
@@ -1485,7 +1485,7 @@ Even though an increase in sample size may lead to a decrease in
 power, it will instead lead to a decrease in the actual
 $\alpha$-level. This occurs because the critical value of the test is
 at times piece-wise constant as a function of sample size,
-cf. Fig.~\ref{fig:xcrAlpha}.  
+cf. Fig.~\ref{fig:xcrAlpha}.
 
 \setkeys{Gin}{width=.49\textwidth}
 \begin{figure}
@@ -1497,7 +1497,7 @@ plot(ss, xcr, type = "l", axes = FALSE,
 points(ss, xcr, pch = 20)
 axis(1); axis(2)
 
-@ 
+@
 <<alphaFig, fig=TRUE, height=3.5, width=5.5>>=
 aa <- sapply(ss, function(n)
              1 - pbinom(findcr(n, p0 = 1/3) - 1, n, 1/3))
@@ -1506,7 +1506,7 @@ plot(ss, aa, pch = 20, ylim = c(0.03, .05), axes = FALSE,
 lines(ss, aa, lty = 1)
 axis(1); axis(2)
 
-@ 
+@
   \caption{Left: critical value of the test. Right: actual
     $\alpha$-level of the test.}
 \label{fig:xcrAlpha}
@@ -1528,7 +1528,7 @@ sample size is large, it may take some time to get there; recall that
 at every evaluation of the actual power, the critical value has to be
 determined. Due to the non-monotonicity of the relationship between
 power and sample size (cf. Fig.~\ref{fig:powerSampleSize}), it is not
-possible to simply solve for the required sample size numerically. 
+possible to simply solve for the required sample size numerically.
 
 An improvement over the simple while loop is suggested by the normal
 approximation to the required sample size shown in
@@ -1548,7 +1548,7 @@ approximation estimate is larger than 10,000, the function will
 inform of that and not attempt to estimate the sample size due to the
 expected large computation time. In addition to the sample size for
 the 'exact' binomial test, it is also possible to ask for the sample
-size based on the normal approximation. 
+size based on the normal approximation.
 
 \paragraph{Example:}
 
@@ -1556,7 +1556,7 @@ Consider the example above illustrated in
 Fig.~\ref{fig:powerSampleSize}; we wanted to know the sample size for
 a difference test where the null hypothesis is that of no difference
 using the triangle protocol. We want a power of 0.80, take $\alpha =
-0.05$ and we assume the 
+0.05$ and we assume the
 actual difference is $d' = 0.9$ under the alternative
 hypothesis. Using package \textsf{sensR} we may get the sample size
 for the exact binomial test with
@@ -1564,30 +1564,30 @@ for the exact binomial test with
 (pd <- coef(rescale(d.prime = .9, method = "triangle"))$pd)
 discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
           = 1/3, test = "difference", statistic = "exact")
-@ 
-We could also obtain the normal approximation with 
+@
+We could also obtain the normal approximation with
 <<normalSSexample, results=verb, echo=TRUE>>=
 discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
           = 1/3, test = "difference", statistic = "normal")
-@ 
+@
 
 
 %% \subsection{Related literature}
 
 %% \section{The 2-AC discrimination and preference protocol}
-%% 
+%%
 %% The statistical methodology for the 2-AC protocol is treated in detail
 %% in (refto 2-AC paper), and we refer to this source for more
 %% information. $\square \bs \s$ and $\blacksquare$ and \ldots
-%% 
+%%
 %% \begin{table}
 %%   \centering
-%%   \caption{Possible outcomes in the 2-AC protocol. 
+%%   \caption{Possible outcomes in the 2-AC protocol.
 %%     \label{tab:twoACoutcomes}}
 %%   \begin{tabular}{lccccccc}
 %%     \hline
 %%     & \multicolumn{7}{c}{cases} \\
-%%     \cline{2-8} 
+%%     \cline{2-8}
 %%     & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
 %%     & $\bs \bs \bs$ & $\bs \s \s$ & $\s \bs \s$ & $\s \s \bs$ & $\bs
 %%     \bs \s$ & $\s \bs \bs$ & $\bs \s \bs$ \\
@@ -1596,13 +1596,13 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %%     $\ell(\hat\tau, \hat d')$ & --- & 0 & 0 & 0 & --- & --- & --- \\
 %%     $\hat\tau$ & --- & 0 & NA & 0 & NA & NA &  0 \\
 %%     $\tau_0$ & --- & 0 & NA & 0 & --- & --- & 0 \\
-%%     $\hat d'$ & --- & $-\infty$ & NA & $\infty$ & $-\infty$ & $\infty$ 
+%%     $\hat d'$ & --- & $-\infty$ & NA & $\infty$ & $-\infty$ & $\infty$
 %%     & --- \\
 %%     var-cov & --- & NA & NA & NA & NA & NA & NA \\
 %%     \hline
 %%   \end{tabular}
 %% \end{table}
-%% 
+%%
 %% Write about
 %% \begin{itemize}
 %% \item Power computations and why the error is at most $\varepsilon$
@@ -1616,24 +1616,24 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %%   of $d'$? - for $d'_0$ and $\hat d'$ separately? What is the value of
 %%   $\tau$ in those cases?
 %% \end{itemize}
-%% 
+%%
 
 %% \section{A-not A and same-different protocols}
 %% \label{sec:not-same-different}
-%% 
-%% 
+%%
+%%
 %% \section{Replicated simple discrimination protocols}
 %% \label{sec:repl-simple-discr}
-%% 
+%%
 %% \subsection{The beta-binomial model}
 %% \label{sec:beta-binomial-model}
-%% 
+%%
 %% \marginpar{introduce data and model here}
-%% 
+%%
 %% The beta-binomial model is derived from the marginal distribution of
 %% the binomial response, $X_i$, when the probabilities, $\pi_i$ are
-%% allowed to have a beta-distribution on the interval $(0; 1)$. 
-%% 
+%% allowed to have a beta-distribution on the interval $(0; 1)$.
+%%
 %% The likelihood function for the beta-binomial model is
 %% \begin{equation}
 %%   \label{eq:17}
@@ -1642,34 +1642,34 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% \end{equation}
 %% where $i = 1, \ldots, N$ is the number of independent binomial
 %% observations each with $x_i$ successes out of $n_i$ trials, $Beta$ is
-%% the beta function with parameters $\alpha$ and 
-%% $\beta$. 
+%% the beta function with parameters $\alpha$ and
+%% $\beta$.
 %% The beta-binomial model can be parameterized in terms of the mean
 %% binomial parameter, $\mu$ and the degree of over-dispersion, $\gamma$
 %% both living in the interval $(0; 1)$. The relation to the $(\alpha,
 %% \beta)$ parameters is:
 %% \begin{equation}
 %%   \label{eq:18}
-%%   \mu = \alpha/(\alpha + \beta) \quad 
+%%   \mu = \alpha/(\alpha + \beta) \quad
 %%   \gamma = 1/(\alpha + \beta + 1)
 %% \end{equation}
 %% $\gamma$ can also be interpreted as a correlation\ldots
-%% 
+%%
 %% In a sensory experiment $\mu$ can be interpreted as the probability of
 %% a correct answer, $p_c$ averaged over subjects. The corresponding
 %% values of $p_d$ and $d'$ can be found by eq.~\eqref{eq:2} and
-%% \eqref{eq:6}. 
-%% 
+%% \eqref{eq:6}.
+%%
 %% The standard error of the $\mu$ and $\gamma$ can be found from the
 %% variance-covariance matrix of the parameters, which in turn can be
 %% found from the Hessian of the likelihood function. The standard errors
 %% of the population $p_d$ and population $d'$ can also be found from
-%% eq.~\eqref{eq:9} and \eqref{eq:10}. 
-%% 
-%% 
+%% eq.~\eqref{eq:9} and \eqref{eq:10}.
+%%
+%%
 %% \subsection{The chance-corrected beta-binomial model}
 %% \label{sec:chance-corr-beta}
-%% 
+%%
 %% In the chance-corrected beta-binomial model the probability of a
 %% correct answer is only allowed in the interval $(p_g; 1)$. This means
 %% that the probability of a correct answer for any one individual is not
@@ -1677,7 +1677,7 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% since it is impossible for the underlying probability of a correct
 %% answer for any individual to be less than the guessing probability for
 %% any of the simple sensory discrimination protocols.
-%% 
+%%
 %% The likelihood function for the chance-corrected beta-binomial model
 %% is
 %% \begin{align}
@@ -1692,34 +1692,34 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% 1)$, but $\mu$ now has to be interpreted on the $p_d$ scale rather
 %% than the $p_c$ scale. Transformation to the other scales and
 %% computation of standard errors follow the approach in
-%% section~\ref{sec:simple-discr-meth}. 
-%% 
+%% section~\ref{sec:simple-discr-meth}.
+%%
 %% \subsection{A mixture of discriminators and non-discriminators}
 %% \label{sec:mixt-discr-non}
-%% 
+%%
 %% It does not have to be assumed that assessors are either
 %% discriminators or non-discriminators. These assessor types can be
 %% regarded as the extreme endpoints in-between which the population of
 %% assessors distribute.
-%% 
-%% 
+%%
+%%
 %% \subsection{Difference testing in replicated experiments}
 %% \label{sec:diff-test-repl}
-%% 
+%%
 %% \subsubsection{Model based likelihood ratio tests}
 %% \label{sec:model-based-likel}
-%% 
+%%
 %% A likelihood ratio test of over-dispersion can be calculated by
 %% comparing the likelihood of the beta-binomial model with the
 %% likelihood of the standard binomial model.
 %% Suppose 20 panelists each conduct 10 triangle tests, with $x_i$
 %% number of correct responses out of $n_i = 10$ trials for all $i$,
-%% where $i = 1, \ldots, N$, $N = 20$. 
-%% 
+%% where $i = 1, \ldots, N$, $N = 20$.
+%%
 %% The likelihood ratio test statistic for the test of over-dispersion is
 %% \begin{equation}
 %%   \label{eq:35}
-%%   LR_{over-disp} = 2 \{\ell_{beta-bin}(\hat\mu, \hat\gamma; x; n) - 
+%%   LR_{over-disp} = 2 \{\ell_{beta-bin}(\hat\mu, \hat\gamma; x; n) -
 %%   \ell_{binom}(\hat\mu; x, n)\} ,
 %% \end{equation}
 %% where $\ell_{beta-bin}(\hat\mu, \hat\gamma; x; n)$ is the log-likelihood of
@@ -1735,8 +1735,8 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% the alternative hypothesis is that $ X_i \sim \textup{binom}(\hat\mu,
 %% n_i)$; that observations from different individuals are independent
 %% and binomially distributed with the same probability of a correct
-%% answer; $p_c = \mu$. 
-%% 
+%% answer; $p_c = \mu$.
+%%
 %% The likelihood ratio statistic asymptotically follows a
 %% $\chi_1^2$-distribution, so the $p$-value is given by:
 %% \begin{equation}
@@ -1752,8 +1752,8 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% fact one-sided, which motivates halving the degrees of freedom.
 %% Choosing df = 1 is on the safe side since this leads to
 %% $p$-value which may be a little too large.
-%% 
-%% 
+%%
+%%
 %% The test of ``any difference'', is a test of $H_0:~ \mu_i = p_g$ for
 %% all $i$, i.e. for all individuals, versus the general alternative that
 %% for some individuals at least the probability of a correct answer is
@@ -1763,10 +1763,10 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% p_g$, and the likelihood ratio statistic is given by
 %% \begin{equation}
 %%   \label{eq:38}
-%%   LR_{any-diff} = 2 \{\ell_{beta-bin}(\hat\mu, \hat\gamma; x; n) - 
+%%   LR_{any-diff} = 2 \{\ell_{beta-bin}(\hat\mu, \hat\gamma; x; n) -
 %%   \ell_{binom}(p_g; x, n)\} .
 %% \end{equation}
-%% 
+%%
 %% We assume a $\chi_2^2$ reference distribution for this statistic, so
 %% the $p$-value is
 %% \begin{equation}
@@ -1774,28 +1774,28 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %%   p\textup{-value} = P(\chi^2_2 \geq LR_{any-diff})
 %% \end{equation}
 %% while this is still partly a test at the boundary of the parameter
-%% space, so the stated $p$-value may be a little too large. 
-%% 
+%% space, so the stated $p$-value may be a little too large.
+%%
 %% Yet another test of ``any difference'' is possible. First realize that
 %% if there really is no sensory difference between the objects/products,
 %% then the probability of a correct answer will for all assessors be
-%% $p_g$ and there is no room for over-dispersion. We may therefore test 
+%% $p_g$ and there is no room for over-dispersion. We may therefore test
 %% $H_0:~ \mu = p_g$ versus $H_1:~ \mu > p_g$ where $\mu$ is the average
-%% probability of a correct answer and 
-%% $\hat\mu = \sum_i x_i / \sum_i n_i$. 
-%% The likelihood ratio statistic for this test is 
+%% probability of a correct answer and
+%% $\hat\mu = \sum_i x_i / \sum_i n_i$.
+%% The likelihood ratio statistic for this test is
 %% \begin{equation}
 %%   \label{eq:40}
-%%   LR_{mean-diff} = 2 \{\ell_{binom}(\hat\mu; x, n) - 
+%%   LR_{mean-diff} = 2 \{\ell_{binom}(\hat\mu; x, n) -
 %%   \ell_{binom}(p_g; x, n)\}
 %% \end{equation}
 %% which asymptotically follows a $\chi_1^2$-distribution, so the
-%% $p$-value is given by: 
+%% $p$-value is given by:
 %% \begin{equation}
 %%   \label{eq:41}
 %%   p\textup{-value} = P(\chi^2_1 \geq LR_{mean-diff}) .
 %% \end{equation}
-%% 
+%%
 %% These three models are nested, so the $LR$-statistics are additive in
 %% the following way
 %% \begin{equation}
@@ -1814,8 +1814,8 @@ discrimSS(pdA = pd, pd0 = 0, target.power = 0.8, alpha = 0.05, pGuess
 %% powerful. We expect that when the beta-binomial model is appropriate,
 %% i.e. when there is appreciably over-dispersion, the test of any
 %% difference will be Superior to the other two tests or at least at
-%% least as good as them. 
-%% 
+%% least as good as them.
+%%
 \bibliography{meth}
 %% \newpage
 %% \appendix

@@ -6,7 +6,7 @@
 
 ## Load common packages, functions and set settings:
 library(sensR)
-## 
+##
 RUN <- FALSE    #redo computations and write .RData files
 ## Change options:
 op <- options() ## To be able to reset settings
@@ -61,7 +61,7 @@ gd4 <- psyderiv(dPrime, method = "triangle")
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
 
-plot(c(0, 6), c(.3, 1), type = "n", xlab = "d-prime", 
+plot(c(0, 6), c(.3, 1), type = "n", xlab = "d-prime",
      ylab = "P(correct answer)", axes = FALSE)
 axis(1)
 axis(2, las = 1)
@@ -79,7 +79,7 @@ legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
 
-plot(c(0, 6), c(0, 1), type = "n", xlab = "d-prime", 
+plot(c(0, 6), c(0, 1), type = "n", xlab = "d-prime",
      ylab = "P(discrimination)", axes = FALSE)
 axis(1)
 axis(2, las = 1)
@@ -97,12 +97,12 @@ legend("topleft", legend = c("2-AFC", "3-AFC", "duo-trio",
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
 
-plot(c(0.3, 1), c(0, 1), type = "n", 
-     ylab = "P(correct answer)", 
+plot(c(0.3, 1), c(0, 1), type = "n",
+     ylab = "P(correct answer)",
      xlab = "P(discrimination)", axes = FALSE)
 axis(1); axis(2, las = 1)
 segments(c(1/3, .5), 0, 1, 1, lty = 1:2)
-legend("topleft", legend = c("3-AFC and triangle", "2-AFC and duo-trio"), 
+legend("topleft", legend = c("3-AFC and triangle", "2-AFC and duo-trio"),
        lty = 1:2, bty = "n")
 
 
@@ -146,7 +146,7 @@ discrim(10, 15, method = "threeAFC", statistic = "likelihood")
 ###################################################
 ### code chunk number 10: discrimExample2
 ###################################################
-discrim(4, 15, method = "threeAFC", test = "similarity", pd0 = 0.2, 
+discrim(4, 15, method = "threeAFC", test = "similarity", pd0 = 0.2,
         statistic = "exact")
 
 
@@ -179,7 +179,7 @@ plot(profile(fm1))
 ### code chunk number 14: criticalValueExample2
 ###################################################
 i <- 0
-while (1 - pbinom(q = i, size = 20, prob = 0.5) > 0.05) 
+while (1 - pbinom(q = i, size = 20, prob = 0.5) > 0.05)
   {
     i <- i + 1
   }
@@ -201,28 +201,28 @@ findcr(sample.size = 20, alpha = 0.05, p0 = 0.5)
 ###################################################
 ### code chunk number 17: differencePowerExample2
 ###################################################
-discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05, 
+discrimPwr(pdA = 0.5, sample.size = 20, alpha = 0.05,
            pGuess = 1/2)
 
 
 ###################################################
 ### code chunk number 18: differencePowerExample3
 ###################################################
-discrimPwr(pdA = 0.5, pd0 = 0.1, sample.size = 20, alpha = 0.05,  
+discrimPwr(pdA = 0.5, pd0 = 0.1, sample.size = 20, alpha = 0.05,
            pGuess = 1/2)
 
 
 ###################################################
 ### code chunk number 19: similarityPowerExample1
 ###################################################
-discrimPwr(pdA = 0, pd0 = 1/3, sample.size = 100, alpha = 0.05,  
+discrimPwr(pdA = 0, pd0 = 1/3, sample.size = 100, alpha = 0.05,
            pGuess = 1/2, test = "similarity")
 
 
 ###################################################
 ### code chunk number 20: similarityPowerExample1
 ###################################################
-discrimPwr(pdA = 1/5, pd0 = 1/3, sample.size = 100, alpha = 0.05, 
+discrimPwr(pdA = 1/5, pd0 = 1/3, sample.size = 100, alpha = 0.05,
            pGuess = 1/2, test = "similarity")
 
 
@@ -248,9 +248,9 @@ power + c(-1,1) * qnorm(.975) * se.power
 ###################################################
 ss <- 275:325
 (pd <- coef(rescale(d.prime = .9, method = "triangle"))$pd)
-pwr <- sapply(ss, function(x) 
+pwr <- sapply(ss, function(x)
               discrimPwr(pdA = pd, sample.size = x, pGuess = 1/3))
-pwrN <- sapply(ss, function(x) 
+pwrN <- sapply(ss, function(x)
                discrimPwr(pdA = pd, sample.size = x, pGuess = 1/3,
                           statistic = "normal"))
 
@@ -273,7 +273,7 @@ legend("topleft", legend = c("exact binomial", "normal approx.",
 ## axis(2, at = c(0.72, 0.75, 0.80, 0.85))
 axis(2, las = 1)
 axis(1, at = c(275, 297, 297+21, 325))
-segments(297, 0.6, 297, 
+segments(297, 0.6, 297,
          discrimPwr(pd, sample.size = 297, pGuess = 1/3), lty = 3)
 segments(297+21, 0.6, 297+21, discrimPwr(pd, sample.size = 297+21,
                                          pGuess = 1/3), lty = 3)

@@ -15,7 +15,12 @@ export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
        samediff, findcr, betabin, samediffSim, discrimR, clls,
        samediffPwr, twoAC, rescale, psyfun, psyinv, psyderiv, pc2pd,
        pd2pc, d.primePwr, d.primeSS, twoACpwr, clm2twoAC,
-       dprime_table, dprime_test, dprime_compare, posthoc)
+       dprime_table, dprime_test, dprime_compare, posthoc,
+       dod, dod_fit, dodControl, dodSim, dodPwr, optimal_tau,
+       par2prob_dod, dod_nll, dod_null, dod_null_tau)
+
+S3method(print, dod)
+S3method(confint, dod_fit)
 
 S3method(posthoc, dprime_test)
 S3method(posthoc, dprime_compare)

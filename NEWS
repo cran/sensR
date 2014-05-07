@@ -178,3 +178,13 @@ October 1. 2013:
   an .Rout.save file in ./tests/Examples to avoid problems with
   minor numerical differences across platforms and architectures.
 
+October 20. 2013:
+
+- Ensuring that the package will work under R-2.15.3 (and older?) by
+  modifying tests in discrimSim.Rd and ./inst/tests/test-links.R.
+
+May 7th 2014:
+
+- Implementing support for the Degree-of-Difference method: dod,
+  dod_fit, dodSim, dodPwr, dodControl, optimal_tau.
+
