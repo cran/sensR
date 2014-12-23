@@ -90,23 +90,30 @@ each case. The choices used here are believed to be conservative, so the
 stated p-values are probably a little too large.
 
 The log-likelihood of the standard beta-binomial model is
-\deqn{\ell(\alpha, \beta; x, n) = - N \log Beta(\alpha, \beta) +
-  \sum_{j=1}^N \log Beta(\alpha + x_j, \beta - x_j + n_j)}
+\deqn{\ell(\alpha, \beta; x, n) =
+  \sum_{j=1}^N \left\{
+  \log {n_j \choose x_j}
+  - \log Beta(\alpha, \beta)
+  + \log  Beta(\alpha + x_j, \beta - x_j + n_j) \right\}
+  }
 
 and the log-likelihood of the chance corrected beta-binomial model is
-\deqn{\ell(\alpha, \beta; x, n) = - N \log Beta(\alpha, \beta) +
-  \sum_{j=1}^N \log \left\{ \sum_{i=1}^{x_j} {{x_j} \choose i}
+\deqn{\ell(\alpha, \beta; x, n) =
+  \sum_{j=1}^N \left\{ C
+  + \log \left[ \sum_{i=0}^{x_j} {{x_j} \choose i}
   (1-p_g)^{n_j-x_j+i} p_g^{x_j-i}
-  Beta(\alpha + i, n_j - x_j + \beta) \right\}}{%
-  \ell(\alpha, \beta; x, n) = - N \log Beta(\alpha, \beta) +
-  \sum_{j=1}^N \log ( \sum_{i=1}^x_j {x_j \choose i}
-  (1-p_g)^{n_j-x_j+i} p_g^{x_j-i}
-  Beta(\alpha + i, n_j - x_j + \beta) )}
+  Beta(\alpha + i, n_j - x_j + \beta) \right] \right\}
+}
+where
+\deqn{C =
+  \log {n_j \choose x_j}
+  - \log Beta(\alpha, \beta)
+}
 
-where \eqn{\mu = \alpha/(\alpha + \beta)},
+and where \eqn{\mu = \alpha/(\alpha + \beta)},
 \eqn{\gamma = 1/(\alpha + \beta + 1)}, \eqn{Beta} is the Beta
 function, cf. \code{\link{beta}},
-\eqn{N} is the number of independent binomial observations, i.e. the
+\eqn{N} is the number of independent binomial observations, i.e.~the
 number of rows in \code{data}, and \eqn{p_g} is the guessing
 probability, \code{pGuess}.
 

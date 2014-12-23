@@ -69,16 +69,24 @@ dodPwr(d.primeA, d.prime0=0, ncat = 4, sample.size, nsim = 1e3,
 
 \examples{
 
+## NOTE: The number of simulations (nsim) is set unrealistically low in
+## the examples below to reduce the computation time for automatic
+## package checks. nsim between 1e3 and 1e4 is usually sufficient and
+## the latter often on the safe side. The standard error of the
+## estimated power ('se(power)') reported by dodPwr() measures the
+## accuracy of the estimated power and indicates if nsim needs to be
+## increased.
+
 ## Estimate power of the conventional difference test (no-difference
 ## under the null hypothesis):
 set.seed(125)
-dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=1e2,
+dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=50,
        alpha=.05, method.tau="LR.max", statistic="likelihood")
-##  [1] 0.69
+##  [1] 0.62
 ##  attr(,"se(power)")
-##  [1] 0.1462532
+##  [1] 0.1825346
 ##  attr(,"n.used")
-##  [1] 100
+##  [1] 50
 ## Here the boundary parameters are chosen automatically so as to
 ## maximize the likelihood ratio test statistic, and so this setting
 ## amounts to a highest achievable power scenario given d-prime = 1.
@@ -86,6 +94,9 @@ dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=1e2,
 ## Using another (and faster) statistic:
 dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=1e3,
        alpha=.05, method.tau="LR.max", statistic="Wilcox")
+
+\dontrun{
+## Not automatically run to reduce computation time.
 
 ## Power of a similarity test:
 set.seed(127)
@@ -113,7 +124,7 @@ if(require(parallel)) {
     system.time(
         res <- parLapply(cl, dvec, fun=function(dp) {
             library(sensR)
-            x <- dodPwr(dp, 0, sample.size=100, nsim=1e2, stat="Wil")
+            x <- dodPwr(dp, 0, sample.size=100, nsim=1e4, stat="Wil")
             c("power"=x, "se"=attr(x, "se(power)"))
         })
         )
@@ -126,6 +137,8 @@ if(require(parallel)) {
     ##  power 0.051 0.058 0.123 0.238 0.578 0.983 1.000 1.000
     ##  se    0.022 0.023 0.033 0.043 0.049 0.013 0.002 0.001
 }
+}
+## Realistically one should use more simulations, e.g. nsim=1e4.
 
 \dontshow{
 ## set.seed(1)

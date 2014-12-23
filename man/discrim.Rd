@@ -12,7 +12,7 @@
 }
 \usage{
 
-discrim(correct, total, pd0 = 0, conf.level = 0.95,
+discrim(correct, total, d.prime0, pd0, conf.level = 0.95,
            method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
              "triangle"),
            statistic = c("exact", "likelihood", "score", "Wald"),
@@ -29,6 +29,8 @@ discrim(correct, total, pd0 = 0, conf.level = 0.95,
     integer}
   \item{total}{the total number of answers (the sample size); positive
     scalar integer}
+  \item{d.prime0}{The value of d-prime under the
+    null hypothesis; numerical non-zero scalar}
   \item{pd0}{the probability of discrimination under the
     null hypothesis; numerical scalar between zero and one}
 %%%   \item{formula}{an object of class "formula" (or one that can be coerced
@@ -61,8 +63,17 @@ discrim(correct, total, pd0 = 0, conf.level = 0.95,
   \item{\dots}{not currently used}
 }
 \details{
-  The p-value for the standard one-tailed difference test of "no
-  difference" is obtained with \code{pd0 = 0}.
+  The degree of product difference/discrimination under the null
+  hypothesis can be specified on \emph{either} the d-prime scale or on
+  the pd (proportion of discriminators) scale. This is done by using
+  either the \code{d.prime0} \emph{or} the \code{pd0} arguments.
+  If unspecified, they default to zero and the
+  conventional difference test of "no difference" is obtained.
+
+  For a similarity test either \code{d.prime0} \emph{or} \code{pd0} have
+  to be specified \emph{and} and a non-zero, positive value should to be
+  given. Here, \code{d.prime0} or \code{pd0} define the \code{limit of
+  similarity} or \code{equivalence}.
 
   The probability under the null hypothesis is
   given by \code{pd0 + pg * (1 - pd0)} where \code{pg} is the guessing
@@ -82,7 +93,7 @@ discrim(correct, total, pd0 = 0, conf.level = 0.95,
   use---it is included here for completeness and to allow comparisons.
 
   For \code{statistic = "score"}, the confidence interval is computed
-  from Wilson's score interval, while the p-value for the hypothesis
+  from Wilson's score interval, and the p-value for the hypothesis
   test is based on Pearson's chi-square test,
   cf. \code{\link{prop.test}}.
 
@@ -104,6 +115,8 @@ discrim(correct, total, pd0 = 0, conf.level = 0.95,
     p-value}
   \item{pd0}{the probability of discrimination under the
     null hypothesis}
+  \item{alt.scale}{the scale for the alternative hypothesis,
+    e.g.~\code{"d.prime"} or \code{"pd"}}
   \item{conf.level}{the confidence level}
   \item{stat.value}{for \code{statistic != "exact"} the value of the
     test statistic used to calculate the p-value}
@@ -142,7 +155,7 @@ m1 <- discrim(10, 15, method = "twoAFC")
 plot(m1)
 
 ## A similarity test where less than chance successes are obtained:
-discrim(20, 75, method = "triangle", pd0 = .2, test = "similarity")
+discrim(22, 75, method = "triangle", d.prime0 = 1, test = "similarity")
 \dontshow{
 ## Testing stability of results:
 fm1 <- discrim(10, 15, method = "twoAFC")

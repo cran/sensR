@@ -38,14 +38,16 @@ AnotA <-
 }
 
 discrim <-
-  function(correct, total, pd0 = 0, conf.level = 0.95,
+  function(correct, total, d.prime0, pd0, conf.level = 0.95,
            method = c("duotrio", "tetrad", "threeAFC", "twoAFC",
              "triangle"),
            statistic = c("exact", "likelihood", "score", "Wald"),
            test = c("difference", "similarity"), ...)
 {
-  stopifnot(length(correct) == 1 && length(total) == 1 &&
-            length(pd0) == 1 && length(conf.level) == 1)
+  stopifnot(length(correct) == 1L, is.numeric(correct),
+            length(total) == 1L, is.numeric(total),
+            length(conf.level) == 1L, is.numeric(conf.level),
+            conf.level >= 0, conf.level <= 1)
   m <- match.call(expand.dots=FALSE)
   method <- match.arg(method)
   test <- match.arg(test)
@@ -64,12 +66,43 @@ discrim <-
   n <- as.integer(round(n))
   if(x > n)
     stop("'correct' cannot be larger than 'total'")
-  if(pd0 < 0 || pd0 > 1)
-    stop("'pd0' has to be between zero and one")
-  Pguess <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
-  pc0 <- pd2pc(pd0, Pguess)
-  if(test == "similarity" && pd0 == 0)
-    stop("'pd0' should be positive for a similarity test")
+  Pguess <- pc0 <- ifelse(method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
+  pd0 <- 0 ## Initial default value.
+  ## Check value of null hypothesis (pd0/d.prime0):
+  null.args <- c("pd0", "d.prime0")
+  isPresent <- sapply(null.args, function(arg) !is.null(m[[arg]]))
+  if(sum(isPresent) > 1)
+      stop("Only specify one of 'pd0' and 'd.prime0'")
+  if(test == "similarity" && sum(isPresent) == 0)
+      stop("Either 'pd0' or 'd.prime0' has to be specified for a similarity test")
+  alt.scale <- "d-prime" ## default value
+  ## Test value of null hypothesis arg:
+  if(sum(isPresent)) {
+      alt.scale <- switch(null.args[isPresent],
+                          "pd0" = "pd",
+                          "d.prime0" = "d-prime",
+                          stop("Argument not recognized"))
+      if(alt.scale == "pd") {
+          pd0 <- m$pd0
+          stopifnot(is.numeric(pd0),
+                    length(pd0) == 1L,
+                    pd0 >= 0,
+                    pd0 <= 1)
+          if(test == "similarity" && pd0 == 0)
+              warning("'pd0' should be positive for a similarity test")
+          pc0 <- pd2pc(pd0, Pguess)
+      } else if(alt.scale == "d-prime") {
+          d.prime0 <- m$d.prime0
+          stopifnot(is.numeric(d.prime0),
+                    length(d.prime0) == 1L,
+                    d.prime0 >= 0)
+          if(test == "similarity" && d.prime0 == 0)
+              warning("'d.prime0' should be positive for a similarity test")
+          pc0 <- psyfun(d.prime0, method=method)
+          pd0 <- pc2pd(pc=pc0, Pguess=Pguess)
+      }
+  }
+  ## Compute estimates:
   mu <- x/n
   se.mu <- sqrt(mu*(1 - mu)/n)
   ## Draft coefficient table:
@@ -118,12 +151,16 @@ discrim <-
   if(stat == "score") {
     ci <- prop.test(x = x, n = n, alternative = "two.sided",
                     conf.level = conf.level)$conf.int
+    ## prop.test needs p in (0, 1):
+    PC0 <- delimit(x=pc0, lower=0+1e-8, upper=1-1e-8)
     if(test == "difference")
-      score <- prop.test(x = x, n = n, alternative = "greater",
-                         p = pc0, correct = FALSE)
+### NOTE: need suppressWarnings to ignore warning about dubious
+### chi-square approximation:
+        score <- suppressWarnings(prop.test(x = x, n = n, alternative = "greater",
+                                            p = PC0, correct = FALSE))
     else
-      score <- prop.test(x = x, n = n, alternative = "less",
-                         p = pc0, correct = FALSE)
+      score <- suppressWarnings(prop.test(x = x, n = n, alternative = "less",
+                         p = PC0, correct = FALSE))
     Stat <- score$statistic
     p.value <- score$p.value
   }
@@ -136,7 +173,7 @@ discrim <-
   res <- list(coefficients = table, p.value = p.value, call = call,
               test = test, method = method, statistic = stat,
               data = c("correct" = x, "total" = n), pd0 = pd0,
-              conf.level = conf.level)
+              conf.level = conf.level, alt.scale = alt.scale)
   if(stat != "exact")
     res$stat.value <- Stat
   if(stat == "score")
@@ -270,6 +307,10 @@ print.discrim <-
   print(x$coefficients, digits = digits)
   Pguess <- ifelse(x$method %in% c("duotrio", "twoAFC"), 1/2, 1/3)
   d.prime0 <- psyinv(pd2pc(x$pd0, Pguess), method = x$method)
+  null.value <- switch(x$alt.scale,
+                       "pd" = x$pd0,
+                       "d-prime" = psyinv(pd2pc(x$pd0, Pguess),
+                       method=x$method))
   cat(paste("\nResult of", x$test, "test:\n"))
   if(x$statistic == "Wald")
     cat(paste("Wald statistic = ", format(x$stat.value, digits),
@@ -289,9 +330,9 @@ print.discrim <-
               ", p-value: ", format.pval(x$p.value, digits=4), "\n",
   sep = ""))
   cat("Alternative hypothesis: ")
-  cat(paste("d-prime is",
+  cat(paste(x$alt.scale,"is",
             ifelse(x$test == "difference", "greater", "less"),
-            "than", format(d.prime0, digits), "\n\n"))
+            "than", format(null.value, digits=digits), "\n\n"))
   invisible(x)
 }
 

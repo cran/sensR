@@ -183,8 +183,25 @@ October 20. 2013:
 - Ensuring that the package will work under R-2.15.3 (and older?) by
   modifying tests in discrimSim.Rd and ./inst/tests/test-links.R.
 
-May 7th 2014:
+May 7th 2014 (version 1.4-0):
 
 - Implementing support for the Degree-of-Difference method: dod,
   dod_fit, dodSim, dodPwr, dodControl, optimal_tau.
 
+June 25th 2014 (version 1.4-1):
+
+- Allowing negative d-primes in AUC.default (reported by Andreas
+  Melzer June 25th 2014)
+
+July 8th 2014 (version 1.4-1)
+
+- Correcting formulae for beta-binomial and chance-corrected
+  beta-binomial models in documentation (Thanks to Peter Nowee for
+  reporting).
+- Adding d.prime0 (value of d-prime under the null hypothesis) as an
+  argument to discrim.
+
+December 223rd 2014 (versoin 1.4-4)
+
+- Coercing package title to title-case.
+- Editing dodPwr() example to reduce computation time

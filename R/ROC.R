@@ -87,8 +87,10 @@ AUC <- function(d, ...) {
 
 AUC.default <- function(d, se.d, scale = 1, CI.alpha = .05, ...) {
     stopifnot(is.numeric(d),
-              length(d) == 1L,
-              d >= 0)
+              length(d) == 1L)
+### NOTE: We allow negative d-primes here. Confidence intervals for
+### d-prime also work for negative d-primes. Note that AnotA can also
+### report negative d-primes.
     stopifnot(is.numeric(scale),
               length(scale) == 1L,
               scale > 0)
@@ -102,11 +104,12 @@ AUC.default <- function(d, se.d, scale = 1, CI.alpha = .05, ...) {
                   se.d >= 0)
     }
     ## Compute AUC:
-    res <- list(value = pnorm(d / sqrt(2)))
+    Scale <- 1 + scale^2
+    res <- list(value = pnorm(d / sqrt(Scale)))
     if(!missing(se.d) && !is.null(se.d)) {
         tol <- se.d * qnorm(1 - CI.alpha/2)
-        res$lower <- pnorm((d - tol)/sqrt(2))
-        res$upper <- pnorm((d + tol)/sqrt(2))
+        res$lower <- pnorm((d - tol)/sqrt(Scale))
+        res$upper <- pnorm((d + tol)/sqrt(Scale))
         res$CI.alpha = CI.alpha
     }
     class(res) <- "AUC"

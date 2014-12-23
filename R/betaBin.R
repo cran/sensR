@@ -37,7 +37,7 @@ betabin <-
       warning(sprintf("Optimizer terminated with max|gradient|: %e",
                       max(abs(grad))), call. = FALSE) }
   else
-    warning("Parameters at boundary occured", call. = FALSE)
+    warning("Parameters at boundary occurred", call. = FALSE)
   ## collect results:
   coef <- fit$par
   names(coef) <- name
@@ -100,8 +100,8 @@ bbEnvir <- function(parent, X, corrected, pGuess, start)
 
 getParBB <- function(rho) rho$par
 setParBB <- function(rho, par)
-### Set parameters of the model and return the log-likelihood at those
-### parameters.
+### Set parameters of the model and return the negative log-likelihood
+### at those parameters.
 {
   if(!missing(par))
     rho$par <- par
@@ -158,15 +158,15 @@ summary.betabin <-
   if(all(!is.na(c(mu, se[1])))) {
     if(object$corrected)
       obj <- rescale(pd = mu, std.err = se[1], method = object$method)
-    else 
+    else
       obj <- rescale(pc = mu, std.err = se[1], method = object$method)
     table[3:5,2] <- unlist(obj$std.err)
   }
   ## Transform Wald CI on mu-scale to pc, pd and d-prime scales:
   if(all(!is.na(muCI))) {
-    if(object$corrected) 
+    if(object$corrected)
       intervals <- rescale(pd = muCI, method = object$method)
-    else 
+    else
       intervals <- rescale(pc = muCI, method = object$method)
     table[3:5,3] <- unlist(coef(intervals)[1,])
     table[3:5,4] <- unlist(coef(intervals)[2,])
@@ -194,13 +194,13 @@ print.summary.betabin <-
           " protocol\nwith ", round(100 * x$level, 3),
           " percent confidence intervals\n\n", sep = ""))
   printCoefmat(x$coefficients, tst.ind=integer(0), cs.ind=1:4,
-               digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...) 
+               digits=digits, P.values=FALSE, has.Pvalue=FALSE, ...)
   cat("\nlog-likelihood: ", round(x$logLik, digits), "\n")
   cat("LR-test of over-dispersion, G^2:", round(x$LR.OD, digits),
-      "df:", 1, "p-value:", format.pval(x$p.value.OD, digits=digits), 
-      "\n") 
-  cat("LR-test of association, G^2:", round(x$LR.null, digits), "df:", 
-      2, "p-value:", format.pval(x$p.value.null, digits=digits), "\n") 
+      "df:", 1, "p-value:", format.pval(x$p.value.OD, digits=digits),
+      "\n")
+  cat("LR-test of association, G^2:", round(x$LR.null, digits), "df:",
+      2, "p-value:", format.pval(x$p.value.null, digits=digits), "\n")
   invisible(x)
 }
 

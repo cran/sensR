@@ -8,7 +8,8 @@
 \description{
   This is the default AUC function for scalar d-primes, which will
   compute Area Under the ROC curve (ROC is an acronym for receiver
-  operating characteristic).
+  operating characteristic) assuming a  normal distribution
+  for the underlying percepts.
 }
 \usage{
 
@@ -32,8 +33,8 @@
   \item{\dots}{additional arguments passed \code{integrate}}
 }
 \details{
-  The function calls \code{integrate} to obtain the area under the ROC
-  curve implied by \code{d} and \code{scale}.
+  The AUC is computed using the standard normal distribution function
+  \code{\link{pnorm}}.
 
   Confidence limits are based on a normal approximation of
   \code{d} and not of AUC. The limits are computed,
