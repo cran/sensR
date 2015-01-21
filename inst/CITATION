@@ -1,9 +1,8 @@
 citHeader("To cite the sensR-package in publications use:")
 
-desc <- packageDescription("sensR")
-year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date)
-vers <- paste("R package version", desc$Version,
-     		"http://www.cran.r-project.org/package=sensR/")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste0("R package version ", meta$Version,
+              ". http://www.cran.r-project.org/package=sensR/")
 
 citEntry(entry="misc",
          title = "sensR---An R-package for sensory discrimination",
@@ -14,6 +13,6 @@ citEntry(entry="misc",
 
          textVersion =
          paste("Christensen, R. H. B. & P. B. Brockhoff (", year,
- 		"). sensR---An R-package for sensory discrimination ",
+ 		"). sensR - An R-package for sensory discrimination. ",
 		vers, ".", sep="")
 )

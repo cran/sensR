@@ -1,7 +1,7 @@
-7452297f9aab83e3646662fceb36bcfe *DESCRIPTION
+a2952768278814304a9a487e29059e8d *DESCRIPTION
 6202d5040864a3ab2bbf85157d56fca7 *LICENCE.note
 d196d946ee850cd678923f1917584829 *NAMESPACE
-687457d4baef814a623643e98d7082b9 *NEWS
+99e55b0392dbcbdaeb486022081182a2 *NEWS
 429a521dc83b9e31706de7add7b66f52 *R/ROC.R
 f007f145a7b489d5a954194bf284dc3b *R/betaBin.R
 2e28539d41ae4b5a26569f6b32f0fbac *R/clls.R
@@ -19,13 +19,13 @@ abc73d5e5bc4955de5b9654f834b7e14 *R/sample.size.R
 afc5072e16a553088a7ba8c6f7421fe8 *R/utils.R
 46f58b5841a0e0ad4109a827bfe7d79d *R/warning_functions.R
 83cc830abce3ace07ba72fafb39ff390 *build/vignette.rds
-3ba3fb080a4a184baaeae3506dde5c2f *inst/CITATION
+88ad48c02693798be1452a8cfa17c392 *inst/CITATION
 e6c89ed5ad6e9a9b214f61517205cc03 *inst/doc/methodology.R
 0cc0d7354deef133d46ba007937decd3 *inst/doc/methodology.Rnw
-62ab8df0e6e88feb4bce29f05bda75b2 *inst/doc/methodology.pdf
+e9d8fcaf28abeac1d397a850dc7b348c *inst/doc/methodology.pdf
 90a30b03e029fc8fa5145f82d86f5f3a *inst/doc/twoACexamples.R
 bd51ae16036e050c907b9cc22744e570 *inst/doc/twoACexamples.Rnw
-1fcaa043b13f9198172c0bb172e70356 *inst/doc/twoACexamples.pdf
+8beffd95e4c171e5344105edc46599fc *inst/doc/twoACexamples.pdf
 04250e75c199475de37f181f096ff6e0 *man/AUC.Rd
 26ef8c792c5180cd88b48c4f58866d1f *man/AnotA.Rd
 83d61ca2b825efad66c85cccb9295d4b *man/ROC.Rd

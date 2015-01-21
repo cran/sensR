@@ -201,7 +201,11 @@ July 8th 2014 (version 1.4-1)
 - Adding d.prime0 (value of d-prime under the null hypothesis) as an
   argument to discrim.
 
-December 223rd 2014 (versoin 1.4-4)
+December 23rd 2014 (version 1.4-4)
 
 - Coercing package title to title-case.
 - Editing dodPwr() example to reduce computation time
+
+January 21st 2015 (version 1.4-5)
+
+- Updating Citation information per CRAN request.
