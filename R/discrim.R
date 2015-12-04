@@ -20,7 +20,8 @@ AnotA <-
   ## Arrange data:
   xt <-  cbind(c(x1, x2), c(n1 - x1, n2 - x2))
   ## Fit GLM:
-  res <- glm(xt ~ gl(2,1), family = binomial(link = probit), ...)
+  res <- glm(xt ~ gl(2,1), 
+             family = binomial(link = "probit"), ...) # added ""  to probit 1.4-6 
   ## Prepare output:
   b <- coef(summary(res))
   coef <- -b[2,1] # d-prime

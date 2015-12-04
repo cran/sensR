@@ -69,7 +69,7 @@ discrimR <-
   ## Starting values:
   suppressWarnings( {
     if(missing(start)) {
-      gf <- glm.fit(X, Y, family=binomial(probit))
+      gf <- glm.fit(X, Y, family=binomial("probit")) # added "" to probit 1.4-6
       b1 <- as.vector(gf$coef); b1
       start <- c(b1, 1)
     }

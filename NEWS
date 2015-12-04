@@ -209,3 +209,16 @@ December 23rd 2014 (version 1.4-4)
 January 21st 2015 (version 1.4-5)
 
 - Updating Citation information per CRAN request.
+
+March 2nd 2015 (version 1.4-6)
+
+- Changing package maintainer from Rune H B Christensen to Per B
+  Brockhoff.
+  
+July 16th 2015 (version 1.4-6)
+
+-  submition to CRAN
+-  cosmetic changes in NAMESPACE file: 
+             fixing warnings:  no visible global function definition
+- in descrim.R and discrimR.R chenged probit to "probit" in order to fix NOTES 
+  issues in CRAN check

@@ -7,6 +7,16 @@ import(MASS) ## to get the confint.glm method
 importFrom(stats, coef, confint, logLik, profile, vcov, update,
            family, extractAIC)
 importFrom(multcomp, contrMat)
+importFrom("graphics", "abline", "lines", "par", "plot.default")
+importFrom("stats", "AIC", "approx", "binom.test", "coefficients", "dbinom", 
+           "dcauchy", "deviance", "dlogis", "dmultinom", "dnorm", "glm", 
+           "glm.control", "glm.fit", "integrate", "model.matrix", 
+           "model.offset", "model.response", "model.weights", "naprint", 
+           "nlminb", "optim", "optimize", "p.adjust", "p.adjust.methods", 
+           "pbinom", "pcauchy", "pchisq", "plogis", "pnorm", "printCoefmat", 
+           "prop.test", "qchisq", "qlogis", "qnorm", "rbinom", "rmultinom", 
+           "rnorm", "setNames", "spline", "uniroot", "wilcox.test",
+           ".getXlevels", "binomial", "fisher.test", "pf")
 
 # functions
 export(AnotA, discrimPwr, discrimSS, discrim, #discrimr,
