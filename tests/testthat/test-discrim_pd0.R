@@ -32,15 +32,15 @@ expect_that(
             "similarity")
     , gives_warning("'d.prime0' should be positive for a similarity test"))
 
-expect_that(
-    discrim(26, 75, method = "triangle", d.prime0 = 1, test =
-            "similarity")
-    , prints_text("p-value = 0.1274"))
+expect_output(
+    print(discrim(26, 75, method = "triangle", d.prime0 = 1, test =
+            "similarity"))
+    , "p-value = 0.1274")
 
-expect_that(
-    discrim(26, 75, method = "triangle", d.prime0 = Inf,
-            stat="like", test="similarity")
-    , prints_text("d-prime is less than Inf"))
+expect_output(
+    print(discrim(26, 75, method = "triangle", d.prime0 = Inf,
+            stat="like", test="similarity"))
+    , "d-prime is less than Inf")
 })
 
 test_that("Test boundary values for pd0 (-1, 0, .2. 1. 2):", {
@@ -53,12 +53,12 @@ expect_that(
             "similarity")
     , gives_warning("'pd0' should be positive for a similarity test"))
 expect_output(
-    discrim(26, 75, method = "triangle", pd0 = .2, test =
-            "similarity")
+    print(discrim(26, 75, method = "triangle", pd0 = .2, test =
+            "similarity"))
     , "'exact' binomial test:  p-value = 0.02377")
 
 expect_output(
-    discrim(26, 75, method = "triangle", pd0 = 1, test = "similarity")
+    print(discrim(26, 75, method = "triangle", pd0 = 1, test = "similarity"))
     , "'exact' binomial test:  p-value = < 2.2e-16")
 
 expect_error(
@@ -112,7 +112,7 @@ expect_error( ## list pd0
 
 test_that("Printing alternative hypothesis in terms of d-prime (default):", {
 expect_output(
-    discrim(26, 75, method = "triangle")
+    print(discrim(26, 75, method = "triangle"))
     , "Alternative hypothesis: d-prime is greater than 0 ")
 
 expect_equal(
@@ -133,10 +133,10 @@ expect_equal(
 
 test_that("Test that alternative hypothesis uses d.prime/pd", {
 expect_output(
-    discrim(26, 75, d.prime=0, method = "triangle")
+    print(discrim(26, 75, d.prime=0, method = "triangle"))
     , "Alternative hypothesis: d-prime is greater than 0 ")
 expect_output(
-    discrim(26, 75, pd0=0, method = "triangle")
+    print(discrim(26, 75, pd0=0, method = "triangle"))
     , "Alternative hypothesis: pd is greater than 0 ")
 })
 
