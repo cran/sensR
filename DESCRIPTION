@@ -1,8 +1,8 @@
 Package: sensR
 Type: Package
 Title: Thurstonian Models for Sensory Discrimination
-Version: 1.5-0
-Date: 2017-08-24
+Version: 1.5-1
+Date: 2018-04-25
 Authors@R: c(person(given="Rune Haubo Bojesen", family="Christensen",
 	   email="Rune@ChristensenStatistics.dk", role=c("aut")),
 	   person(given="Per Bruun", family="Brockhoff",
@@ -21,8 +21,10 @@ Description: Provides methods for sensory discrimination methods;
   comparisons of different d-primes. Methods for profile likelihood
   confidence intervals and plotting are included.
 License: GPL-2 | GPL-3
+URL: https://github.com/perbrock/sensR
+BugReports: https://github.com/perbrock/sensR/issues
 NeedsCompilation: no
-Packaged: 2017-08-24 06:20:39 UTC; rhbc
+Packaged: 2018-04-27 08:55:39 UTC; rhbc
 Author: Rune Haubo Bojesen Christensen [aut],
   Per Bruun Brockhoff [aut, cre],
   Alexandra Kuznetsova [ctb],
@@ -30,4 +32,4 @@ Author: Rune Haubo Bojesen Christensen [aut],
   Karolina Amelia Stachlewska [ctb]
 Maintainer: Per Bruun Brockhoff <perbb@dtu.dk>
 Repository: CRAN
-Date/Publication: 2017-08-24 09:12:39 UTC
+Date/Publication: 2018-04-28 17:32:07 UTC
