@@ -1,6 +1,5 @@
 \name{clm2twoAC}
 \alias{clm2twoAC}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Extract 2-AC coefficient table from a cumulative link model}
 \description{
   The Thurstonian model for the 2-AC protocol can be formulated as a
@@ -31,9 +30,9 @@ clm2twoAC(object, ...)
   \code{d.prime}.
 }
 \references{
-  Christensen R.H.B., Lee H-S and Brockhoff P.B. (2011). Estimation of
-  the Thurstonian model for the 2-AC protocol. Submitted to Food
-  Quality and Preference.
+  Christensen R.H.B., Lee H-S and Brockhoff P.B. (2012). Estimation of
+  the Thurstonian model for the 2-AC protocol. Food Quality
+  and Preference, 24(1), pp.119-128.
 }
 
 \author{Rune Haubo B Christensen}
@@ -85,7 +84,8 @@ if(require(ordinal)) {
     b <- clm2twoAC(fit.clm)
     b2 <- c(tau, d.prime, se.tau, se.d.prime)
     stopifnot(
-    isTRUE(all.equal(unlist(b[, 1:2]), b2, c(coef(fm1)), check.attributes=FALSE))
+    isTRUE(all.equal(unlist(b[, 1:2]), b2, check.attributes=FALSE)),
+    isTRUE(all.equal(unlist(b[, 1:2]), c(coef(fm1)), check.attributes=FALSE))
     )
     ## Test stability of clm2twoAC results:
     tab <- unlist(clm2twoAC(fm2)[, 1:3])
@@ -100,4 +100,4 @@ if(require(ordinal)) {
 }
 
 }
-\keyword{models}% at least one, from doc/KEYWORDS
+\keyword{models}

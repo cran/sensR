@@ -1,7 +1,6 @@
 \name{discrimPwr}
 \alias{discrimPwr}
 \alias{d.primePwr}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Sensory discrimination power analysis}
 \description{
   Computes the power of a difference or similarity test for a sensory
@@ -112,7 +111,10 @@ x1 <- discrimPwr(pd, sample.size = 30)
 x2 <- d.primePwr(1, sample.size = 30, method = "twoAFC")
 ## x3 := dput(x2)
 x3 <- 0.917255217993622
-stopifnot(isTRUE(all.equal(x1, x2, x3)))
+stopifnot(
+isTRUE(all.equal(x1, x2)),
+isTRUE(all.equal(x1, x3))
+)
 
 y1 <- discrimPwr(pd, sample.size = 30, statistic = "cont.normal")
 y2 <- discrimPwr(pd, sample.size = 30, statistic = "normal")
@@ -134,4 +136,4 @@ stopifnot(
 }
 
 }
-\keyword{models}% at least one, from doc/KEYWORDS
+\keyword{models}

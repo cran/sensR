@@ -1,6 +1,5 @@
 \name{discrimR}
 \alias{discrimR}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Replicated Thurstonian Model for discrimination analysis}
 \description{
   The model is a synthesis of a mixture and a mixed effect model. The
@@ -94,7 +93,7 @@ discrimR(formula, data, weights, cluster, start, subset, na.action,
 }
 
 \examples{
-\dontrun{
+\donttest{
 freq <- c(10,8,10,9,8,9,9,1,10,10,8,2,6,7,6,7,6,4,5,5,3,3,9,9,5,5,8,8,9,9)
 tmp <- data.frame(id = factor(1:30), n = rep(10, 30), freq = freq)
 head(tmp)
@@ -109,4 +108,4 @@ names(fm)
 fm[1:4]
 }
 }
-\keyword{models}% at least one, from doc/KEYWORDS
+\keyword{models}

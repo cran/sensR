@@ -317,3 +317,11 @@ text(2, 0.6, "95th percentile consumer")
 sessionInfo()
 
 
+###################################################
+### code chunk number 33: Finalize
+###################################################
+
+options(op)
+
+
+

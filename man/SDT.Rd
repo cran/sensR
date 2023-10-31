@@ -1,6 +1,5 @@
 \name{SDT}
 \alias{SDT}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Signal Detection Theory Computation of d-prime}
 \description{
   The function computes d-prime for any 2 x J table where J >= 2 for the
@@ -12,15 +11,11 @@
 \usage{
 SDT(tab, method = c("probit", "logit"))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{tab}{A 2 x J table with true class relation in rows (only two
     true classes) and the J-class response in columns}
   \item{method}{should the empirical probit or logit transform be computed?}
 }
-%% \details{
-%%   ~~ If necessary, more details than the description above ~~
-%% }
 \value{
   A (J-1) x 3 matrix. The first two columns contains the z-transform of
   the Hit rate and the False Alarm rate respectively---ready to plot
@@ -30,11 +25,6 @@ SDT(tab, method = c("probit", "logit"))
 \references{MacMillan , A. N. and Creelman, C. D (2005) Detection Theory
 A User's Guide. Lawrence Elbaum Associates, Inc. 2nd edition.}
 \author{Rune Haubo B Christensen}
-%% \note{ ~~further notes~~
-%%
-%%  ~Make other sections like Warning with \section{Warning }{....} ~
-%% }
-%% \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 ### Design table:
 ## 8  "yes"-responses to yes-samples
@@ -75,7 +65,10 @@ zH - zFA  # d'
   ## Test equality of all three d-prime computation methods:
   yy2 <- as.vector(coef(m1))
   yy3 <- zH - zFA
-  stopifnot(isTRUE(all.equal(yy[3], yy2, yy3)))
+  stopifnot(
+  isTRUE(all.equal(yy[3], yy2)),
+  isTRUE(all.equal(yy[3], yy3))
+  )
 
 }
 
@@ -95,7 +88,4 @@ ROC(obj[3,3])
 
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{models}
-%% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

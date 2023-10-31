@@ -1,7 +1,6 @@
 \name{twoAC}
 \alias{twoAC}
 \alias{print.twoAC}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{2-AC Discrimination and Preference Protocol}
 \description{
   Computes estimates and standard errors of d-prime and tau for the two
@@ -79,9 +78,9 @@ twoAC(data, d.prime0 = 0, conf.level = 0.95,
     get confidence intervals instead; see the examples.}
 }
 \references{
-  Christensen R.H.B., Lee H-S and Brockhoff P.B. (2011). Estimation of
-  the Thurstonian model for the 2-AC protocol. Submitted to Food
-  Quality and Preference. 
+  Christensen R.H.B., Lee H-S and Brockhoff P.B. (2012). Estimation of
+  the Thurstonian model for the 2-AC protocol. Food Quality
+  and Preference, 24(1), pp.119-128.
 }
 
 \author{Rune Haubo B Christensen}
@@ -122,4 +121,4 @@ confint(pr)
 plot(pr)
 
 }
-\keyword{models}% at least one, from doc/KEYWORDS
+\keyword{models}

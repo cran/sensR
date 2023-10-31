@@ -1,7 +1,6 @@
 \name{dod}
 \alias{dod}
 \alias{print.dod}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Thurstonian Degree-of-Difference (DOD) model}
 \description{
   Fits the Thurstonian Degree-of-Difference (DOD) model and performs
@@ -82,9 +81,9 @@ dod(same, diff, d.prime0 = 0, conf.level = 0.95,
 }
 
 \references{
-  Ennis, J.M. and R.H.B. Christensen (2014) A Thurstonian comparison
+  Ennis, J.M. and R.H.B. Christensen (2015) A Thurstonian comparison
   of the tetrad and degree of difference tests.
-  \emph{Food Quality and Preference}, in press.
+  \emph{Food Quality and Preference}, 40, pp.263-269.
 
   Christensen, R.H.B, J.M. Ennis, D.M. Ennis and P.B Brockhoff (2012)
   A Thurstonian model for the Degree of Difference test
@@ -128,4 +127,4 @@ coef(fm)
 
 }
 }
-\keyword{models}% at least one, from doc/KEYWORDS
+\keyword{models}

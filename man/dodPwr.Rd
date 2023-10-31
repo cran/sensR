@@ -1,6 +1,5 @@
 \name{dodPwr}
 \alias{dodPwr}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Power of the Degree-of-Difference (DOD) method}
 \description{
   Computes the power of the Degree-of-Difference (DOD) method by
@@ -38,8 +37,6 @@ dodPwr(d.primeA, d.prime0=0, ncat = 4, sample.size, nsim = 1e3,
     parameters in the DOD model, otherwise not used.}
   \item{\dots}{parsed on to \code{\link{wilcox.test}} when appropriate.}
 }
-%% \details{
-%% }
 \value{
   The simulation based estimate of the power with the following
   attributes:
@@ -55,9 +52,9 @@ dodPwr(d.primeA, d.prime0=0, ncat = 4, sample.size, nsim = 1e3,
 }
 
 \references{
-  Ennis, J.M. and R.H.B. Christensen (2014) A Thurstonian comparison
+  Ennis, J.M. and R.H.B. Christensen (2015) A Thurstonian comparison
   of the tetrad and degree of difference tests.
-  \emph{Food Quality and Preference}, in press.
+  \emph{Food Quality and Preference}, 40, pp.263-269.
 }
 
 \author{Rune Haubo B Christensen}
@@ -95,7 +92,7 @@ dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=50,
 dodPwr(d.primeA=1, d.prime0=0, ncat=4, sample.size=100, nsim=1e3,
        alpha=.05, method.tau="LR.max", statistic="Wilcox")
 
-\dontrun{
+\donttest{
 ## Not automatically run to reduce computation time.
 
 ## Power of a similarity test:
@@ -148,6 +145,4 @@ if(require(parallel)) {
 ## stopifnot(all(a == expect))
 ## }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{models}

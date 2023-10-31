@@ -3,7 +3,6 @@
 \alias{AUC.anota}
 \alias{print.AUC}
 \alias{AUC}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ AUC computation}
 \description{
   This is the default AUC function for scalar d-primes, which will
@@ -18,7 +17,6 @@
 \method{AUC}{anota}(d, CI.alpha = 0.05, ...)
 
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{d}{a unit lenght vector with the value of d-prime for which AUC
     is to be computed or a \code{anota} object from the fitting of a
@@ -55,13 +53,7 @@
   \item{upper}{the upper confidence limit}
   \item{CI.alpha}{echoes the provided \code{CI.alpha}}
 }
-%% \references{}
 \author{Rune Haubo B Christensen}
-%%\note{ ~~further notes~~
-%%
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-%%}
-%%\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 
 ## Compute AUC from d-prime and confindence interval for the AUC:
@@ -79,21 +71,19 @@ z <- pnorm(fm1$coef/sqrt(2))
 w <- 0.817851857437929
 
 stopifnot(
-  isTRUE(all.equal(as.vector(x$value), as.vector(y$value),
-                   as.vector(z), w)),
+  isTRUE(all.equal(as.vector(x$value), as.vector(y$value))),
+  isTRUE(all.equal(as.vector(x$value), as.vector(z))),
+  isTRUE(all.equal(as.vector(x$value), w)),
   isTRUE(all.equal(x$lower, y$lower)),
   isTRUE(all.equal(x$upper, y$upper))
 )
 
 ## Don't actually know what this is supposed to illustrate:
-(odor <- matrix(c(112, 112, 72, 53, 22, 4, 7, 38, 50, 117, 101, 62), 2,
-               byrow = TRUE))
+(odor <- matrix(c(112, 112, 72, 53, 22, 4, 7, 38, 50, 117, 101, 62), 2, 
+                byrow = TRUE))
 (d.primes <- SDT(odor)[,3])
 for(i in 1:5) print(AUC(d.primes[i]))
 }
 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{htest}
-%% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

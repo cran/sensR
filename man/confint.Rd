@@ -103,9 +103,9 @@
 
 }
 \references{
-  Christensen R.H.B., lee H-S and Brockhoff P.B. (2010). Estimation of
-  the Thurstonian model for the 2-AC protocol. Manuscript for Food
-  Quality and Preference.
+  Christensen R.H.B., lee H-S and Brockhoff P.B. (2012). Estimation of
+  the Thurstonian model for the 2-AC protocol. Food Quality
+  and Preference, 24(1), pp.119-128.
 }
 
 \author{Rune Haubo B Christensen}
@@ -122,11 +122,12 @@ pr1 <- profile(fm1)
 confint(pr1)
 
 pr1 <- profile(fm1, alpha = 1e-5)
-par(mfrow = c(2,2))
+old <- par(mfrow = c(2,2))
 plot(pr1)
 plot(pr1, Log = FALSE, relative = TRUE)
 plot(pr1, Log = TRUE, relative = TRUE)
 plot(pr1, Log = TRUE, relative = FALSE)
+par(old)
 \dontshow{
 ## Test stability of CIs:
 ci <- c(confint(fm1), confint(fm1, type = "Wald"))
